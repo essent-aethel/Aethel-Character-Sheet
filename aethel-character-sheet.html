@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aethel — Character Dossier</title>
@@ -2987,6 +2988,51 @@ textarea.action-col-input {
   transition: all 0.15s;
 }
 .migration-banner-dismiss:hover { background: var(--copper); color: var(--ink); border-color: var(--copper); }
+/* ── COMPREHENSIVE PDF GENERATION & PRINT ENGINE OVERRIDES ── */
+@media print {
+  /* 1. Hide control utilities, dynamic tabs, and navigation headers completely */
+  .tab-nav, 
+  .save-btn, 
+  input[type="file"], 
+  button, 
+  .action-modal-backdrop,
+  header .divider::before {
+    display: none !important;
+  }
+
+  /* 2. Rescale layout grids to fill standardized layout dimensions */
+  body {
+    background: #f0e6d0 !important; /* Forces transition to lighter vellum for home printer ink saves */
+    color: #16120e !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .page {
+    display: block !important; /* Forces multi-page rendering engines to print all sheets sequentially */
+    page-break-after: always;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0.5rem !important;
+  }
+
+  .layout, .main-grid, .char-header-grid {
+    display: block !important; /* Converts desktop flex grids to block format to stop structural line clipping */
+    width: 100% !important;
+  }
+
+  .sheet-section, .panel {
+    box-shadow: none !important; /* Drops heavy drop shadow styling elements */
+    page-break-inside: avoid; /* Prevents an individual panel element from splitting in half over pages */
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* 3. Ensure background profiles and colors transfer over accurately */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -3001,6 +3047,7 @@ textarea.action-col-input {
   <button class="tab-btn" onclick="switchTab('notes', this)">Notes & Lore</button>
   <button class="tab-btn" onclick="switchTab('cheatsheet', this)">Cheat Sheet</button>
   <button class="save-btn" onclick="saveAll()">Save</button>
+  <button class="save-btn" onclick="exportToPDF()">Export PDF</button>
   <label class="save-btn" style="cursor:pointer;">Load<input type="file" accept=".json" style="display:none;" onchange="loadFromFile(this)"></label>
   <span class="save-msg" id="save-msg">Saved.</span>
 </nav>
@@ -6929,6 +6976,62 @@ document.getElementById('char-class')?.addEventListener('change', function() {
   renderLevelLog();
   refreshResourceDisplays();
 });
+  
+/**
+ * Aethel App PDF Generation Engine
+ * Handles full compiling, formatting, and file generation pipeline.
+ */
+function exportToPDF() {
+  // 1. Identify what we want to capture (the main wrapper page or panel content)
+  // For the Character Sheet, we temporarily want ALL pages visible for full capture
+  const standardPages = document.querySelectorAll('.page');
+  const activeTabClass = 'active';
+
+  // State checkpoint: Track what page the user was currently looking at
+  const previouslyActivePage = document.querySelector('.page.active');
+
+  // 2. Prep the DOM layout for multi-page export by un-hiding elements
+  standardPages.forEach(page => {
+    page.style.display = 'block'; // Temporarily bypass tab rules
+    page.style.marginBottom = '2rem'; // Padding spacer between printable segments
+  });
+
+  // Pick target container element
+  // (Adjust ID selectors depending on character-sheet wrapper vs spell-slinger wrapper)
+  const elementToCapture = document.body; 
+
+  // 3. Configure the generation parameters
+  const optimizationOptions = {
+    margin:       [0.4, 0.4, 0.4, 0.4], // Top, Left, Bottom, Right layout offsets in inches
+    filename:     `Aethel_Dossier_${document.getElementById('char-name')?.value || 'Character'}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { 
+      scale: 2, // High resolution pixel ratio enhancement
+      useCORS: true, // Safeguard webfont loadings across CDNs
+      letterRendering: true,
+      backgroundColor: '#0e0b08' // Mirrors the deep theme background configuration
+    },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css'] } // Utilizes custom page break hooks gracefully
+  };
+
+  // 4. Fire compilation pipeline execution
+  html2pdf().set(optimizationOptions).from(elementToCapture).save().then(() => {
+    // 5. Clean up phase: Roll the application DOM state back to normal
+    standardPages.forEach(page => {
+      page.style.display = ''; // Clear temporary structural shifts
+      page.style.marginBottom = '';
+    });
+    // Ensure only the user's active page is shown again
+    if (previouslyActivePage) {
+      standardPages.forEach(p => p.classList.remove(activeTabClass));
+      previouslyActivePage.classList.add(activeTabClass);
+    }
+    console.log("PDF generation lifecycle complete.");
+  }).catch(err => {
+    console.error("PDF Pipeline breakdown: ", err);
+  });
+}
 </script>
 </body>
 </html>
