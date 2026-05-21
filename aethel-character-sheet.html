@@ -3221,7 +3221,7 @@ body.pdf-exporting .section-header {
           <div class="cstat-divider"></div>
           <div class="cstat-row" style="align-items:flex-start;">
             <div style="display:flex;flex-direction:column;gap:0.15rem;">
-              <span class="cstat-label">Spell Save DC</span>
+              <span class="cstat-label">Scaling Threat DC</span>
               <div class="cstat-dc-desc">8 + (level / 2, Rounded up) + Spell casting Modifier</div>
             </div>
             <div style="text-align:right;">
@@ -3884,7 +3884,7 @@ body.pdf-exporting .section-header {
           <div class="am-group">
             <label class="am-label">DC</label>
             <select class="am-select" id="am-dc-type" onchange="amToggleDC()">
-              <option value="spell">Use Spell Save DC</option>
+              <option value="spell">Use Scaling Threat DC</option>
               <option value="manual">Manual</option>
             </select>
           </div>
@@ -4549,7 +4549,7 @@ function loadAll() {
   if (dailyUsed === '1') document.getElementById('daily-toggle')?.classList.add('used');
 }
 
-// ── SAVING THROWS & SPELL SAVE DC ──
+// ── SAVING THROWS & Scaling Threat DC ──
 function updateSavingThrows() {
   const fortMod    = getAbilityMod('FORT');
   const reflexMod  = getAbilityMod('REF');
@@ -4568,7 +4568,7 @@ function updateSavingThrows() {
   applyMod('save-will', willMod);
   applyMod('save-intellect', intMod);
 
-  // Spell Save DC: 8 + ceil(level/2) + governing mod
+  // Scaling Threat DC: 8 + ceil(level/2) + governing mod
   const level = getCharLevel();
   const statSel = document.getElementById('spell-save-stat')?.value || 'INT';
   const govMod = getAbilityMod(statSel);
@@ -7016,7 +7016,7 @@ document.getElementById('ability-grid')?.addEventListener('input', function() {
   renderAllActionTables();
 });
 
-// Wire spell save stat dropdown
+// Wire Scaling Threat stat dropdown
 document.getElementById('spell-save-stat')?.addEventListener('change', function() {
   updateSavingThrows();
   renderAllActionTables();
