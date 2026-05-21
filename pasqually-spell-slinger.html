@@ -1639,12 +1639,11 @@ const AUG_SECTIONS = [
     augments: [
       { id: 'destructive',    name: 'Destructive',       cost: 2, desc: 'Adds 2d6 damage to each affected enemy. Required for damage spells.' },
       { id: 'restorative',    name: 'Restorative',       cost: 3, desc: 'Restores 2d8 HP to each affected ally.' },
-      { id: 'elemental',      name: 'Elemental Shift',   cost: 1, desc: 'Deals 1d6 damage and shifts all damage to Fire, Ice, Lightning, Acid, or Thunder.' },
-      { id: 'greater_reach',  name: 'Greater Reach',     cost: 1, desc: 'Doubles the Spell Forms range (e.g., 60 ft → 120 ft).' },
     ]
   },
   {
     title: 'Condition Augments',
+    note: 'AoE Surcharge: +1 RP when combined with an area Spell Form (Close Burst, Ranged Burst, Broad Wave, Arcane Wall, Binding Ring).',
     augments: [
       { id: 'minor_cond',  name: 'Impose Minor Condition',  cost: 2, desc: 'Imposes a Basic condition on failed save (e.g. Prone, Grappled, Frightened).', gate: null,
         conditions: ['Dazed','Deafened','Prone','Staggered','Frightened','Grappled'] },
@@ -1660,6 +1659,7 @@ const MIND_AUG_SECTIONS = [
   {
     title: 'Damage & Delivery',
     augments: [
+      { id: 'elemental',      name: 'Elemental Shift',   cost: 1, desc: 'Deals 1d6 damage and shifts all damage to Fire, Ice, Lightning, Acid, or Thunder.' },
       { id: 'flawless_strike', name: 'Flawless Strike',  cost: 2, desc: 'If this Spell Form lands a Glancing Blow, it is converted to Full Damage instead.' },
       { id: 'aftershock',      name: 'Aftershock',       cost: 2, desc: 'If the target already has any condition applied to them, this Spell Form deals an additional 1d8 bonus damage.' },
       { id: 'kinetic_chain',   name: 'Kinetic Chain',    cost: 3, desc: 'If the Spell Form deals damage, the damage dealt is also dealt to a second enemy target within 10 ft. No additional attack roll required.' },
@@ -1679,6 +1679,7 @@ const MIND_AUG_SECTIONS = [
   {
     title: 'Utility & Positioning',
     augments: [
+      { id: 'greater_reach',  name: 'Greater Reach',     cost: 1, desc: 'Doubles the Spell Form\'s range (e.g., 60 ft → 120 ft).' },
       { id: 'haste_field',     name: 'Haste Field',      cost: 2, desc: "If this Spell Form affects an ally (including you), that ally's movement speed is doubled until the end of their next turn." },
       { id: 'concussive_force',name: 'Concussive Force',  cost: 2, desc: 'If this Spell Form deals damage on a Full Hit, push the target up to 10 ft. in a direction of your choice. No Save.' },
       { id: 'flicker_warp',    name: 'Flicker Warp',     cost: 3, desc: 'After casting this Spell Form, you may teleport up to 30 ft. to an unoccupied space you can see. Triggers after the spell resolves.' },
@@ -1991,7 +1992,10 @@ function renderAugments() {
   AUG_SECTIONS.forEach(section => {
     const sec = document.createElement('div');
     sec.className = 'aug-section';
-    sec.innerHTML = `<div class="aug-section-title">${section.title}</div>`;
+    let noteHtml = section.note
+      ? `<div style="font-size:0.68rem;font-style:italic;color:rgba(26,20,16,0.45);margin-bottom:0.5rem;">${section.note}</div>`
+      : '';
+    sec.innerHTML = `<div class="aug-section-title">${section.title}</div>${noteHtml}`;
 
     section.augments.forEach(aug => {
       const isSelected = selectedAugs.has(aug.id);
@@ -2064,12 +2068,23 @@ function renderMindAugments() {
 
     section.augments.forEach(aug => {
       const isSelected = selectedMindAugs.has(aug.id);
-      const gated = aug.gate && isGated(aug.gate);
+      const isLocked = lockedAugs.has(aug.id);
+      const gated = !isLocked && aug.gate && isGated(aug.gate);
       const item = document.createElement('div');
-      item.className = 'aug-item' + (isSelected ? ' selected' : '') + (gated ? ' gated' : '');
+      item.className = 'aug-item' + (isSelected ? ' selected' : '') + (gated ? ' gated' : '') + (isLocked ? ' locked' : '');
+
+      // Locked element label (for imported spells with Elemental Shift)
+      let lockedElementHtml = '';
+      if (isLocked && aug.id === 'elemental' && conditionChoices['elemental']) {
+        lockedElementHtml = `<div style="font-size:0.72rem;color:var(--gold);margin-top:0.25rem;font-family:'Cinzel',serif;letter-spacing:0.05em;">Element: ${conditionChoices['elemental']}</div>`;
+      }
+
+      const checkIcon = isLocked
+        ? `<div class="aug-check locked-icon" title="Imported — locked">🔒</div>`
+        : `<div class="aug-check">${isSelected ? '✦' : ''}</div>`;
 
       item.innerHTML = `
-        <div class="aug-check">${isSelected ? '✦' : ''}</div>
+        ${checkIcon}
         <div class="aug-inner">
           <div style="display:flex;justify-content:space-between;align-items:baseline;">
             <span class="aug-name">${aug.name}</span>
@@ -2077,15 +2092,20 @@ function renderMindAugments() {
           </div>
           <div class="aug-desc">${aug.desc}</div>
           ${aug.gate ? `<div class="gate-label${gated ? '' : ' unlocked'}">⚠ Requires ${aug.gate}</div>` : ''}
+          ${lockedElementHtml}
         </div>
       `;
 
-      item.onclick = () => {
-        if (gated) return;
-        if (selectedMindAugs.has(aug.id)) selectedMindAugs.delete(aug.id);
-        else selectedMindAugs.add(aug.id);
-        renderAll();
-      };
+      if (isLocked) {
+        item.title = 'Imported — locked';
+      } else {
+        item.onclick = () => {
+          if (gated) return;
+          if (selectedMindAugs.has(aug.id)) selectedMindAugs.delete(aug.id);
+          else selectedMindAugs.add(aug.id);
+          renderAll();
+        };
+      }
 
       sec.appendChild(item);
     });
@@ -2098,6 +2118,9 @@ function setCondition(augId, val) {
   conditionChoices[augId] = val;
   updateSummary();
 }
+
+const AOE_FORM_IDS = new Set(['close_burst', 'ranged_burst', 'broad_wave', 'arcane_wall', 'binding_ring']);
+const CONDITION_AUG_IDS = new Set(['minor_cond', 'major_cond', 'severe_cond']);
 
 function computeCost() {
   let base = 0;
@@ -2117,7 +2140,11 @@ function computeCost() {
     if (a) augCost += a.cost;
   });
   const sustainCost = sustainType === 'unfocused' ? 4 : sustainType === 'focused' ? 2 : 0;
-  return { base, augCost, sustainCost, total: base + augCost + importTierMinCost + sustainCost };
+  // AoE Condition Surcharge: +1 RP when any Impose Condition augment is used with an AoE Spell Form
+  const hasCondition = [...selectedAugs].some(id => CONDITION_AUG_IDS.has(id));
+  const isAoE = AOE_FORM_IDS.has(selectedForm);
+  const aoeSurcharge = (hasCondition && isAoE) ? 1 : 0;
+  return { base, augCost, sustainCost, aoeSurcharge, total: base + augCost + importTierMinCost + sustainCost + aoeSurcharge };
 }
 
 function buildSpellDescriptionHTML(spell) {
@@ -2138,9 +2165,9 @@ function buildSpellDescriptionHTML(spell) {
 
   const effects = [];
   if (augs.has('destructive') && !locked.has('destructive')) effects.push('deals 2d6 damage to each target');
-  if (augs.has('elemental') && !locked.has('elemental')) effects.push(`deals 1d6 additional damage as ${conds['elemental'] || 'elemental'} type`);
+  if ((mindAugs.has('elemental') || augs.has('elemental')) && !locked.has('elemental')) effects.push(`deals 1d6 additional damage as ${conds['elemental'] || 'elemental'} type`);
   if (augs.has('restorative') && !locked.has('restorative')) effects.push('restores 2d8 HP to each ally');
-  if (augs.has('greater_reach')) effects.push('range doubled');
+  if (mindAugs.has('greater_reach') || augs.has('greater_reach')) effects.push('range doubled');
   if (augs.has('minor_cond')) effects.push(`imposes ${conds['minor_cond'] || 'a minor condition'} on failed save`);
   if (augs.has('major_cond')) effects.push(`imposes ${conds['major_cond'] || 'a major condition'} on failed save`);
   if (augs.has('severe_cond')) effects.push(`imposes ${conds['severe_cond'] || 'a severe condition'} on failed save`);
@@ -2211,7 +2238,7 @@ function onSustainChange() {
 }
 
 function updateSummary() {
-  const { base, augCost, sustainCost, total } = computeCost();
+  const { base, augCost, sustainCost, aoeSurcharge, total } = computeCost();
 
   // Cost number
   const el = document.getElementById('total-cost');
@@ -2261,7 +2288,10 @@ function updateSummary() {
       const sustainLabel = sustainType === 'unfocused' ? 'Unfocused Sustain' : 'Focused Sustain';
       rows += `<div class="breakdown-row"><span>${sustainLabel}</span><span class="bval">+${sustainCost} RP</span></div>`;
     }
-    if (selectedAugs.size > 0 || selectedMindAugs.size > 0 || sustainCost > 0) {
+    if (aoeSurcharge > 0) {
+      rows += `<div class="breakdown-row"><span>AoE Condition Surcharge</span><span class="bval">+${aoeSurcharge} RP</span></div>`;
+    }
+    if (selectedAugs.size > 0 || selectedMindAugs.size > 0 || sustainCost > 0 || aoeSurcharge > 0) {
       rows += `<div class="breakdown-row total-row"><span>Total</span><span class="bval">${total} RP</span></div>`;
     }
     blist.innerHTML = rows;
@@ -2566,7 +2596,7 @@ function deriveSpellTableRow(spell) {
   const augs = spell.augs || [];
   const mindAugs = spell.mindAugs || [];
   const savedCond = spell.conditions || {};
-  const hasReach = augs.includes('greater_reach');
+  const hasReach = augs.includes('greater_reach') || mindAugs.includes('greater_reach');
 
   // Range / Area
   let range;
@@ -2594,11 +2624,11 @@ function deriveSpellTableRow(spell) {
     const dmgParts = [];
     if (spell.formId === 'cantrip') dmgParts.push('1d6');
     if (augs.includes('destructive')) dmgParts.push('2d6');
-    if (augs.includes('elemental')) dmgParts.push(`1d6 ${savedCond['elemental'] || 'Elemental'}`);
+    if (augs.includes('elemental') || mindAugs.includes('elemental')) dmgParts.push(`1d6 ${savedCond['elemental'] || 'Elemental'}`);
     damage = dmgParts.join(' + ') || '—';
     dmgDice = (spell.formId === 'cantrip' ? 1 : 0)
       + (augs.includes('destructive') ? 2 : 0)
-      + (augs.includes('elemental') ? 1 : 0);
+      + ((augs.includes('elemental') || mindAugs.includes('elemental')) ? 1 : 0);
   }
 
   // Healing
@@ -2893,7 +2923,7 @@ function confirmImport() {
     lockedAugs.add('destructive');
     // Auto-lock Elemental Shift if an elemental damage type is chosen
     if (damageType && ELEMENTAL_TYPES.has(damageType)) {
-      selectedAugs.add('elemental');
+      selectedMindAugs.add('elemental');
       lockedAugs.add('elemental');
       conditionChoices['elemental'] = damageType;
     }
