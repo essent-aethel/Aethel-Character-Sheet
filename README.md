@@ -6,10 +6,10 @@ A pair of web apps for the **Aethel** tabletop RPG system.
 
 ## Apps
 
-**[Aethel Character Sheet](https://farewellfox.github.io/Aethel/aethel-character-sheet.html)**
+**[Aethel Character Sheet](https://essent-aethel.github.io/Aethel-Character-Sheet/aethel-character-sheet.html)**
 Full digital character sheet with live calculations and level tracking.
 
-**[Pasqually's Spell Slinger](https://farewellfox.github.io/Aethel/pasqually-spell-slinger.html)**
+**[Pasqually's Spell Slinger](https://essent-aethel.github.io/Aethel-Character-Sheet/pasqually-spell-slinger.html)**
 Spell builder and library for The Mind and The Spirit classes.
 
 Open either link in your browser. No download or installation required.
@@ -24,7 +24,7 @@ Open either link in your browser. No download or installation required.
 2. Fill in your identity fields (name, species, class, archetype, background, alignment)
 3. Open the **Level Log** tab and add your starting level. Character level on the sheet is driven by the log, not a manual field
 4. Add your actions, reactions, and passives in the **Actions** section
-5. Use **Ctrl+S** (or the Save button) to export your sheet as a `.json` file
+5. Use **Ctrl+S** (or the Save button) to export your sheet as a `.json` file, or Export to PDF for a .pdf file.
 
 ---
 
