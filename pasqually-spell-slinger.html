@@ -1672,7 +1672,6 @@ const MIND_AUG_SECTIONS = [
       { id: 'expose',          name: 'Expose',           cost: 2, desc: "If this Spell Form hits or affects a target, that target's Defense Score is reduced by 2 until the start of your next turn. Does not stack with multiple casts." },
       { id: 'displacement',    name: 'Displacement',     cost: 3, desc: 'If the Spell Form affects a target, you may push or pull that target up to 15 ft. in any direction. The target may roll a Fortitude Save to resist the forced movement.' },
       { id: 'enervate',        name: 'Enervate',         cost: 3, gate: 'Mind Level 3+', desc: "If this Spell Form deals damage, that target's damage rolls are reduced by 1d10 until the start of your next turn." },
-      { id: 'temporal_hitch',  name: 'Temporal Hitch',   cost: 3, gate: 'Mind Level 3+', desc: "If this Spell Form fails to affect a target (a successful Save), you may delay the effect. It reapplies automatically at the start of that target's next turn, and they make their Save or resist roll with Disadvantage." },
       { id: 'silence',         name: 'Silence',          cost: 3, gate: 'Mind Level 3+', desc: 'Targets that fail their Save suffer the Silenced condition until the start of your next turn. Silenced creatures cannot cast Spell Forms, use abilities with a verbal component, or maintain Focused Sustain.' },
       { id: 'gravity_well',    name: 'Gravity Well',     cost: 4, gate: 'Mind Level 3+', desc: 'This Augment requires a Burst or Wave Spell Form. All affected targets that fail their Save are also pulled up to 10 ft. toward the center of the effect after damage resolves.' },
     ]
@@ -1681,7 +1680,6 @@ const MIND_AUG_SECTIONS = [
     title: 'Utility & Positioning',
     augments: [
       { id: 'haste_field',     name: 'Haste Field',      cost: 2, desc: "If this Spell Form affects an ally (including you), that ally's movement speed is doubled until the end of their next turn." },
-      { id: 'spellmark',       name: 'Spellmark',        cost: 2, desc: 'If this Spell Form hits or affects a target, that target is Marked until the start of your next turn. Your next Spell Form cast against a Marked target costs 1 AP less and deals +1d6 bonus damage. A target can only be Marked once at a time.' },
       { id: 'concussive_force',name: 'Concussive Force',  cost: 2, desc: 'If this Spell Form deals damage on a Full Hit, push the target up to 10 ft. in a direction of your choice. No Save.' },
       { id: 'flicker_warp',    name: 'Flicker Warp',     cost: 3, desc: 'After casting this Spell Form, you may teleport up to 30 ft. to an unoccupied space you can see. Triggers after the spell resolves.' },
       { id: 'shockwave',       name: 'Shockwave',        cost: 3, desc: 'After this Spell Form resolves, release a burst of concussive force. All creatures within 10 ft. of you (not the target) must make a Reflex Save or be pushed 10 ft. away and knocked Prone.' },
@@ -1695,15 +1693,21 @@ const MIND_AUG_SECTIONS = [
       { id: 'arcane_vanguard', name: 'Arcane Vanguard',  cost: 3, desc: "If this Spell Form targets an ally (including yourself), that ally's next attack this round is treated as a Full Hit regardless of the roll result." },
       { id: 'momentum_surge',  name: 'Momentum Surge',   cost: 4, gate: 'Mind Level 3+', desc: 'If this Spell Form targets an ally (including yourself), that ally may immediately move up to their full speed as a Free Action. This movement does not provoke Opportunity Attacks.' },
       { id: 'warding_shell',   name: 'Warding Shell',    cost: 5, gate: 'Mind Level 3+', desc: 'If this Spell Form targets an ally (including yourself), that ally becomes Resistant to one specific damage type of your choice until the start of your next turn. Applies to all damage of that type, not just a single hit.' },
-      { id: 'strand_barrier',  name: 'Strand Barrier',   cost: 6, gate: 'Mind Level 5+', desc: 'Creates a shimmering barrier around one ally within 60 ft. (or yourself). Until the start of your next turn, that ally cannot be affected by conditions imposed by attacks or spells.' },
     ]
-  },
+  }
+];
+
+const ARCANIST_AUG_SECTIONS = [
   {
-    title: 'Combination Enablers',
+    title: 'Arcanist Augments',
+    note: 'Arcanist Exclusive — Strand mastery and prepared spell sequencing.',
     augments: [
+      { id: 'spellmark',       name: 'Spellmark',        cost: 2, desc: 'If this Spell Form hits or affects a target, that target is Marked until the start of your next turn. Your next Spell Form cast against a Marked target costs 1 AP less and deals +1d6 bonus damage. A target can only be Marked once at a time.' },
+      { id: 'temporal_hitch',  name: 'Temporal Hitch',   cost: 3, gate: 'Mind Level 3+', desc: "If this Spell Form fails to affect a target (a successful Save), you may delay the effect. It reapplies automatically at the start of that target's next turn, and they make their Save or resist roll with Disadvantage." },
       { id: 'lingering_effect',name: 'Lingering Effect',  cost: 3, desc: 'If this Spell Form imposes a condition via an Impose Condition Augment, the condition persists for one additional round beyond its normal duration. Does not extend Sustained conditions — single-turn conditions only.' },
       { id: 'echo',            name: 'Echo',             cost: 4, gate: 'Mind Level 3+', desc: 'This Spell Form replays the last Spell Form you cast this combat — same Augments, different target or position. You pay only the Echo cost, not the original cost again. The echo deals half damage or half effect value.' },
       { id: 'split_cast',      name: 'Split Cast',       cost: 5, gate: 'Mind Level 3+', desc: 'This Spell Form targets two separate creatures instead of one (applies to Simple Projection and similar single-target Forms only). Each target is affected independently — roll separately for each.' },
+      { id: 'strand_barrier',  name: 'Strand Barrier',   cost: 6, gate: 'Mind Level 5+', desc: 'Creates a shimmering barrier around one ally within 60 ft. (or yourself). Until the start of your next turn, that ally cannot be affected by conditions imposed by attacks or spells.' },
     ]
   }
 ];
@@ -1752,7 +1756,7 @@ const WARDEN_AUG_SECTIONS = [
 
 const SPIRIT_AUGMENTS = [
   // ── Universal ──
-  { id: 'prayer',              name: 'Prayer',              cost: 0, archetypes: ['oracle','templar','zealot'],  desc: 'While in combat as a Bonus Action, reconnect with your faith and gain 2 SP. Alternatively, as an Action, gain 6 SP. These amounts double at Level 5.' },
+  { id: 'prayer',              name: 'Prayer',              cost: 0, archetypes: ['oracle','templar','zealot'],  desc: 'As a Bonus Action, reconnect with your faith and gain 2 SP. Alternatively, as an Action, gain 6 SP. These amounts double at Level 5.' },
   { id: 'swift_blessing',      name: 'Swift Blessing',      cost: 2, archetypes: ['oracle','templar','zealot'],  desc: 'One ally within 30 ft. gains +20 ft. movement speed and ignores non-magical Difficult Terrain until the start of your next turn.' },
   { id: 'radiant_surge',       name: 'Radiant Surge',       cost: 4, archetypes: ['oracle','templar','zealot'],  gate: 'Spirit Level 5+', desc: 'One ally within 60 ft. gains 2d6 temporary HP, +10 ft. movement speed, and Advantage on their next attack roll — all until the start of your next turn.' },
   // ── Oracle, Templar ──
@@ -1841,9 +1845,13 @@ function isGated(gate) {
 
 function getCurrentClassAugSections() {
   if (selectedClass === 'mind') {
-    if (selectedSubclass === 'animist') return ANIMIST_AUG_SECTIONS;
-    if (selectedSubclass === 'warden') return WARDEN_AUG_SECTIONS;
-    return MIND_AUG_SECTIONS;
+    // All Mind subclasses get the shared Mind pool
+    const sections = [...MIND_AUG_SECTIONS];
+    // Plus their archetype-specific augments
+    if (selectedSubclass === 'arcanist') sections.push(...ARCANIST_AUG_SECTIONS);
+    else if (selectedSubclass === 'animist') sections.push(...ANIMIST_AUG_SECTIONS);
+    else if (selectedSubclass === 'warden') sections.push(...WARDEN_AUG_SECTIONS);
+    return sections;
   }
   // Spirit — filter SPIRIT_AUGMENTS by selected subclass
   const filtered = SPIRIT_AUGMENTS.filter(a => a.archetypes.includes(selectedSubclass));
@@ -1852,6 +1860,10 @@ function getCurrentClassAugSections() {
 
 function findClassAugById(id) {
   for (const sec of MIND_AUG_SECTIONS) {
+    const a = sec.augments.find(x => x.id === id);
+    if (a) return a;
+  }
+  for (const sec of ARCANIST_AUG_SECTIONS) {
     const a = sec.augments.find(x => x.id === id);
     if (a) return a;
   }
@@ -1903,7 +1915,7 @@ function enforceGating() {
       if (aug.gate && isGated(aug.gate)) selectedAugs.delete(aug.id);
     }
   }
-  const allClassSecs = [...MIND_AUG_SECTIONS, ...ANIMIST_AUG_SECTIONS, ...WARDEN_AUG_SECTIONS];
+  const allClassSecs = [...MIND_AUG_SECTIONS, ...ARCANIST_AUG_SECTIONS, ...ANIMIST_AUG_SECTIONS, ...WARDEN_AUG_SECTIONS];
   for (const sec of allClassSecs) {
     for (const aug of sec.augments) {
       if (aug.gate && isGated(aug.gate)) selectedMindAugs.delete(aug.id);
