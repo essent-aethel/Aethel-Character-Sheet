@@ -1651,34 +1651,59 @@ const AUG_SECTIONS = [
       { id: 'major_cond',  name: 'Impose Major Condition',  cost: 4, desc: 'Imposes an Advanced condition on failed save (e.g. Blinded, Distracted, Poisoned).', gate: 'Level 3+',
         conditions: ['Blinded','Distracted','Poisoned','Restrained','Silenced','Weakened'] },
       { id: 'severe_cond', name: 'Impose Severe Condition', cost: 6, desc: 'Imposes an Expert condition on failed save (e.g. Stunned, Paralyzed, Unconscious).', gate: 'Level 5+',
-        conditions: ['Stunned','Paralyzed','Unconscious'] },
+        conditions: ['Stunned','Paralyzed'] },
     ]
   }
 ];
 
 const MIND_AUG_SECTIONS = [
   {
-    title: 'Mind Augments',
+    title: 'Damage & Delivery',
     augments: [
-      { id: 'kinetic_chain',   name: 'Kinetic Chain',   cost: 3, desc: 'If the Spell Form deals damage, the damage dealt is also dealt to a second enemy target within 10 ft.' },
-      { id: 'flawless_strike', name: 'Flawless Strike',  cost: 2, desc: 'If this Spell Form lands a Glancing Blow (half damage), it is converted to Full Damage instead.' },
-      { id: 'flicker_warp',   name: 'Flicker Warp',     cost: 3, desc: 'After casting this Spell Form, you may teleport up to 30 ft. to an unoccupied space you can see.' },
-      { id: 'haste_field',    name: 'Haste Field',      cost: 2, desc: 'If this Spell Form affects an ally (including you), that ally\'s movement speed is doubled until the end of their next turn.' },
-      { id: 'expose',         name: 'Expose',           cost: 2, desc: 'If this Spell Form hits or affects a target, that target\'s Defense Score is reduced by 2 until the start of your next turn. Does not stack with multiple casts.' },
-      { id: 'aftershock',     name: 'Aftershock',       cost: 2, desc: 'If the target already has any condition applied to them, this Spell Form deals an additional 1d8 bonus damage.' },
+      { id: 'flawless_strike', name: 'Flawless Strike',  cost: 2, desc: 'If this Spell Form lands a Glancing Blow, it is converted to Full Damage instead.' },
+      { id: 'aftershock',      name: 'Aftershock',       cost: 2, desc: 'If the target already has any condition applied to them, this Spell Form deals an additional 1d8 bonus damage.' },
+      { id: 'kinetic_chain',   name: 'Kinetic Chain',    cost: 3, desc: 'If the Spell Form deals damage, the damage dealt is also dealt to a second enemy target within 10 ft. No additional attack roll required.' },
+      { id: 'astral_link',     name: 'Astral Link',      cost: 4, gate: 'Mind Level 5+', desc: 'If the Spell Form hits or affects a target with another within 30 ft, you create a temporary link. Half of the damage taken by one linked enemy is also dealt to the other linked enemy within 30 ft. until the end of your next turn.' },
     ]
   },
   {
-    title: 'Advanced Mind Augments',
+    title: 'Control & Debuff',
     augments: [
-      { id: 'temporal_hitch', name: 'Temporal Hitch', cost: 4, gate: 'Mind Level 3+', desc: 'If this Spell Form is completely resisted (a successful Save), you may delay its effect until the end of your next turn and reapply it to the same target with Disadvantage on the Save.' },
-      { id: 'displacement',   name: 'Displacement',   cost: 3, gate: 'Mind Level 3+', desc: 'If the Spell Form affects a target, you may push or pull the target up to 15 ft. in any direction. A creature resisting must roll a Fortitude Save.' },
+      { id: 'expose',          name: 'Expose',           cost: 2, desc: "If this Spell Form hits or affects a target, that target's Defense Score is reduced by 2 until the start of your next turn. Does not stack with multiple casts." },
+      { id: 'displacement',    name: 'Displacement',     cost: 3, desc: 'If the Spell Form affects a target, you may push or pull that target up to 15 ft. in any direction. The target may roll a Fortitude Save to resist the forced movement.' },
+      { id: 'enervate',        name: 'Enervate',         cost: 3, gate: 'Mind Level 3+', desc: "If this Spell Form deals damage, that target's damage rolls are reduced by 1d10 until the start of your next turn." },
+      { id: 'temporal_hitch',  name: 'Temporal Hitch',   cost: 3, gate: 'Mind Level 3+', desc: "If this Spell Form fails to affect a target (a successful Save), you may delay the effect. It reapplies automatically at the start of that target's next turn, and they make their Save or resist roll with Disadvantage." },
+      { id: 'silence',         name: 'Silence',          cost: 3, gate: 'Mind Level 3+', desc: 'Targets that fail their Save suffer the Silenced condition until the start of your next turn. Silenced creatures cannot cast Spell Forms, use abilities with a verbal component, or maintain Focused Sustain.' },
+      { id: 'gravity_well',    name: 'Gravity Well',     cost: 4, gate: 'Mind Level 3+', desc: 'This Augment requires a Burst or Wave Spell Form. All affected targets that fail their Save are also pulled up to 10 ft. toward the center of the effect after damage resolves.' },
     ]
   },
   {
-    title: 'Expert Mind Augments',
+    title: 'Utility & Positioning',
     augments: [
-      { id: 'astral_link', name: 'Astral Link', cost: 4, gate: 'Mind Level 7+', desc: 'If the power hits or affects two or more targets, half of the damage taken by one linked enemy is also dealt to the other linked enemy within 30 ft. until the end of your next turn.' },
+      { id: 'haste_field',     name: 'Haste Field',      cost: 2, desc: "If this Spell Form affects an ally (including you), that ally's movement speed is doubled until the end of their next turn." },
+      { id: 'spellmark',       name: 'Spellmark',        cost: 2, desc: 'If this Spell Form hits or affects a target, that target is Marked until the start of your next turn. Your next Spell Form cast against a Marked target costs 1 AP less and deals +1d6 bonus damage. A target can only be Marked once at a time.' },
+      { id: 'concussive_force',name: 'Concussive Force',  cost: 2, desc: 'If this Spell Form deals damage on a Full Hit, push the target up to 10 ft. in a direction of your choice. No Save.' },
+      { id: 'flicker_warp',    name: 'Flicker Warp',     cost: 3, desc: 'After casting this Spell Form, you may teleport up to 30 ft. to an unoccupied space you can see. Triggers after the spell resolves.' },
+      { id: 'shockwave',       name: 'Shockwave',        cost: 3, desc: 'After this Spell Form resolves, release a burst of concussive force. All creatures within 10 ft. of you (not the target) must make a Reflex Save or be pushed 10 ft. away and knocked Prone.' },
+    ]
+  },
+  {
+    title: 'Defensive & Support',
+    augments: [
+      { id: 'fortify',         name: 'Fortify',          cost: 2, desc: 'If this Spell Form targets an ally (including yourself), that ally gains temporary HP equal to 1d6 + your INT or PRES modifier. Temporary HP expires at the start of your next turn if unused. Multiple applications do not stack.' },
+      { id: 'veil_of_strands', name: 'Veil of Strands',  cost: 3, desc: 'If this Spell Form targets an ally (including yourself), that ally gains +5 Defense Score to the next single instance of damage they take, until the start of your next turn.' },
+      { id: 'arcane_vanguard', name: 'Arcane Vanguard',  cost: 3, desc: "If this Spell Form targets an ally (including yourself), that ally's next attack this round is treated as a Full Hit regardless of the roll result." },
+      { id: 'momentum_surge',  name: 'Momentum Surge',   cost: 4, gate: 'Mind Level 3+', desc: 'If this Spell Form targets an ally (including yourself), that ally may immediately move up to their full speed as a Free Action. This movement does not provoke Opportunity Attacks.' },
+      { id: 'warding_shell',   name: 'Warding Shell',    cost: 5, gate: 'Mind Level 3+', desc: 'If this Spell Form targets an ally (including yourself), that ally becomes Resistant to one specific damage type of your choice until the start of your next turn. Applies to all damage of that type, not just a single hit.' },
+      { id: 'strand_barrier',  name: 'Strand Barrier',   cost: 6, gate: 'Mind Level 5+', desc: 'Creates a shimmering barrier around one ally within 60 ft. (or yourself). Until the start of your next turn, that ally cannot be affected by conditions imposed by attacks or spells.' },
+    ]
+  },
+  {
+    title: 'Combination Enablers',
+    augments: [
+      { id: 'lingering_effect',name: 'Lingering Effect',  cost: 3, desc: 'If this Spell Form imposes a condition via an Impose Condition Augment, the condition persists for one additional round beyond its normal duration. Does not extend Sustained conditions — single-turn conditions only.' },
+      { id: 'echo',            name: 'Echo',             cost: 4, gate: 'Mind Level 3+', desc: 'This Spell Form replays the last Spell Form you cast this combat — same Augments, different target or position. You pay only the Echo cost, not the original cost again. The echo deals half damage or half effect value.' },
+      { id: 'split_cast',      name: 'Split Cast',       cost: 5, gate: 'Mind Level 3+', desc: 'This Spell Form targets two separate creatures instead of one (applies to Simple Projection and similar single-target Forms only). Each target is affected independently — roll separately for each.' },
     ]
   }
 ];
@@ -1686,17 +1711,17 @@ const MIND_AUG_SECTIONS = [
 const ANIMIST_AUG_SECTIONS = [
   {
     title: 'Anima Augments',
-    note: 'Animist Exclusive — Taken in place of standard Advanced Augments.',
+    note: 'Animist Exclusive — Activated via Anima Manifestation Action.',
     augments: [
-      { id: 'prowlers_strike',    name: "Prowler's Strike",  cost: 3, desc: "When the Animist commands the Anima to attack, that attack deals an additional 1d8 damage." },
-      { id: 'ancestral_ward',     name: 'Ancestral Ward',    cost: 5, gate: 'Mind Level 3+', desc: 'The Anima gains Resistance to all Physical Damage (Slashing, Piercing, Bludgeoning) until the start of the Animist\'s next turn.' },
-      { id: 'aggressive_tether',  name: 'Aggressive Tether', cost: 2, desc: 'If the Anima hits an enemy with an attack this turn, the Anima may immediately move the enemy up to 10 ft. into any open space.' },
-      { id: 'symbiotic_healing',  name: 'Symbiotic Healing', cost: 3, desc: 'When the Animist uses a Restorative spell on the Anima, the Animist also recovers half of the HP healed.' },
-      { id: 'blinding_radiance',  name: 'Blinding Radiance', cost: 5, gate: 'Mind Level 5+', desc: 'The Anima lets out a flash of raw energy. All enemies within a 15 ft. radius must make a Reflex Save or be Blinded until the end of their next turn.' },
-      { id: 'guardian_link',      name: 'Guardian Link',     cost: 4, gate: 'Mind Level 5+', desc: 'If an adjacent ally (other than the Animist) is targeted by an attack, the Animist may command the Anima to intercept as a Reaction. The Anima is instantly moved to the target and takes the hit instead.' },
-      { id: 'anima_projection',   name: 'Anima Projection',  cost: 3, desc: 'The Anima roots itself in place (speed becomes 0) and projects a 10 ft. radius spiritual aura. Until the start of your next turn, all allies within this aura gain +2 DEF and cannot be forcibly pushed or moved.' },
-      { id: 'spirit_swap',        name: 'Spirit Swap',       cost: 3, gate: 'Mind Level 3+', desc: 'As a reaction to being attacked (or at will), the Anima instantly teleports, swapping physical locations with the Animist. The Anima takes the attack instead, applying its own DEF score to the incoming damage.' },
-      { id: 'primal_roar',        name: 'Primal Roar',       cost: 5, gate: 'Mind Level 5+', desc: 'The Anima unleashes a terrifying shockwave. Enemies within 15 ft. are physically pushed 10 ft. away and lose their Bonus Action on their next turn. Allies in the radius are instantly cleared of the Dazed or Distracted conditions.' },
+      { id: 'aggressive_tether',  name: 'Aggressive Tether', cost: 2, desc: 'When the Anima hits a Medium or smaller enemy with its attack, it drags that target up to 10 ft. into any unoccupied space. The target is Slowed (speed halved) until the start of your next turn.' },
+      { id: 'prowlers_strike',    name: "Prowler's Strike",  cost: 3, desc: "When the Anima hits an enemy with its attack, the target is Staggered until the start of your next turn. Additionally, all allies who hit that target before the start of your next turn ignore 2 points of its Defense Score." },
+      { id: 'symbiotic_healing',  name: 'Symbiotic Healing', cost: 3, desc: 'The Anima channels the bond\'s healing energy inward. Both the Anima and the Animist immediately recover 2d8 + Presence modifier HP. The Anima does not attack this turn.' },
+      { id: 'anima_projection',   name: 'Anima Projection',  cost: 3, desc: 'The Anima roots itself in place (Speed becomes 0; it does not attack this turn) and projects a 10-ft. spiritual aura. Until the start of your next turn, all allies within the aura gain +2 DEF, cannot be forcibly moved, and have Advantage on their next Saving Throw.' },
+      { id: 'spirit_swap',        name: 'Spirit Swap',       cost: 3, gate: 'Mind Level 3+', desc: 'Reaction. When the Animist is targeted by an attack, the Anima instantly teleports and swaps physical locations with the Animist. The Anima takes the hit in the Animist\'s place, applying its own DEF to the incoming damage.' },
+      { id: 'ancestral_ward',     name: 'Ancestral Ward',    cost: 5, gate: 'Mind Level 3+', desc: 'The Anima gains Resistance to all Physical Damage (Slashing, Piercing, and Bludgeoning) until the start of your next turn.' },
+      { id: 'guardian_link',      name: 'Guardian Link',     cost: 4, gate: 'Mind Level 5+', desc: 'Reaction. When any ally other than the Animist is targeted by an attack and the Anima is within 30 ft. of that ally, the Anima instantly moves to intercept and takes the hit instead, applying its own DEF to the incoming damage. Spirit Swap and Guardian Link share your Reaction — only one may be used per round.' },
+      { id: 'blinding_radiance',  name: 'Blinding Radiance', cost: 5, gate: 'Mind Level 5+', desc: 'The Anima releases a burst of concentrated spiritual energy. All enemies within a 15-ft. radius centered on the Anima must succeed a REF Save or be Blinded until the end of their next turn. The Anima does not attack this turn.' },
+      { id: 'primal_roar',        name: 'Primal Roar',       cost: 5, gate: 'Mind Level 5+', desc: 'The Anima unleashes a shockwave of primal force. All enemies within 15 ft. of the Anima must succeed a REF Save or be pushed 10 ft. and Dazed until the start of their next turn. All allies within the same radius are immediately cleared of the Dazed and Distracted conditions. The Anima does not attack this turn.' },
     ]
   }
 ];
@@ -1706,62 +1731,85 @@ const WARDEN_AUG_SECTIONS = [
     title: 'Wild Augments',
     note: 'Warden Exclusive — Channel raw natural energy.',
     augments: [
-      { id: 'thorn_whip',          name: 'Thorn Whip',          cost: 1, desc: 'If the Spell Form hits a target, a lashing tendril of thorns pulls the target up to 10 ft. toward you.' },
-      { id: 'rooting_tendrils',    name: 'Rooting Tendrils',    cost: 2, desc: 'Impose the Grappled condition on a failed Reflex Save. The target cannot move until the start of your next turn.' },
-      { id: 'shifting_ground',     name: 'Shifting Ground',     cost: 2, desc: 'Choose a 10 ft. square within the Spell Form\'s area. It becomes difficult terrain until the end of your next turn.' },
-      { id: 'territorial_presence',name: 'Territorial Presence',cost: 3, desc: 'All allies within 15 ft. of you gain Advantage on opportunity attack rolls until the start of your next turn.' },
-      { id: 'savage_rend',         name: 'Savage Rend',         cost: 3, desc: 'Your Anima\'s next attack deals an additional 2d6 damage and ignores Physical Resistance.' },
-      { id: 'bark_skin',           name: 'Bark Skin',           cost: 3, desc: 'Target ally (including yourself) gains +3 Defense Score until the start of your next turn. Ends early if the target moves more than 10 ft.' },
-      { id: 'regenerative_hide',   name: 'Regenerative Hide',   cost: 2, desc: 'As a part of casting, one ally within range recovers 1d6 HP at the start of each of their turns for 2 turns.' },
-      { id: 'spiritual_frenzy',    name: 'Spiritual Frenzy',    cost: 3, desc: 'If the Spell Form deals damage, all affected enemies suffer Disadvantage on Saving Throws until the end of their next turn.' },
-      { id: 'life_bloom',          name: 'Life Bloom',          cost: 3, desc: 'If the Spell Form includes a Restorative Augment, the target also removes one Basic condition and gains 1d4 temporary HP.' },
+      { id: 'thorn_whip',          name: 'Thorn Whip',          cost: 1, desc: 'If this Spell Form hits an enemy, you may pull that target up to 10 ft. toward you or toward any terrain feature within range (Fort Save resists). If the target is pulled adjacent to your active Earthbound Thorns barrier, they are also Rooted until the start of your next turn.' },
+      { id: 'rooting_tendrils',    name: 'Rooting Tendrils',    cost: 2, desc: "Targets that fail their Save suffer the Rooted condition (Speed becomes 0, cannot be forcibly moved; a creature may spend an Action to break free). Referenced by Primal Avatar Level 10 feature." },
+      { id: 'shifting_ground',     name: 'Shifting Ground',     cost: 2, desc: 'If this Spell Form hits or affects a target, that target must succeed a Reflex Save or fall Prone. A 10-ft radius centered on the point of impact becomes Difficult Terrain until the start of your next turn.' },
+      { id: 'territorial_presence',name: 'Territorial Presence',cost: 3, desc: 'If this Spell Form hits or affects any target, the strike radiates primal menace. All enemies within 15 ft. of you must succeed a Will Save or be Frightened until the end of your next turn.' },
+      { id: 'savage_rend',         name: 'Savage Rend',         cost: 3, gate: 'Beast Aspect required', desc: 'While in Beast Aspect, if this Spell Form deals damage on a Full Hit, the target is lacerated and bleeds for 1d6 damage at the start of each of its turns. A creature may spend an Action to stanch the bleeding, or any healing ends the effect.' },
+      { id: 'bark_skin',           name: 'Bark Skin',           cost: 3, desc: 'The target gains +2 Defense Score and Resistance to one instance of Physical Damage until the start of your next turn. When used with Self Channel (targeting yourself), reduce this Augment\'s AP cost by 1 (to +2 AP).' },
+      { id: 'regenerative_hide',   name: 'Regenerative Hide',   cost: 2, gate: 'Beast Aspect required', desc: 'Used with a Self Channel Spell Form while in Beast Aspect only. You channel primal vitality through your transformed form, recovering 2d6 + Presence modifier HP.' },
+      { id: 'spiritual_frenzy',    name: 'Spiritual Frenzy',    cost: 3, desc: 'If this Spell Form deals damage, the target is Staggered. The target must also succeed a Will Save or be compelled to direct its next attack this round against you rather than any other ally within range.' },
+      { id: 'life_bloom',          name: 'Life Bloom',          cost: 3, desc: 'This Spell Form must include the Restorative Augment. Each affected ally recovers an additional 1d4 HP and may immediately end one Basic condition currently affecting them.' },
     ]
   },
   {
     title: 'Advanced Wild Augments',
     augments: [
-      { id: 'elemental_symbiosis', name: 'Elemental Symbiosis',  cost: 4, gate: 'Mind Level 3+', desc: 'When you deal elemental damage, the Anima\'s next attack deals the same damage type and gains +1d8 damage of that type until the start of your next turn.' },
+      { id: 'elemental_symbiosis', name: 'Elemental Symbiosis',  cost: 4, gate: 'Mind Level 5+', desc: "While in Beast Aspect, this Spell Form's damage ignores any enemy Resistance to its elemental damage type. This Augment requires an Elemental Shift Augment to also be applied to the same Spell Form." },
     ]
   }
 ];
 
 const SPIRIT_AUGMENTS = [
-  { id: 'ward_of_faith',        name: 'Ward of Faith',        cost: 2, archetypes: ['oracle','templar'],          desc: 'Grants an ally +2 Defense Score until the start of your next turn.' },
-  { id: 'purify_condition',     name: 'Purify Condition',     cost: 3, archetypes: ['oracle','templar'],          desc: 'Removes one Advanced (Medium) condition from one ally. The ally also immediately gains +1 Defense Score until the start of your next turn.' },
-  { id: 'restore_vitality',     name: 'Restore Vitality',     cost: 4, archetypes: ['oracle','templar'], gate: 'Spirit Level 5+', desc: 'If the Spell Form includes Restorative healing, the target recovers an additional 2d6 HP and gains Resistance to physical damage until the start of their next turn.' },
-  { id: 'smite',                name: 'Smite',                cost: 2, archetypes: ['templar','zealot'],          desc: 'If the Spell Form deals damage, the attack deals an additional 1d12 Radiant Damage.' },
-  { id: 'hallowed_ground',      name: 'Hallowed Ground',      cost: 3, archetypes: ['templar','zealot'],          desc: "Enemies must make a Will Save or suffer the Frightened condition (Basic). Allies in the area gain +2 Defense Score until the start of your next turn." },
-  { id: 'judgment',             name: 'Judgment',             cost: 4, archetypes: ['templar','zealot'], gate: 'Spirit Level 5+', desc: 'If the Spell Form hits or affects an enemy, all subsequent attacks by allies against that enemy have Advantage until end of your next turn. The enemy also takes +1d6 damage from all sources until the start of its next turn.' },
-  { id: 'empower_healing',      name: 'Empower Healing',      cost: 2, archetypes: ['oracle'],                    desc: 'If the Spell Form includes Restorative healing, the target recovers an additional 1d8 HP and one adjacent ally also recovers 1d4 HP.' },
-  { id: 'mass_renewal',         name: 'Mass Renewal',         cost: 3, archetypes: ['oracle'], gate: 'Spirit Level 3+', desc: 'If the Spell Form targets a single ally with a Restorative Augment, it also affects two additional allies within 15 ft. OR you may choose a single ally to also remove one Basic or Advanced condition.' },
-  { id: 'sanctuary',            name: 'Sanctuary',            cost: 4, archetypes: ['oracle'], gate: 'Spirit Level 7+', desc: 'One target gains Immunity to all Advanced (Medium) and Basic (Low) conditions until the start of your next turn. The target also gains Advantage on its next Will Save.' },
-  { id: 'aura_of_protection',   name: 'Aura of Protection',   cost: 2, archetypes: ['templar'],                   desc: 'You and all allies within 10 ft. gain +2 to their Defense Score until the start of your next turn.' },
-  { id: 'aura_of_courage',      name: 'Aura of Courage',      cost: 3, archetypes: ['templar'], gate: 'Spirit Level 3+', desc: 'You and all allies within 10 ft. gain Advantage on all Saving Throws (Will, Reflex, Fortitude) until the start of your next turn.' },
-  { id: 'aura_of_retribution',  name: 'Aura of Retribution',  cost: 4, archetypes: ['templar'], gate: 'Spirit Level 7+', desc: 'You and all allies within 15 ft. gain Advantage on their next Attack Roll which deals +2d6 Radiant Damage.' },
-  { id: 'chained_punishment',   name: 'Chained Punishment',   cost: 2, archetypes: ['zealot'],                    desc: 'If the Spell Form deals damage, it immediately deals half that damage to a second target within 10 ft.' },
-  { id: 'agony',                name: 'Agony',                cost: 3, archetypes: ['zealot'], gate: 'Spirit Level 3+', desc: 'If the Spell Form deals damage, the target suffers the Distracted condition and takes an extra 1d6 damage from all sources until the start of your next turn.' },
-  { id: 'oblivion',             name: 'Oblivion',             cost: 4, archetypes: ['zealot'], gate: 'Spirit Level 7+', desc: 'If the Spell Form deals damage, the target automatically suffers Disadvantage on all Saving Throws (Will, Reflex, Fortitude) and -2 Defense Score until the end of your next turn.' },
+  // ── Universal ──
+  { id: 'prayer',              name: 'Prayer',              cost: 0, archetypes: ['oracle','templar','zealot'],  desc: 'While in combat as a Bonus Action, reconnect with your faith and gain 2 SP. Alternatively, as an Action, gain 6 SP. These amounts double at Level 5.' },
+  { id: 'swift_blessing',      name: 'Swift Blessing',      cost: 2, archetypes: ['oracle','templar','zealot'],  desc: 'One ally within 30 ft. gains +20 ft. movement speed and ignores non-magical Difficult Terrain until the start of your next turn.' },
+  { id: 'radiant_surge',       name: 'Radiant Surge',       cost: 4, archetypes: ['oracle','templar','zealot'],  gate: 'Spirit Level 5+', desc: 'One ally within 60 ft. gains 2d6 temporary HP, +10 ft. movement speed, and Advantage on their next attack roll — all until the start of your next turn.' },
+  // ── Oracle, Templar ──
+  { id: 'ward_of_faith',       name: 'Ward of Faith',       cost: 2, archetypes: ['oracle','templar'],           desc: 'Grants one ally within 30 ft. +2 Defense Score until the start of your next turn.' },
+  { id: 'aegis_of_light',      name: 'Aegis of Light',      cost: 2, archetypes: ['oracle','templar'],           desc: 'One ally within 30 ft. gains temporary HP equal to 1d8 + your Presence modifier until the start of your next turn or until depleted. Does not stack with other temporary HP sources — use the higher value.' },
+  { id: 'blessed_reflexes',    name: 'Blessed Reflexes',    cost: 3, archetypes: ['oracle','templar'],           gate: 'Spirit Level 3+', desc: 'One ally within 30 ft. gains +2 Defense Score and may reroll one Reflex Save before the start of your next turn, taking the higher result.' },
+  // ── Oracle, Templar, Zealot ──
+  { id: 'purify_condition',    name: 'Purify Condition',    cost: 3, archetypes: ['oracle','templar','zealot'],  desc: 'Removes one Advanced condition from one ally within 30 ft. That ally also gains +1 Defense Score until the start of your next turn.' },
+  { id: 'hallowed_ground',     name: 'Hallowed Ground',     cost: 4, archetypes: ['oracle','templar','zealot'],  desc: 'Affects all creatures in the Spell Form\'s area of effect. Enemies must make a Will Save or suffer the Frightened condition. Allies in the area gain +2 Defense Score until the start of your next turn.' },
+  // ── All Spirit (Augment Only) ──
+  { id: 'restore_vitality',    name: 'Restore Vitality',    cost: 4, archetypes: ['oracle','templar','zealot'],  gate: 'Spirit Level 5+', desc: 'If the Spell Form includes Restorative healing, the target recovers an additional 2d6 HP and gains Resistance to Physical damage until the start of your next turn.' },
+  // ── Oracle, Zealot ──
+  { id: 'righteous_mending',   name: 'Righteous Mending',   cost: 3, archetypes: ['oracle','zealot'],            gate: 'Spirit Level 3+', desc: 'When you deal damage with a weapon attack or Spell Form, one ally within 30 ft. recovers 1d8 + your Presence modifier HP.' },
+  // ── Templar, Zealot ──
+  { id: 'smite',               name: 'Smite',               cost: 2, archetypes: ['templar','zealot'],           desc: 'When you deal damage with a weapon attack or Spell Form, the attack deals an additional 1d12 Radiant damage.' },
+  { id: 'mark_of_valor',       name: 'Mark of Valor',       cost: 2, archetypes: ['templar','zealot'],           desc: "One ally within 30 ft. gains a sacred mark until the start of your next turn. The first Full Hit that ally lands before the mark expires deals +1d8 Radiant bonus damage." },
+  { id: 'judgment',            name: 'Judgment',            cost: 4, archetypes: ['templar','zealot'],           gate: 'Spirit Level 5+', desc: "When you deal damage with a weapon attack or Spell Form, all subsequent attacks by allies against that enemy have Advantage until end of your next turn. The enemy also takes +1d6 damage from all sources until the start of its next turn." },
+  // ── Oracle Exclusive ──
+  { id: 'empower_healing',     name: 'Empower Healing',     cost: 2, archetypes: ['oracle'],                     desc: 'If the Spell Form includes Restorative healing, the target recovers an additional 1d8 HP and one adjacent ally also recovers 1d4 HP.' },
+  { id: 'mass_renewal',        name: 'Mass Renewal',        cost: 3, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'If the Spell Form targets a single ally with a Restorative effect, it also affects two additional allies within 15 ft. of the first target. Alternatively, remove one Basic or Advanced condition from the primary target instead of extending the heal.' },
+  { id: 'vision_of_fate',      name: 'Vision of Fate',      cost: 4, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'Until the start of your next turn, one ally within 60 ft. makes their first attack roll or Saving Throw with Advantage. If that action would result in a Glancing Blow, it is treated as a Full Hit instead.' },
+  { id: 'shared_burden',       name: 'Shared Burden',       cost: 5, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'Until the start of your next turn, whenever an ally within 60 ft. would take damage, you may absorb up to half that damage (rounded down), taking it yourself instead. May be applied to up to two separate instances of incoming damage per turn.' },
+  { id: 'sanctuary',           name: 'Sanctuary',           cost: 4, archetypes: ['oracle'],                     gate: 'Spirit Level 7+', desc: 'One target within 30 ft. gains Immunity to all Advanced and Basic conditions until the start of your next turn. That target also gains Advantage on their next Will Save.' },
+  // ── Templar Exclusive ──
+  { id: 'aura_of_protection',  name: 'Aura of Protection',  cost: 2, archetypes: ['templar'],                    desc: 'You and all allies within 10 ft. gain +2 Defense Score until the start of your next turn.' },
+  { id: 'consecrated_ground',  name: 'Consecrated Ground',  cost: 5, archetypes: ['templar'],                    gate: 'Spirit Level 3+', desc: 'Choose a 15 ft. radius area within 60 ft. Until the start of your next turn: enemies who enter the area take 1d10 Radiant damage. Allies who enter the area recover 1d6 HP once. Undead and Demon-type creatures are Frightened while within the area.' },
+  { id: 'aura_of_courage',     name: 'Aura of Courage',     cost: 3, archetypes: ['templar'],                    gate: 'Spirit Level 5+', desc: 'You and all allies within 10 ft. gain Advantage on all Saving Throws (Will, Reflex, Fortitude) until the start of your next turn.' },
+  { id: 'aura_of_retribution', name: 'Aura of Retribution', cost: 4, archetypes: ['templar'],                    gate: 'Spirit Level 7+', desc: 'You and all allies within 15 ft. gain Advantage on their next Attack Roll. That attack deals +2d6 Radiant damage if it hits.' },
+  // ── Zealot Exclusive ──
+  { id: 'chained_punishment',  name: 'Chained Punishment',  cost: 2, archetypes: ['zealot'],                     desc: 'When you deal damage with a weapon attack or Spell Form, immediately deal half that damage to one enemy within 10 ft. of the target. No attack roll required for the chain.' },
+  { id: 'covenants_edge',      name: "Covenant's Edge",     cost: 3, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: "One ally within 30 ft. burns with covenant fire until the start of your next turn. Their attacks deal +1d6 Radiant damage and their Critical Hit threshold is reduced by 1 (e.g. 18+ becomes 17+)." },
+  { id: 'wrathful_condemnation',name: 'Wrathful Condemnation',cost: 4, archetypes: ['zealot'],                   gate: 'Spirit Level 3+', desc: "When you deal damage, the target is Condemned until the start of your next turn. While Condemned: the target cannot benefit from Resistance or Immunity to any damage type. The first ally to hit the Condemned target deals +1d8 Radiant bonus damage." },
+  { id: 'fervent_absolution',  name: 'Fervent Absolution',  cost: 3, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: "Remove one Basic condition from one ally within 30 ft. That ally also recovers 1d6 + your Presence modifier HP." },
+  { id: 'agony',               name: 'Agony',               cost: 4, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: 'When you deal damage with a weapon attack or Spell Form, the target is Distracted and takes an extra 1d6 damage from all sources until the start of your next turn.' },
+  { id: 'soul_brand',          name: 'Soul Brand',          cost: 5, archetypes: ['zealot'],                     gate: 'Spirit Level 5+', desc: 'When you deal damage, place a divine Brand on that target until the start of your next turn. While Branded: the target takes an additional 1d6 Radiant damage from every source that hits them. If the target is reduced to 0 HP while Branded, you immediately recover 1d8 SP.' },
+  { id: 'oblivion',            name: 'Oblivion',            cost: 4, archetypes: ['zealot'],                     gate: 'Spirit Level 7+', desc: 'When you deal damage, the target automatically suffers Disadvantage on all Saving Throws and −2 Defense Score until the end of your next turn.' },
 ];
 
 const TIERS = [
-  { label: '1st — Simple',    min: 3,  max: 3,  scale: '5–6 casts at Level 1' },
-  { label: '2nd — Advanced',  min: 4,  max: 4,  scale: 'Moderate complexity' },
-  { label: '3rd — Major',     min: 6,  max: 6,  scale: 'Impactful AoE or single-target' },
-  { label: '4th — Epic',      min: 7,  max: 7,  scale: 'Major conditions, battlefield control' },
-  { label: '5th — Legendary', min: 10, max: 10, scale: 'Capstone-level power' },
-  { label: '6th — Mythic',    min: 11, max: 11, scale: 'Shapes the encounter' },
-  { label: '7th — Mythic',    min: 15, max: 15, scale: 'Can resolve an encounter' },
-  { label: '8th — Cosmic',    min: 16, max: 16, scale: 'Near-ultimate power' },
-  { label: '9th — Cosmic',    min: 20, max: 99, scale: 'Campaign-defining devastation' },
+  { label: '1st — Simple',    min: 3,  max: 3,  scale: 'Foundational focused Augments' },
+  { label: '2nd — Advanced',  min: 4,  max: 5,  scale: 'Slightly more complex effects' },
+  { label: '3rd — Major',     min: 6,  max: 7,  scale: 'Impactful single-target or small AoE' },
+  { label: '4th — Epic',      min: 8,  max: 10, scale: 'Major conditions, battlefield control' },
+  { label: '5th — Legendary', min: 11, max: 12, scale: 'Mid-level capstone power' },
+  { label: '6th — Mythic',    min: 13, max: 16, scale: 'Shapes the encounter significantly' },
+  { label: '7th — Mythic',    min: 17, max: 19, scale: 'Game-defining, can resolve an encounter' },
+  { label: '8th — Cosmic',    min: 20, max: 23, scale: 'Near-ultimate power' },
+  { label: '9th — Cosmic',    min: 24, max: 99, scale: 'Campaign-defining devastation' },
 ];
 
 const TIER_COLORS = [
   { min:0,  max:3,  color:'#2d6a2d', bg:'rgba(45,106,45,0.12)' },
-  { min:4,  max:5,  color:'#1a5c5c', bg:'rgba(26,92,92,0.12)' },
-  { min:6,  max:7,  color:'#1a3a8b', bg:'rgba(26,58,139,0.12)' },
-  { min:8,  max:11, color:'#6a2d8b', bg:'rgba(106,45,139,0.12)' },
-  { min:12, max:16, color:'#b86a00', bg:'rgba(184,106,0,0.12)' },
-  { min:17, max:99, color:'#8b1a1a', bg:'rgba(139,26,26,0.12)' },
+  { min:4,  max:7,  color:'#1a5c5c', bg:'rgba(26,92,92,0.12)' },
+  { min:8,  max:12, color:'#1a3a8b', bg:'rgba(26,58,139,0.12)' },
+  { min:13, max:16, color:'#6a2d8b', bg:'rgba(106,45,139,0.12)' },
+  { min:17, max:23, color:'#b86a00', bg:'rgba(184,106,0,0.12)' },
+  { min:24, max:99, color:'#8b1a1a', bg:'rgba(139,26,26,0.12)' },
 ];
 
 let selectedForm = null;
