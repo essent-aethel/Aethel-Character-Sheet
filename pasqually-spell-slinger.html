@@ -1645,11 +1645,11 @@ const AUG_SECTIONS = [
     title: 'Condition Augments',
     note: 'AoE Surcharge: +1 RP when combined with an area Spell Form (Close Burst, Ranged Burst, Broad Wave, Arcane Wall, Binding Ring).',
     augments: [
-      { id: 'minor_cond',  name: 'Impose Minor Condition',  cost: 2, desc: 'Imposes a Basic condition on failed save (e.g. Prone, Grappled, Frightened).', gate: null,
+      { id: 'minor_cond',  name: 'Impose Minor Condition',  cost: 1, desc: 'Imposes a Basic condition on failed save (e.g. Prone, Grappled, Frightened).', gate: null,
         conditions: ['Dazed','Deafened','Prone','Staggered','Frightened','Grappled'] },
-      { id: 'major_cond',  name: 'Impose Major Condition',  cost: 4, desc: 'Imposes an Advanced condition on failed save (e.g. Blinded, Distracted, Poisoned).', gate: 'Level 3+',
+      { id: 'major_cond',  name: 'Impose Major Condition',  cost: 3, desc: 'Imposes an Advanced condition on failed save (e.g. Blinded, Distracted, Poisoned).', gate: 'Level 3+',
         conditions: ['Blinded','Distracted','Poisoned','Restrained','Silenced','Weakened'] },
-      { id: 'severe_cond', name: 'Impose Severe Condition', cost: 6, desc: 'Imposes an Expert condition on failed save (e.g. Stunned, Paralyzed, Unconscious).', gate: 'Level 5+',
+      { id: 'severe_cond', name: 'Impose Severe Condition', cost: 5, desc: 'Imposes an Expert condition on failed save (e.g. Stunned, Paralyzed, Unconscious).', gate: 'Level 5+',
         conditions: ['Stunned','Paralyzed'] },
     ]
   }
