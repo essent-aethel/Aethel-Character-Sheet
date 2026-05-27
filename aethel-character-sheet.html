@@ -507,28 +507,28 @@ select.field-input{cursor:pointer;}
       <div class="ability-grid" id="ability-grid">
         <div class="ability-card">
           <div class="ability-name">Fortitude</div>
-          <input type="number" class="ability-score-input" id="ability-fort" min="1" max="30" placeholder="—" data-save="ability-fort" oninput="updateAbilityDisplays()">
+          <input type="number" class="ability-score-input" id="ability-fort" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-fort">—</div>
           <div class="ability-bonus">Melee attacks · HP · Physical saves</div>
           <div class="ability-ancestry" id="bonus-fort"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Reflex</div>
-          <input type="number" class="ability-score-input" id="ability-ref" min="1" max="30" placeholder="—" data-save="ability-ref" oninput="updateAbilityDisplays()">
+          <input type="number" class="ability-score-input" id="ability-ref" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-ref">—</div>
           <div class="ability-bonus">Initiative · Defense · Ranged/Finesse</div>
           <div class="ability-ancestry" id="bonus-ref"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Intellect</div>
-          <input type="number" class="ability-score-input" id="ability-int" min="1" max="30" placeholder="—" data-save="ability-int" oninput="updateAbilityDisplays()">
+          <input type="number" class="ability-score-input" id="ability-int" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-int">—</div>
           <div class="ability-bonus">Skill points · Tactical awareness</div>
           <div class="ability-ancestry" id="bonus-int"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Presence</div>
-          <input type="number" class="ability-score-input" id="ability-pres" min="1" max="30" placeholder="—" data-save="ability-pres" oninput="updateAbilityDisplays()">
+          <input type="number" class="ability-score-input" id="ability-pres" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-pres">—</div>
           <div class="ability-bonus">Will saves · Awareness · Persuasion</div>
           <div class="ability-ancestry" id="bonus-pres"></div>
@@ -875,6 +875,23 @@ function switchTab(tab, btn) {
 
 // ── ABILITY SCORE RENDERING ───────────────────────────────────────
 function renderAbilities() { updateAbilityDisplays(); }
+
+function saveAbilityScores() {
+  const d = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+  ['fort','ref','int','pres'].forEach(a => {
+    d['ability-'+a] = document.getElementById('ability-'+a)?.value||'';
+  });
+  localStorage.setItem(LS_KEY, JSON.stringify(d));
+  updateDerivedStats();
+  renderSkills();
+}
+
+function loadAbilityScores(d) {
+  ['fort','ref','int','pres'].forEach(a => {
+    const el = document.getElementById('ability-'+a);
+    if (el && d['ability-'+a] !== undefined) el.value = d['ability-'+a];
+  });
+}
 
 function updateAbilityDisplays() {
   const ancestry = document.getElementById('char-ancestry')?.value||'';
@@ -1707,6 +1724,9 @@ function adjustRP(sign) {
 function buildSaveData() {
   const data = {};
   document.querySelectorAll('[data-save]').forEach(el => { data[el.dataset.save] = el.value; });
+  ['fort','ref','int','pres'].forEach(a => {
+    data['ability-'+a] = document.getElementById('ability-'+a)?.value||'';
+  });
   return data;
 }
 
@@ -1782,6 +1802,7 @@ function loadAll() {
       document.querySelectorAll('[data-save]').forEach(el => {
         if (d[el.dataset.save] !== undefined) el.value = d[el.dataset.save];
       });
+      loadAbilityScores(d);
     } catch {}
   }
   // Load level log
