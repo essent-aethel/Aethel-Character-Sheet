@@ -504,9 +504,36 @@ select.field-input{cursor:pointer;}
   <div class="sheet-section">
     <div class="section-header"><div class="section-title">Ability Scores</div></div>
     <div class="section-body">
-      <div class="ability-grid" id="ability-grid"></div>
-    </div>
-  </div>
+      <div class="ability-grid" id="ability-grid">
+        <div class="ability-card">
+          <div class="ability-name">Fortitude</div>
+          <input type="number" class="ability-score-input" id="ability-fort" min="1" max="30" placeholder="—" data-save="ability-fort" oninput="updateAbilityDisplays()">
+          <div class="ability-mod" id="mod-fort">—</div>
+          <div class="ability-bonus">Melee attacks · HP · Physical saves</div>
+          <div class="ability-ancestry" id="bonus-fort"></div>
+        </div>
+        <div class="ability-card">
+          <div class="ability-name">Reflex</div>
+          <input type="number" class="ability-score-input" id="ability-ref" min="1" max="30" placeholder="—" data-save="ability-ref" oninput="updateAbilityDisplays()">
+          <div class="ability-mod" id="mod-ref">—</div>
+          <div class="ability-bonus">Initiative · Defense · Ranged/Finesse</div>
+          <div class="ability-ancestry" id="bonus-ref"></div>
+        </div>
+        <div class="ability-card">
+          <div class="ability-name">Intellect</div>
+          <input type="number" class="ability-score-input" id="ability-int" min="1" max="30" placeholder="—" data-save="ability-int" oninput="updateAbilityDisplays()">
+          <div class="ability-mod" id="mod-int">—</div>
+          <div class="ability-bonus">Skill points · Tactical awareness</div>
+          <div class="ability-ancestry" id="bonus-int"></div>
+        </div>
+        <div class="ability-card">
+          <div class="ability-name">Presence</div>
+          <input type="number" class="ability-score-input" id="ability-pres" min="1" max="30" placeholder="—" data-save="ability-pres" oninput="updateAbilityDisplays()">
+          <div class="ability-mod" id="mod-pres">—</div>
+          <div class="ability-bonus">Will saves · Awareness · Persuasion</div>
+          <div class="ability-ancestry" id="bonus-pres"></div>
+        </div>
+      </div>
 
   <!-- SKILLS -->
   <div class="sheet-section">
@@ -847,36 +874,20 @@ function switchTab(tab, btn) {
 }
 
 // ── ABILITY SCORE RENDERING ───────────────────────────────────────
-function renderAbilities() {
-  const grid = document.getElementById('ability-grid');
-  if (!grid || !GD) return;
-  grid.innerHTML = '';
-  const abilities = ['FORT','REF','INT','PRES'];
-  const labels = {FORT:'Fortitude',REF:'Reflex',INT:'Intellect',PRES:'Presence'};
-  const governs = {
-    FORT:'Melee attacks · HP · Physical saves',
-    REF:'Initiative · Defense · Ranged/Finesse',
-    INT:'Skill points · Tactical awareness',
-    PRES:'Will saves · Awareness · Persuasion'
-  };
-  abilities.forEach(abbr => {
-    const score = getAbilityScore(abbr);
-    const mod = scoreToMod(score);
-    const ancestry = document.getElementById('char-ancestry')?.value||'';
-    const bonus = (GD.ancestries[ancestry]?.bonuses||{})[abbr]||0;
-    const div = document.createElement('div');
-    div.className = 'ability-card';
-    div.innerHTML = `
-      <div class="ability-name">${labels[abbr]}</div>
-      <input type="number" class="ability-score-input" id="ability-${abbr.toLowerCase()}"
-        value="${score||''}" min="1" max="30" placeholder="—"
-        data-save="ability-${abbr.toLowerCase()}"
-        onchange="renderAbilities();updateSavingThrows();updateSkillTotals();updateDerivedStats();">
-      <div class="ability-mod">${modDisplay(mod)}</div>
-      <div class="ability-bonus">${governs[abbr]}</div>
-      ${bonus>0?`<div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--teal);margin-top:.1rem">+${bonus} from ancestry</div>`:''}
-    `;
-    grid.appendChild(div);
+function renderAbilities() { updateAbilityDisplays(); }
+
+function updateAbilityDisplays() {
+  const ancestry = document.getElementById('char-ancestry')?.value||'';
+  ['FORT','REF','INT','PRES'].forEach(abbr => {
+    const mod = scoreToMod(getAbilityScore(abbr));
+    const modEl = document.getElementById('mod-'+abbr.toLowerCase());
+    if (modEl) modEl.textContent = modDisplay(mod);
+    const bonus = (GD?.ancestries[ancestry]?.bonuses||{})[abbr]||0;
+    const bonusEl = document.getElementById('bonus-'+abbr.toLowerCase());
+    if (bonusEl) {
+      bonusEl.textContent = bonus > 0 ? '+'+bonus+' from ancestry' : '';
+      bonusEl.style.cssText = bonus>0 ? "font-family:'Cinzel',serif;font-size:.6rem;color:var(--teal);margin-top:.1rem" : '';
+    }
   });
   updateDerivedStats();
 }
