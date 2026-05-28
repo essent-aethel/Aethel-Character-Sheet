@@ -329,6 +329,15 @@ select.field-input{cursor:pointer;}
 /* ── TALENTS ── */
 .talent-row{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .6rem;
   background:rgba(184,115,51,.04);border-left:3px solid var(--copper);border-radius:2px;margin-bottom:.35rem;}
+
+/* ── AUTO-POPULATED ARCHETYPE ABILITY CARDS ── */
+.am-auto-card{background:rgba(30,95,95,.04);border-left:3px solid var(--teal);border-radius:2px;
+  padding:.5rem .75rem;margin-bottom:.4rem;}
+.am-auto-card-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--copper-dark);}
+.am-auto-card-tag{font-family:'Cinzel',serif;font-size:.58rem;color:var(--teal);margin-left:.3rem;letter-spacing:.06em;}
+.am-auto-card-desc{font-size:.82rem;color:var(--text-soft);margin-top:.2rem;line-height:1.4;}
+.am-auto-label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:.35rem;opacity:.7;}
 .talent-row-body{flex:1;min-width:0;}
 .talent-row-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--copper-dark);}
 .talent-row-tier{font-family:'Cinzel',serif;font-size:.6rem;color:var(--teal);margin-left:.3rem;}
@@ -711,18 +720,19 @@ select.field-input{cursor:pointer;}
     </div>
   </div>
 
-  <!-- ACTIONS / REACTIONS / PASSIVES TABLES -->
+  <!-- ACTIONS / BONUS / REACTIONS / PASSIVES TABLES -->
   <div class="sheet-section">
     <div class="section-header" style="justify-content:space-between">
       <div class="section-title">Actions</div>
-      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('actions')">+ Add</button>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('actions')">+ Add Custom</button>
     </div>
     <div class="section-body">
+      <div id="am-actions-auto"></div>
       <table class="am-table" id="am-actions-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th><th></th></tr></thead><tbody></tbody></table>
       <div class="am-form" id="am-actions-form" style="display:none">
         <div class="am-form-full"><input placeholder="Ability name…" id="amf-actions-name"></div>
         <input placeholder="Cost (e.g. 3 FP)" id="amf-actions-cost">
-        <input placeholder="Type (Action/Reaction…)" id="amf-actions-type">
+        <input placeholder="Usage (1×/LR, per combat…)" id="amf-actions-type">
         <div class="am-form-full"><textarea placeholder="Description…" id="amf-actions-desc"></textarea></div>
         <div class="am-form-btns am-form-full">
           <button class="am-form-cancel" onclick="hideAmForm('actions')">Cancel</button>
@@ -735,14 +745,15 @@ select.field-input{cursor:pointer;}
   <div class="sheet-section">
     <div class="section-header" style="justify-content:space-between">
       <div class="section-title">Bonus Actions</div>
-      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('bonus')">+ Add</button>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('bonus')">+ Add Custom</button>
     </div>
     <div class="section-body">
+      <div id="am-bonus-auto"></div>
       <table class="am-table" id="am-bonus-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th><th></th></tr></thead><tbody></tbody></table>
       <div class="am-form" id="am-bonus-form" style="display:none">
         <div class="am-form-full"><input placeholder="Ability name…" id="amf-bonus-name"></div>
         <input placeholder="Cost" id="amf-bonus-cost">
-        <input placeholder="Type" id="amf-bonus-type">
+        <input placeholder="Usage" id="amf-bonus-type">
         <div class="am-form-full"><textarea placeholder="Description…" id="amf-bonus-desc"></textarea></div>
         <div class="am-form-btns am-form-full">
           <button class="am-form-cancel" onclick="hideAmForm('bonus')">Cancel</button>
@@ -754,15 +765,37 @@ select.field-input{cursor:pointer;}
 
   <div class="sheet-section">
     <div class="section-header" style="justify-content:space-between">
-      <div class="section-title">Reactions &amp; Passives</div>
-      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('passives')">+ Add</button>
+      <div class="section-title">Reactions</div>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('reactions')">+ Add Custom</button>
     </div>
     <div class="section-body">
+      <div id="am-reactions-auto"></div>
+      <table class="am-table" id="am-reactions-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th><th></th></tr></thead><tbody></tbody></table>
+      <div class="am-form" id="am-reactions-form" style="display:none">
+        <div class="am-form-full"><input placeholder="Ability name…" id="amf-reactions-name"></div>
+        <input placeholder="Cost" id="amf-reactions-cost">
+        <input placeholder="Usage" id="amf-reactions-type">
+        <div class="am-form-full"><textarea placeholder="Description…" id="amf-reactions-desc"></textarea></div>
+        <div class="am-form-btns am-form-full">
+          <button class="am-form-cancel" onclick="hideAmForm('reactions')">Cancel</button>
+          <button class="am-form-confirm" onclick="confirmAmRow('reactions')">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-section">
+    <div class="section-header" style="justify-content:space-between">
+      <div class="section-title">Passives</div>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showAmForm('passives')">+ Add Custom</button>
+    </div>
+    <div class="section-body">
+      <div id="am-passives-auto"></div>
       <table class="am-table" id="am-passives-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th><th></th></tr></thead><tbody></tbody></table>
       <div class="am-form" id="am-passives-form" style="display:none">
         <div class="am-form-full"><input placeholder="Ability name…" id="amf-passives-name"></div>
         <input placeholder="Cost" id="amf-passives-cost">
-        <input placeholder="Type" id="amf-passives-type">
+        <input placeholder="Usage" id="amf-passives-type">
         <div class="am-form-full"><textarea placeholder="Description…" id="amf-passives-desc"></textarea></div>
         <div class="am-form-btns am-form-full">
           <button class="am-form-cancel" onclick="hideAmForm('passives')">Cancel</button>
@@ -970,7 +1003,7 @@ let skillInvestments = {};   // {SkillName: pts}
 let skillGrants = [];        // [{amount, source}]
 let shortRestUsed = false;
 let dailyUsed = false;
-let actionTableData = {actions:[], bonus:[], passives:[]};
+let actionTableData = {actions:[], bonus:[], reactions:[], passives:[]};
 let spellData = [];
 let talentSelections = [];  // [{name, category, tier}]
 
@@ -1434,6 +1467,21 @@ function updateLevelLogStatus() {
   }
 }
 
+function getFreeAugmentLock(archetype) {
+  // Arcanist and Zealot must take Destructive; Oracle must take Restorative
+  if (archetype === 'Arcanist' || archetype === 'Zealot') return 'Destructive';
+  if (archetype === 'Oracle') return 'Restorative';
+  return ''; // Warden, Animist, Templar choose freely
+}
+
+function onFreeAugmentChange(value) {
+  const l1 = levelEntries.find(e => e.level === 1);
+  if (!l1) return;
+  l1.freeAugment = value;
+  saveLevelLog();
+  renderLevelLog(); // Re-render to update selection pool availability
+}
+
 function renderLevelLog() {
   const container = document.getElementById('level-log-container');
   if (!container) return;
@@ -1506,6 +1554,43 @@ function renderLevelLog() {
             <div class="archetype-feature-desc">${esc(arcFeature.desc || '')}</div>`;
           body.appendChild(aDiv);
         }
+      }
+
+      // ── Free starter augment (Mind / Spirit Level 1 only)
+      if (entry.level === 1 && (cls === 'The Mind' || cls === 'The Spirit')) {
+        const freeDiv = document.createElement('div');
+        freeDiv.className = 'level-selections';
+        const lockedChoice = getFreeAugmentLock(archetype);
+        const currentFree = entry.freeAugment || lockedChoice || '';
+
+        // Auto-set locked archetypes
+        if (lockedChoice && !entry.freeAugment) {
+          entry.freeAugment = lockedChoice;
+          saveLevelLog();
+        }
+
+        const freeDesc = currentFree === 'Destructive'
+          ? 'Adds damage: Spell deals 2d6 damage per affected enemy target. Must take this for spell to deal damage.'
+          : currentFree === 'Restorative'
+          ? 'Adds healing: Spell restores 2d8 HP to each affected ally.'
+          : '';
+
+        freeDiv.innerHTML = `
+          <div class="level-grants-label">Free Starting Augment</div>
+          <div class="selection-slot">
+            <div class="selection-label" style="color:var(--teal)">
+              ${lockedChoice
+                ? `${esc(lockedChoice)} (required for ${esc(archetype)})`
+                : 'Choose Destructive or Restorative — the other becomes available as a regular selection'}
+            </div>
+            <select class="selection-select" onchange="onFreeAugmentChange(this.value)" ${lockedChoice ? 'disabled style="opacity:.7"' : ''}>
+              <option value="">— Choose Free Augment —</option>
+              <option value="Destructive" ${currentFree==='Destructive'?'selected':''} ${lockedChoice==='Restorative'?'disabled':''}>Destructive (+2 AP — adds 2d6 damage)</option>
+              <option value="Restorative" ${currentFree==='Restorative'?'selected':''} ${lockedChoice==='Destructive'?'disabled':''}>Restorative (+3 AP — heals 2d8 HP)</option>
+            </select>
+            <div class="selection-desc ${currentFree?'show':''}">${esc(freeDesc)}</div>
+          </div>`;
+        body.appendChild(freeDiv);
       }
 
       // ── Selection slots (augments / maneuvers / inscriptions / stances)
@@ -1875,15 +1960,75 @@ function renderArchetypeAbilities() {
     });
   }
   body.innerHTML = html || '<div style="color:var(--text-label);font-size:.85rem;font-style:italic">Archetype data loading...</div>';
+  // Keep action tables in sync with archetype changes
+  renderActionTables();
 }
 
 // ── ACTION TABLES ─────────────────────────────────────────────────
+function getArchetypeActionsByCategory() {
+  const result = {actions:[], bonus:[], reactions:[], passives:[]};
+  const archetype = getSelectedArchetype();
+  if (!archetype || !GD?.archetypeFeatures?.[archetype]) return result;
+  const af = GD.archetypeFeatures[archetype];
+  const level = getCharLevel();
+
+  // Core abilities — sorted by their type field
+  (af.abilities || []).forEach(a => {
+    const entry = {name: a.name, cost: a.cost || '', type: a.type || '', desc: a.desc || '', source: 'Archetype'};
+    const t = (a.type || '').toLowerCase();
+    if (t.includes('bonus')) result.bonus.push(entry);
+    else if (t.includes('reaction')) result.reactions.push(entry);
+    else result.actions.push(entry);
+  });
+
+  // Passives
+  (af.passives || []).forEach(p => {
+    // Parse "Name: desc" or just use as-is
+    const colonIdx = p.indexOf(':');
+    const name = colonIdx > 0 ? p.substring(0, colonIdx).trim() : 'Passive';
+    const desc = colonIdx > 0 ? p.substring(colonIdx + 1).trim() : p;
+    result.passives.push({name, cost: '—', type: 'Passive', desc, source: 'Archetype'});
+  });
+
+  // Level features (only those the character has reached)
+  if (af.levelFeatures) {
+    Object.entries(af.levelFeatures).forEach(([lvl, feat]) => {
+      if (parseInt(lvl) <= level) {
+        result.passives.push({name: `L${lvl}: ${feat.name}`, cost: '—', type: 'Level Feature', desc: feat.desc || '', source: 'Archetype'});
+      }
+    });
+  }
+
+  return result;
+}
+
 function renderActionTables() {
-  ['actions','bonus','passives'].forEach(t => {
+  const archActions = getArchetypeActionsByCategory();
+
+  ['actions','bonus','reactions','passives'].forEach(t => {
+    // Render auto-populated archetype rows
+    const autoDiv = document.getElementById('am-'+t+'-auto');
+    if (autoDiv) {
+      const items = archActions[t] || [];
+      if (items.length > 0) {
+        autoDiv.innerHTML = '<div class="am-auto-label">From Archetype</div>' +
+          items.map(row =>
+            `<div class="am-auto-card">
+              <div><span class="am-auto-card-name">${esc(row.name)}</span>
+              <span class="am-auto-card-tag">${esc(row.cost)}</span></div>
+              <div class="am-auto-card-desc">${esc(row.desc)}</div>
+            </div>`
+          ).join('');
+      } else {
+        autoDiv.innerHTML = '';
+      }
+    }
+
+    // Render manual/custom rows
     const tbody = document.querySelector(`#am-${t}-table tbody`);
     if (!tbody) return;
     tbody.innerHTML = '';
-    actionTableData[t].forEach((row, idx) => {
+    (actionTableData[t] || []).forEach((row, idx) => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="am-row-name">${esc(row.name)}</td>
@@ -1893,6 +2038,10 @@ function renderActionTables() {
         <td><button class="am-del-btn" onclick="deleteAmRow('${t}',${idx})">✕</button></td>`;
       tbody.appendChild(tr);
     });
+
+    // Hide table header if no custom rows
+    const table = document.getElementById('am-'+t+'-table');
+    if (table) table.style.display = (actionTableData[t] || []).length > 0 ? '' : 'none';
   });
 }
 
@@ -2109,7 +2258,7 @@ function loadAll() {
   const rawTal = localStorage.getItem('aethel-talents');
   if (rawTal) try { talentSelections = JSON.parse(rawTal); } catch {}
   // Load action tables
-  ['actions','bonus','passives'].forEach(t => {
+  ['actions','bonus','reactions','passives'].forEach(t => {
     const raw2 = localStorage.getItem('aethel-am-'+t);
     if (raw2) try { actionTableData[t] = JSON.parse(raw2); } catch {}
   });
@@ -2282,7 +2431,7 @@ function newCharacter() {
 
   // Clear all localStorage keys
   const keys = [LS_KEY, 'aethel-level-log', 'aethel-skill-investments', 'aethel-spells',
-    'aethel-talents', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-passives',
+    'aethel-talents', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-reactions', 'aethel-am-passives',
     'aethel-daily-used', 'aethel-short-rest-used'];
   keys.forEach(k => localStorage.removeItem(k));
 
@@ -2292,7 +2441,7 @@ function newCharacter() {
   skillGrants = [];
   shortRestUsed = false;
   dailyUsed = false;
-  actionTableData = {actions:[], bonus:[], passives:[]};
+  actionTableData = {actions:[], bonus:[], reactions:[], passives:[]};
   spellData = [];
   talentSelections = [];
 
@@ -2443,13 +2592,21 @@ function buildPrintSheet() {
   const actionSections = [
     {key:'actions', label:'Actions'},
     {key:'bonus', label:'Bonus Actions'},
-    {key:'passives', label:'Reactions & Passives'}
+    {key:'reactions', label:'Reactions'},
+    {key:'passives', label:'Passives'}
   ];
+  // Collect archetype-derived actions for PDF
+  const archActions = getArchetypeActionsByCategory();
   actionSections.forEach(({key, label}) => {
-    if (actionTableData[key]?.length > 0) {
+    const archRows = archActions[key] || [];
+    const customRows = actionTableData[key] || [];
+    if (archRows.length + customRows.length > 0) {
       html += `<div class="ps-section">${esc(label)}</div>
         <table class="ps-actions-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th></tr></thead><tbody>`;
-      actionTableData[key].forEach(row => {
+      archRows.forEach(row => {
+        html += `<tr><td>${esc(row.name)}</td><td>${esc(row.cost)}</td><td>${esc(row.type||'Archetype')}</td><td>${esc(row.desc)}</td></tr>`;
+      });
+      customRows.forEach(row => {
         html += `<tr><td>${esc(row.name)}</td><td>${esc(row.cost)}</td><td>${esc(row.type)}</td><td>${esc(row.desc)}</td></tr>`;
       });
       html += '</tbody></table>';
