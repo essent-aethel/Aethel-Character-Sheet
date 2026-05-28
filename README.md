@@ -7,12 +7,12 @@ A pair of web apps for the **Aethel** tabletop RPG system.
 ## Apps
 
 **[Aethel Character Sheet](https://essent-aethel.github.io/Aethel-Character-Sheet/aethel-character-sheet.html)**
-Full digital character sheet with live calculations and level tracking.
+Full digital character sheet with live calculations, class-aware level tracking, and PDF export.
 
 **[Pasqually's Spell Slinger](https://essent-aethel.github.io/Aethel-Character-Sheet/pasqually-spell-slinger.html)**
 Spell builder and library for The Mind and The Spirit classes.
 
-Open either link in your browser. No download or installation required.
+Open either link in your browser. No download or installation required. All game data is embedded — no companion files needed.
 
 ---
 
@@ -20,11 +20,22 @@ Open either link in your browser. No download or installation required.
 
 ### Getting Started
 
-1. Enter your ability scores first — modifiers, saving throws, and skill totals calculate automatically
-2. Fill in your identity fields (name, species, class, archetype, background, alignment)
-3. Open the **Level Log** tab and add your starting level. Character level on the sheet is driven by the log, not a manual field
-4. Add your actions, reactions, and passives in the **Actions** section
-5. Use **Ctrl+S** (or the Save button) to export your sheet as a `.json` file, or Export to PDF for a .pdf file.
+1. Enter your **ability scores** first — modifiers, saving throws, and skill totals calculate automatically
+2. Fill in your identity fields — name, ancestry, class, archetype, background, alignment, and languages
+3. Open the **Level Log** tab and click **+ Add Level** to add your starting level. Your class and archetype determine the features and selection options available at each level. The character level on the main sheet is driven by the log and cannot be edited directly
+4. Add your combat actions, bonus actions, reactions, and passives on the **Features** tab
+5. Use the **Save** button to export your sheet as a `.json` file, or **Export PDF** for a printable character dossier
+
+---
+
+### Toolbar
+
+The top toolbar contains six tabs and four utility buttons:
+
+- **New Character** — clears all data and resets the sheet for a fresh build (prompts for confirmation)
+- **Save** — exports the full character as a `.json` file
+- **Load** — imports a previously saved `.json` file
+- **Export PDF** — generates a compact, print-optimized character summary via the browser's print dialog (choose "Save as PDF")
 
 ---
 
@@ -34,97 +45,111 @@ Open either link in your browser. No download or installation required.
 
 The main tab. Contains:
 
-**Identity** — name, species, class, archetype, background, alignment, and level (derived from the Level Log).
+**Identity** — character name, player name, ancestry (dropdown), class, archetype, background, alignment, and languages. Level is read-only and driven by the Level Log.
 
-**Ability Scores** — enter raw scores; modifiers calculate automatically and feed everything else.
+**Ability Scores** — Fortitude, Reflex, Intellect, and Presence. Enter raw scores; modifiers calculate automatically using the game's score-to-modifier table and feed into saving throws, skills, and derived stats.
 
-**Combat Stats** — four panels:
+**Combat Stats** — a single compact band containing:
 
-- *Saving Throws* — Fortitude, Reflex, and Will calculate live. Reflex and Will automatically use whichever of their two governing stats is higher and label which one they're using
-- *Offense* — Initiative, Attack Bonus, Spell Save DC (8 + ⌈level ÷ 2⌉ + governing mod; defaults to INT, switchable to WIS or CHA via dropdown), and a manual Defense field
-- *Defense* — manual entry; the Inventory tab calculates a suggested value based on equipped gear
-- *HP & Resource* — tracks current and max HP, and your class resource (AP / FP / RP, labelled automatically based on your class entry). Short Rest and Long Rest buttons are available here
+- *Initiative, Speed, Defense* — manual entry fields
+- *Saving Throws* — FORT, REF, INT, and PRES, calculated live from ability modifiers
+- *HP* — current and max, manual entry
+- *Resource Pool* — current and max. The label updates automatically based on class: Feat Points (FP) for The Body, Arcane Points (AP) for The Mind, Spirit Points (SP) for The Spirit
+- *Short Rest* button — tracks once-per-long-rest usage
+- *Daily Archetype Ability* — hex toggle to mark as used; resets on long rest
 
-**Skills** — shows points available, points spent, and remaining. Each skill displays its total bonus (points + ability modifier). Skills exceeding the cap for your current level are flagged in red. Skill cap is based on level and enforced as a visual warning — no cheating.
+**Skills** — eleven skills from the game system, each showing invested points, ability modifier, and total bonus. Displays points available, points spent, and remaining. Skills exceeding the cap for the current level are flagged. Cap is level + 1.
 
-**Actions** — four categorized tables: Actions, Reactions, Bonus Actions, and Passives. Each entry is created through a modal with fields for:
-- Name and range
-- Action type and usage limit (no limit, per combat, per short rest, per long rest, daily)
-- Optional resource cost (AP / FP / RP, or a custom resource)
-- Effects: damage (with dice and type), healing, conditions (Basic / Advanced / Expert tier), and freeform "other"
-- Resolution type: attack roll or saving throw, with modifier and DC configuration
-- Trigger (for reactions), duration, spell form, spell augments, and notes
+**Talents** — select talents from the game's five categories (Combat, Magic, Skill, Social, Exploration) via a grouped dropdown. Each talent has two tiers; upgrade or downgrade in place with the ▲/▼ buttons. Talent descriptions display inline.
 
-Action cards display a summary of all configured fields and auto-calculate attack bonuses and spell save DCs from your current ability scores.
-
-**Import from Spell Slinger** — the Actions section has an "↑ Import Library" button. Load a Spell Slinger `.json` export and select which spells to add to your actions. Each spell maps automatically to an action entry with its form, augments, damage, and conditions pre-filled, with a review step before committing.
-
-**Daily Archetype Ability** — a hex toggle to mark your daily ability as used. Resets on long rest.
+**Character Summary** — placeholder section that populates as the character is built through the Level Log.
 
 ---
 
 #### Features
 
-An automatically compiled reference list of all class features and abilities added across your level log entries. Sortable by name, source, or level gained. Read-only — features are added and managed through the Level Log.
+Contains class and combat ability management:
+
+**Archetype Abilities** — auto-populated reference list of your archetype's passive abilities, active abilities, and level features. Updates when you change your class or archetype on the Character Sheet tab.
+
+**Actions / Bonus Actions / Reactions & Passives** — three manually managed tables for tracking combat abilities. Each entry has fields for name, cost, type, and description. Add entries with the **+ Add** button; delete with the row's ✕ button.
+
+**Spell Forms & Crafted Spells** — import spells built in Pasqually's Spell Slinger. Click **Import JSON** and select a `.json` file exported from the Spell Slinger. Imported spells display as styled cards showing name, spell form, cost, and full description.
 
 ---
 
 #### Inventory
 
-Six collapsible sections:
+A streamlined inventory system:
 
-- **Armor & Shields** — track armor type, value, and DEX bonus eligibility; equip one armor and one shield at a time. The section calculates and displays your Suggested Defense Score based on equipped items and your DEX modifier, which you then enter manually on the Character Sheet tab
-- **Weapons** — name, damage dice, damage type, properties
-- **Consumables** — name, effect, quantity with +/− controls
-- **Adventuring Gear** — name, quantity, notes
-- **Magic Items** — name, rarity, attunement, description
-- **Currency** — Gold, Silver, and Copper fields
+- **Currency** — Copper (CP), Silver (SP), and Gold (GP) fields
+- **Capacity** — Readied Slots (2 + REF mod) and Pack Slots (8 + FORT mod), calculated automatically
+- **Four text areas** — Weapons & Combat Gear, Armor & Shields, Magic Items (Attuned), and Consumables & Gear. Free-form entry for maximum flexibility
+- **Attunement Slots** — max slots calculated from PRES modifier + 1, with a manual "used" counter
 
 ---
 
 #### Level Log
 
-Add one entry per level gained. Each entry tracks:
+The core character-building interface. Each level entry is class-aware and shows:
 
-- HP gained at that level
-- Features and abilities unlocked (pulled into the Features tab)
-- Skill point allocation per skill for that level
-- Free-form notes
-- Skill investment notes (e.g. "2 Arcana, 1 Lore")
+- **Status banner** — displays your current class and archetype, or prompts you to set them (with a quick-link button to the Character Sheet tab)
+- **Features gained** — pulled from the game data's progression table for your class at that level
+- **Archetype features** — displayed at the appropriate levels (typically 4, 7, and 10) with full name and description
+- **Selection dropdowns** — choose your level-appropriate maneuvers, battle stances, strand augments, or divine inscriptions depending on your class. Options are level-gated (standard, advanced at L3+, expert at L5+), archetype-filtered, and previously selected choices are grayed out across all levels
+- **Starting info** — Level 1 entries show your hit die and resource pool details; Level 2+ entries show HP roll, resource gain, and skill points gained
 
-The log enforces the correct skill point budget per level based on your INT modifier. Delete any entry to correct a mistake — entries renumber automatically.
+The **+ Add Level** button is disabled until a class is selected. Entries can be collapsed by clicking the header and deleted with the ✕ button (which also removes all higher-level entries). The level cap is 10.
+
+**Class-specific selection types:**
+
+- **The Body** — Tactical Maneuvers (standard + advanced + archetype-exclusive) and Battle Stances
+- **The Mind** — Strand Augments (basic, damage, control, utility, defensive, combination + archetype-exclusive pools for Arcanist/Warden/Animist)
+- **The Spirit** — Divine Inscriptions (universal + archetype-specific for Oracle/Templar/Zealot)
+
+**Archetype bonuses:** Arcanists receive extra augment slots per level. Vanguards receive two extra maneuver slots at Level 1.
 
 ---
 
 #### Notes & Lore
 
-**Proficiencies & Training** — structured tracking for four categories, each displayed as a chip list:
+Five free-form text areas:
 
-- Armor
-- Weapons
-- Tools
-- Languages — includes an optional fluency tier (Native, Fluent, Conversational, Basic, Script Only) displayed as a badge on each chip
-
-Add entries via the inline input fields; remove them with the ✕ on each chip. Proficiency data is stored separately from the rest of the sheet.
-
-**Lore & Notes** — seven free-label text boxes for anything else: faction standing, retainer info, backstory, world notes, session reminders, etc. Labels are editable.
+- Character Background & Backstory
+- Faction Standing & Reputation
+- Campaign Notes
+- NPC Relationships
+- Miscellaneous Notes
 
 ---
 
 #### Cheat Sheet
 
-Quick in-session reference covering attack rolls, advantage and disadvantage, critical hits, defense score, skill check DCs, resting rules, and condition tiers (Basic, Advanced, Expert).
+Quick in-session reference covering:
+
+- **Attack Resolution** — roll mechanics, glancing blow/full hit/critical hit thresholds, advantage and disadvantage (2d10 system with 3d10 for adv/disadv)
+- **Conditions** — Prone, Staggered, Distracted, Frightened, Restrained, Blinded, Stunned, Paralyzed, Bloodied
+- **Actions on Your Turn** — move, action, bonus action, reaction, free action, and the Scaling Threat DC formula
+- **Rest & Recovery** — short rest, long rest, death saves, stabilize ally
+- **Skill DC Reference** — Easy, Medium, Hard, and Legendary DCs scaled to your current level
+- **Spell Forms** — all nine spell forms with base cost, range, and mechanic
 
 ---
 
 ### Saving & Loading
 
-- **Ctrl+S** or the **Save** button exports a `.json` file containing all sheet data including actions, inventory, level log, notes, and proficiencies
+- The **Save** button exports a `.json` file containing all sheet data: identity, ability scores, combat stats, level log, skill investments, talents, action tables, spells, inventory, notes, and rest state
 - **Load** imports a `.json` file — useful for moving between devices or sharing with your GM
 - Data also persists automatically in browser `localStorage` between sessions on the same device and browser
-- Proficiency data (`aethel-proficiencies-v1`) is stored separately in `localStorage` and does not require a manual save to persist locally, but is not included in the exported `.json` — back up by keeping your export current
+- **Export PDF** generates a compact print-optimized dossier covering identity, combat stats, ability scores, skills, talents, level selections, actions, spells, inventory, and notes
 
 > Local storage is per browser, per device. Use Save / Load to move between machines.
+
+---
+
+### Embedded Game Data
+
+The character sheet includes the full Aethel game data (ancestries, backgrounds, skills, classes, archetypes, progression tables, maneuvers, stances, augments, inscriptions, spell forms, and talents) embedded directly in the HTML. No external `aethel-data.json` file is required. If an external file is present alongside the HTML, it takes priority — this allows updating game data without regenerating the sheet.
 
 ---
 
@@ -135,6 +160,7 @@ A spell builder and library for **The Mind** and **The Spirit** classes.
 ---
 
 ### Building a Spell
+
 - Select your **class** (Mind or Spirit). The augments update to show only what's relevant to you
 - For Spirit, select your **subclass** (Oracle, Templar, or Zealot) to filter subclass-specific augments
 - Choose a **Spell Form**. This is the shape and delivery method of your spell
@@ -143,11 +169,21 @@ A spell builder and library for **The Mind** and **The Spirit** classes.
 - Name your spell and save it to your **spell library**
 
 ### Spell Library
+
 - Saved spells persist between sessions in your browser
 - **Export** your library as a `.json` file to back it up or share it
 - **Import** a `.json` file to load spells from another device or player
 
+### Integration with the Character Sheet
+
+The Spell Slinger and Character Sheet are separate apps connected by JSON export/import:
+
+1. Build your spells in the Spell Slinger and export the library as a `.json` file
+2. On the Character Sheet's **Features** tab, click **Import JSON** under Spell Forms & Crafted Spells
+3. Imported spells display as styled cards with their form, cost, and full description
+
 ### Notes
+
 - Higher-tier augments are gated by class level; these are flagged in the interface
 - Condition augments include a dropdown to choose the specific condition applied
 - The power tier reference table highlights your current spell's tier as you build
