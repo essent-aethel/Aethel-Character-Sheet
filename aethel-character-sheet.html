@@ -459,6 +459,7 @@ select.field-input{cursor:pointer;}
   <button class="tab-btn" onclick="switchTab('levels',this)">Level Log</button>
   <button class="tab-btn" onclick="switchTab('notes',this)">Notes & Lore</button>
   <button class="tab-btn" onclick="switchTab('cheatsheet',this)">Cheat Sheet</button>
+  <button class="save-btn" onclick="newCharacter()" title="Clear all data and start fresh" style="border-color:var(--crimson-soft);color:var(--crimson-soft)">New Character</button>
   <button class="save-btn" onclick="saveAll()">Save</button>
   <label class="save-btn" style="cursor:pointer">Load<input type="file" accept=".json" style="display:none" onchange="loadFromFile(this)"></label>
   <button class="save-btn" onclick="exportPDF()" title="Export a compact PDF summary">Export PDF</button>
@@ -2273,6 +2274,57 @@ function removeTalent(idx) {
 
 function saveTalents() {
   localStorage.setItem('aethel-talents', JSON.stringify(talentSelections));
+}
+
+// ── NEW CHARACTER ─────────────────────────────────────────────────
+function newCharacter() {
+  if (!confirm('Start a new character? This will clear ALL current data (ability scores, level log, skills, talents, spells, inventory, notes — everything).\n\nMake sure you\'ve saved your current character first if you want to keep it.')) return;
+
+  // Clear all localStorage keys
+  const keys = [LS_KEY, 'aethel-level-log', 'aethel-skill-investments', 'aethel-spells',
+    'aethel-talents', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-passives',
+    'aethel-daily-used', 'aethel-short-rest-used'];
+  keys.forEach(k => localStorage.removeItem(k));
+
+  // Reset runtime state
+  levelEntries = [];
+  skillInvestments = {};
+  skillGrants = [];
+  shortRestUsed = false;
+  dailyUsed = false;
+  actionTableData = {actions:[], bonus:[], passives:[]};
+  spellData = [];
+  talentSelections = [];
+
+  // Clear all form fields
+  document.querySelectorAll('[data-save]').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else if (el.type === 'checkbox') el.checked = false;
+    else el.value = '';
+  });
+  document.querySelectorAll('.ability-score-input').forEach(el => el.value = '');
+
+  // Re-render everything
+  onClassChange();
+  onAncestryChange();
+  renderAbilities();
+  renderSkills();
+  updateSavingThrows();
+  updateDerivedStats();
+  updateDCTable();
+  refreshResourceDisplays();
+  renderLevelLog();
+  renderArchetypeAbilities();
+  renderActionTables();
+  renderSpellList();
+  renderTalents();
+
+  // Switch to sheet tab
+  switchTab('sheet', document.querySelector('.tab-btn'));
+
+  // Flash confirmation
+  const msg = document.getElementById('save-msg');
+  if (msg) { msg.textContent = 'Sheet cleared!'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),2000); }
 }
 
 // ── EXPORT PDF ────────────────────────────────────────────────────
