@@ -331,6 +331,28 @@ select.field-input{cursor:pointer;}
   background:rgba(184,115,51,.04);border-left:3px solid var(--copper);border-radius:2px;margin-bottom:.35rem;}
 
 /* ── AUTO-POPULATED ARCHETYPE ABILITY CARDS ── */
+
+/* ── INVENTORY ITEMS ── */
+.inv-item{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .6rem;
+  background:rgba(184,115,51,.03);border:1px solid rgba(184,115,51,.12);border-radius:3px;margin-bottom:.35rem;}
+.inv-item.readied{border-left:3px solid var(--teal);background:rgba(30,95,95,.04);}
+.inv-item-body{flex:1;min-width:0;}
+.inv-item-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--copper-dark);}
+.inv-item-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.15rem;}
+.inv-item-tag{font-family:'Cinzel',serif;font-size:.55rem;padding:.1rem .35rem;border-radius:2px;
+  letter-spacing:.06em;background:rgba(184,115,51,.08);color:var(--copper-dark);}
+.inv-item-tag.teal{background:rgba(30,95,95,.1);color:var(--teal);}
+.inv-item-desc{font-size:.78rem;color:var(--text-soft);margin-top:.2rem;line-height:1.35;}
+.inv-item-actions{display:flex;gap:.25rem;align-items:center;flex-shrink:0;}
+.inv-ready-btn{font-family:'Cinzel',serif;font-size:.52rem;padding:.15rem .4rem;background:transparent;
+  border:1px solid var(--teal);color:var(--teal);border-radius:2px;cursor:pointer;letter-spacing:.06em;white-space:nowrap;}
+.inv-ready-btn.active{background:var(--teal);color:var(--vellum);}
+.inv-ready-btn:hover{opacity:.8;}
+.inv-qty{display:flex;align-items:center;gap:.2rem;font-size:.75rem;}
+.inv-qty button{width:20px;height:20px;font-size:.7rem;border:1px solid var(--field-border);background:var(--field-bg);
+  border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-soft);}
+.inv-qty span{min-width:16px;text-align:center;font-weight:700;color:var(--copper-dark);}
+.inv-empty{color:var(--text-label);font-size:.82rem;font-style:italic;padding:.3rem 0;}
 .am-auto-card{background:rgba(30,95,95,.04);border-left:3px solid var(--teal);border-radius:2px;
   padding:.5rem .75rem;margin-bottom:.4rem;}
 .am-auto-card-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--copper-dark);}
@@ -805,6 +827,17 @@ select.field-input{cursor:pointer;}
     </div>
   </div>
 
+  <!-- CUSTOMIZATIONS (catch-all for level selections without clear action type) -->
+  <div class="sheet-section">
+    <div class="section-header"><div class="section-title">Customizations</div></div>
+    <div class="section-body">
+      <div id="am-customizations-auto"></div>
+      <div id="am-customizations-empty" style="color:var(--text-label);font-size:.85rem;font-style:italic">
+        Augments, inscriptions, stances, and other selections from your Level Log appear here.
+      </div>
+    </div>
+  </div>
+
   <!-- SPELL CRAFTER IMPORT -->
   <div class="sheet-section">
     <div class="section-header"><div class="section-title">Spell Forms &amp; Crafted Spells</div></div>
@@ -820,50 +853,114 @@ select.field-input{cursor:pointer;}
 
 <!-- ═══════════════════════ PAGE: INVENTORY ═══════════════════════ -->
 <div class="page" id="page-inventory">
+
+  <!-- CAPACITY BAR -->
   <div class="sheet-section">
-    <div class="section-header"><div class="section-title">Inventory</div></div>
-    <div class="section-body" id="inventory-body">
-      <!-- Currency -->
-      <div class="inv-section">
-        <div class="inv-section-header">Currency</div>
-        <div class="inv-body">
-          <div class="currency-row">
-            <div class="currency-item"><span class="currency-label">CP</span><input type="number" class="currency-input" id="cur-cp" min="0" data-save="cur-cp" placeholder="0"></div>
-            <div class="currency-item"><span class="currency-label">SP</span><input type="number" class="currency-input" id="cur-sp" min="0" data-save="cur-sp" placeholder="0"></div>
-            <div class="currency-item"><span class="currency-label">GP</span><input type="number" class="currency-input" id="cur-gp" min="0" data-save="cur-gp" placeholder="0"></div>
-          </div>
-        </div>
+    <div class="section-header"><div class="section-title">Carrying Capacity</div></div>
+    <div class="section-body" style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:140px">
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">READIED SLOTS</div>
+        <div style="font-size:.85rem;color:var(--text-soft)"><strong id="inv-readied-used">0</strong> / <strong id="inv-readied-max">—</strong> <span style="font-size:.7rem;color:var(--text-label)">(2 + REF mod)</span></div>
       </div>
-      <!-- Inventory capacity display -->
-      <div style="font-family:'Cinzel',serif;font-size:.65rem;color:var(--text-label);margin-bottom:.5rem;letter-spacing:.08em">
-        READIED SLOTS: <span id="inv-readied-max">—</span> (2 + REF mod) &nbsp;|&nbsp;
-        PACK SLOTS: <span id="inv-pack-max">—</span> (8 + FORT mod)
+      <div style="flex:1;min-width:140px">
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">PACK SLOTS</div>
+        <div style="font-size:.85rem;color:var(--text-soft)"><strong id="inv-pack-used">0</strong> / <strong id="inv-pack-max">—</strong> <span style="font-size:.7rem;color:var(--text-label)">(8 + FORT mod)</span></div>
       </div>
-      <!-- Simple text inventory -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-        <div class="field-group">
-          <label class="field-label">Weapons &amp; Combat Gear</label>
-          <textarea class="field-input note-textarea" id="inv-weapons" data-save="inv-weapons" placeholder="List weapons, damage, properties…" style="min-height:100px"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Armor &amp; Shields</label>
-          <textarea class="field-input note-textarea" id="inv-armor" data-save="inv-armor" placeholder="Armor type, DEF value, equipped…" style="min-height:100px"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Magic Items (Attuned)</label>
-          <textarea class="field-input note-textarea" id="inv-magic" data-save="inv-magic" placeholder="Item name, slot, attunement effect…" style="min-height:100px"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Consumables &amp; Gear</label>
-          <textarea class="field-input note-textarea" id="inv-gear" data-save="inv-gear" placeholder="Potions, tools, rations, etc…" style="min-height:100px"></textarea>
-        </div>
+      <div style="flex:1;min-width:140px">
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">SUGGESTED DEFENSE</div>
+        <div style="font-size:.85rem;color:var(--text-soft)"><strong id="inv-suggested-def">—</strong></div>
       </div>
-      <div style="margin-top:.75rem">
-        <div style="font-family:'Cinzel',serif;font-size:.65rem;color:var(--copper-dark);letter-spacing:.1em;margin-bottom:.25rem">ATTUNEMENT SLOTS</div>
-        <div style="font-size:.82rem;color:var(--text-soft)">Max attunement: PRES modifier + 1 = <strong id="attune-max">—</strong> &nbsp;|&nbsp; Used: <input type="number" min="0" max="10" id="attune-used" data-save="attune-used" style="width:36px;text-align:center;background:var(--field-bg);border:1px solid var(--field-border);border-radius:2px;font-size:.85rem;"></div>
+      <div style="flex:1;min-width:140px">
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">ATTUNEMENT</div>
+        <div style="font-size:.85rem;color:var(--text-soft)"><input type="number" min="0" max="10" id="attune-used" data-save="attune-used" style="width:28px;text-align:center;background:var(--field-bg);border:1px solid var(--field-border);border-radius:2px;font-size:.82rem"> / <strong id="attune-max">—</strong> <span style="font-size:.7rem;color:var(--text-label)">(PRES mod + 1)</span></div>
       </div>
     </div>
   </div>
+
+  <!-- EQUIPPED GEAR (armor + shield) -->
+  <div class="sheet-section">
+    <div class="section-header"><div class="section-title">Equipped Gear</div></div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.08em;color:var(--copper-dark);margin-bottom:.3rem">ARMOR</div>
+          <select class="selection-select" id="inv-armor-select" onchange="onEquipmentChange()">
+            <option value="">— None (Unarmored) —</option>
+          </select>
+          <div class="selection-desc show" id="inv-armor-desc" style="margin-top:.3rem"></div>
+        </div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.08em;color:var(--copper-dark);margin-bottom:.3rem">SHIELD / OFF-HAND</div>
+          <select class="selection-select" id="inv-shield-select" onchange="onEquipmentChange()">
+            <option value="">— None —</option>
+          </select>
+          <div class="selection-desc show" id="inv-shield-desc" style="margin-top:.3rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEAPONS -->
+  <div class="sheet-section">
+    <div class="section-header" style="justify-content:space-between">
+      <div class="section-title">Weapons</div>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showWeaponPicker()">+ Add Weapon</button>
+    </div>
+    <div class="section-body">
+      <div id="inv-weapons-list"></div>
+      <div id="inv-weapon-picker" style="display:none;margin-top:.5rem">
+        <div class="am-form" style="grid-template-columns:2fr 1fr">
+          <select class="selection-select" id="inv-weapon-select">
+            <option value="">— Choose Weapon —</option>
+          </select>
+          <div class="am-form-btns">
+            <button class="am-form-cancel" onclick="hideWeaponPicker()">Cancel</button>
+            <button class="am-form-confirm" onclick="addWeaponFromPicker()">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACK ITEMS (custom) -->
+  <div class="sheet-section">
+    <div class="section-header" style="justify-content:space-between">
+      <div class="section-title">Pack &amp; Gear</div>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showCustomItemForm()">+ Add Item</button>
+    </div>
+    <div class="section-body">
+      <div id="inv-pack-list"></div>
+      <div id="inv-custom-form" style="display:none;margin-top:.5rem">
+        <div class="am-form" style="grid-template-columns:2fr 1fr 1fr">
+          <div class="am-form-full"><input placeholder="Item name…" id="inv-custom-name"></div>
+          <input placeholder="Qty" type="number" min="1" value="1" id="inv-custom-qty" style="width:60px">
+          <input placeholder="Slots" type="number" min="0" value="1" id="inv-custom-slots" style="width:60px">
+          <div class="am-form-full"><input placeholder="Type (Consumable, Gear, Magic Item, Tool…)" id="inv-custom-type"></div>
+          <div class="am-form-full"><textarea placeholder="Description, effects, properties…" id="inv-custom-desc"></textarea></div>
+          <div class="am-form-full" style="display:flex;gap:.5rem;align-items:center;font-size:.78rem;color:var(--text-label)">
+            <label><input type="checkbox" id="inv-custom-attune"> Requires Attunement</label>
+          </div>
+          <div class="am-form-btns am-form-full">
+            <button class="am-form-cancel" onclick="hideCustomItemForm()">Cancel</button>
+            <button class="am-form-confirm" onclick="addCustomItem()">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRENCY -->
+  <div class="sheet-section">
+    <div class="section-header"><div class="section-title">Currency</div></div>
+    <div class="section-body">
+      <div class="currency-row">
+        <div class="currency-item"><span class="currency-label">CP</span><input type="number" class="currency-input" id="cur-cp" min="0" data-save="cur-cp" placeholder="0"></div>
+        <div class="currency-item"><span class="currency-label">SP</span><input type="number" class="currency-input" id="cur-sp" min="0" data-save="cur-sp" placeholder="0"></div>
+        <div class="currency-item"><span class="currency-label">GP</span><input type="number" class="currency-input" id="cur-gp" min="0" data-save="cur-gp" placeholder="0"></div>
+      </div>
+    </div>
+  </div>
+
 </div><!-- /page-inventory -->
 
 <!-- ═══════════════════════ PAGE: LEVELS ═══════════════════════ -->
@@ -1006,6 +1103,7 @@ let dailyUsed = false;
 let actionTableData = {actions:[], bonus:[], reactions:[], passives:[]};
 let spellData = [];
 let talentSelections = [];  // [{name, category, tier}]
+let inventoryData = {weapons:[], packItems:[], equippedArmor:'', equippedShield:''};
 
 // ── INIT ──────────────────────────────────────────────────────────
 async function init() {
@@ -1037,6 +1135,8 @@ async function init() {
   renderLevelLog();
   renderArchetypeAbilities();
   renderActionTables();
+  initInventorySelects();
+  renderInventory();
 }
 window.addEventListener('DOMContentLoaded', init);
 
@@ -1628,6 +1728,94 @@ function renderLevelLog() {
         body.appendChild(selDiv);
       }
 
+      // ── Body bonus maneuver at L2 and L8 (alongside stances)
+      if (cls === 'The Body' && (entry.level === 2 || entry.level === 8)) {
+        const bonusDiv = document.createElement('div');
+        bonusDiv.className = 'level-selections';
+        bonusDiv.innerHTML = '<div class="level-grants-label">Bonus Maneuver</div>';
+        const bonusKey = 'bonusManeuver';
+        const currentBonus = entry.selections[bonusKey] || '';
+        const prevSels = getPreviousSelections(entry.level, bonusKey, 999);
+        // Build maneuver options (same pool rules as the level's maneuver access)
+        const unlockAdvanced = entry.level >= 3;
+        const bonusOpts = [];
+        (GD.maneuvers?.standard || []).forEach(m => {
+          bonusOpts.push({value:m.name, label:`${m.name} (${m.cost}) — ${m.type}`, disabled:prevSels.has(m.name)});
+        });
+        if (unlockAdvanced) {
+          bonusOpts.push({value:'__sep_advanced', label:'─── Advanced (Level 3+) ───', disabled:true});
+          (GD.maneuvers?.advanced || []).forEach(m => {
+            bonusOpts.push({value:m.name, label:`${m.name} (${m.cost}) — ${m.type}`, disabled:prevSels.has(m.name)});
+          });
+        }
+        const customMans = GD.maneuvers?.custom?.[archetype] || [];
+        customMans.filter(m => m.level <= entry.level).forEach(m => {
+          bonusOpts.push({value:m.name, label:`✦ ${m.name} (${m.cost}) [${archetype}]`, disabled:prevSels.has(m.name)});
+        });
+        const bonusSlot = document.createElement('div');
+        bonusSlot.className = 'selection-slot';
+        bonusSlot.innerHTML = `
+          <div class="selection-label">Tactical Maneuver (bonus at Level ${entry.level})</div>
+          <select class="selection-select" onchange="onSelectionChange(${entry.level},'${bonusKey}',this.value,this)">
+            <option value="">— Choose Maneuver —</option>
+            ${bonusOpts.map(o => `<option value="${esc(o.value)}" ${o.value===currentBonus?'selected':''} ${o.disabled?'disabled':''}>
+              ${esc(o.label)}
+            </option>`).join('')}
+          </select>
+          <div class="selection-desc ${currentBonus?'show':''}" id="sel-desc-${entry.level}-${bonusKey}">
+            ${currentBonus ? esc(getSelectionDesc('maneuver', currentBonus, cls, archetype)) : ''}
+          </div>`;
+        bonusDiv.appendChild(bonusSlot);
+        body.appendChild(bonusDiv);
+      }
+
+      // ── Talent selection (every level)
+      if (cls && GD?.talents) {
+        const talDiv = document.createElement('div');
+        talDiv.className = 'level-selections';
+        talDiv.innerHTML = '<div class="level-grants-label">Talent (Optional)</div>';
+        const talKey = 'talent';
+        const currentTal = entry.selections[talKey] || '';
+        // Build talent options grouped by category; allow Tier 2 re-picks
+        const allPreviousTalents = getAllPreviousTalentSelections(entry.level);
+        const talOpts = [];
+        Object.entries(GD.talents).forEach(([cat, talents]) => {
+          talOpts.push({value:'__sep_'+cat, label:'─── '+cat+' ───', disabled:true});
+          talents.forEach(t => {
+            const prevPick = allPreviousTalents.get(t.name);
+            if (prevPick === 2) {
+              // Already at max tier
+              talOpts.push({value:t.name+'|2', label:`${t.name} — Tier 2 (already taken)`, disabled:true});
+            } else if (prevPick === 1 && t.tiers.length >= 2) {
+              // Can upgrade to Tier 2
+              talOpts.push({value:t.name+'|2', label:`${t.name} — Upgrade to Tier 2`, disabled: currentTal === t.name+'|2' ? false : false});
+            } else if (!prevPick) {
+              // Fresh pick at Tier 1
+              talOpts.push({value:t.name+'|1', label:`${t.name} — Tier 1`, disabled:false});
+            }
+          });
+        });
+        // Parse current
+        const [curTalName, curTalTier] = currentTal ? currentTal.split('|') : ['',''];
+        const curTalent = currentTal ? findTalent(curTalName) : null;
+        const curTierData = curTalent?.tiers?.[(parseInt(curTalTier)||1)-1];
+        const talSlot = document.createElement('div');
+        talSlot.className = 'selection-slot';
+        talSlot.innerHTML = `
+          <div class="selection-label">Choose a talent or leave empty</div>
+          <select class="selection-select" onchange="onSelectionChange(${entry.level},'${talKey}',this.value,this)">
+            <option value="">— No Talent —</option>
+            ${talOpts.map(o => `<option value="${esc(o.value)}" ${o.value===currentTal?'selected':''} ${o.disabled?'disabled':''}>
+              ${esc(o.label)}
+            </option>`).join('')}
+          </select>
+          <div class="selection-desc ${currentTal?'show':''}" id="sel-desc-${entry.level}-${talKey}">
+            ${curTierData ? esc(curTierData.desc) : ''}
+          </div>`;
+        talDiv.appendChild(talSlot);
+        body.appendChild(talDiv);
+      }
+
       // ── No archetype notice
       if (!archetype && cls) {
         const notice = document.createElement('div');
@@ -1722,16 +1910,32 @@ function getPreviousSelections(currentLevel, currentSlot, slotIdx) {
   const chosen = new Set();
   levelEntries.forEach(entry => {
     if (entry.level < currentLevel) {
-      Object.values(entry.selections).forEach(v => { if (v) chosen.add(v); });
+      Object.entries(entry.selections).forEach(([k,v]) => { if (v && k !== 'talent') chosen.add(v); });
     } else if (entry.level === currentLevel) {
-      // For same level, previous slots
-      for (let i=0; i<slotIdx; i++) {
+      // For same level, previous slots (not talent, not bonusManeuver unless we're checking bonusManeuver)
+      for (let i = 0; i < slotIdx; i++) {
         const v = entry.selections['slot'+i];
         if (v) chosen.add(v);
+      }
+      // Also include bonusManeuver if it's a different key
+      if (currentSlot !== 'bonusManeuver' && entry.selections.bonusManeuver) {
+        chosen.add(entry.selections.bonusManeuver);
       }
     }
   });
   return chosen;
+}
+
+function getAllPreviousTalentSelections(currentLevel) {
+  // Returns Map of talentName → tier already taken
+  const map = new Map();
+  levelEntries.forEach(entry => {
+    if (entry.level < currentLevel && entry.selections.talent) {
+      const [name, tier] = entry.selections.talent.split('|');
+      if (name) map.set(name, Math.max(map.get(name)||0, parseInt(tier)||1));
+    }
+  });
+  return map;
 }
 
 function buildSelectionOptions(level, cls, archetype, progRow, previousSelections) {
@@ -1874,6 +2078,7 @@ function onSelectionChange(level, slotKey, value, selectEl) {
   if (!entry) return;
   entry.selections[slotKey] = value;
   saveLevelLog();
+
   // Update description
   const cls = getSelectedClass();
   const archetype = getSelectedArchetype();
@@ -1882,15 +2087,32 @@ function onSelectionChange(level, slotKey, value, selectEl) {
   const selType = progRow?.selections?.type||'';
   const descEl = document.getElementById(`sel-desc-${level}-${slotKey}`);
   if (descEl) {
-    const desc = getSelectionDesc(selType, value, cls, archetype);
+    let desc = '';
+    if (slotKey === 'talent' && value) {
+      // Talent description
+      const [tName, tTier] = value.split('|');
+      const talent = findTalent(tName);
+      desc = talent?.tiers?.[(parseInt(tTier)||1)-1]?.desc || '';
+    } else if (slotKey === 'bonusManeuver') {
+      desc = getSelectionDesc('maneuver', value, cls, archetype);
+    } else {
+      desc = getSelectionDesc(selType, value, cls, archetype);
+    }
     descEl.textContent = desc;
     descEl.className = 'selection-desc' + (desc?' show':'');
   }
+
+  // Sync talent selections to the Character Sheet tab's talent list
+  syncTalentsFromLevelLog();
+
   // Refresh other slots at same level to update disabled states
   const entry2 = levelEntries.find(e=>e.level===level);
   if (entry2) {
     const container = document.getElementById('level-entry-'+level);
     container?.querySelectorAll('.selection-select').forEach((sel, idx) => {
+      // Only refresh the regular slot selects, not talent/bonusManeuver
+      if (sel.closest('.selection-slot')?.querySelector('.selection-label')?.textContent?.includes('Talent')) return;
+      if (sel.closest('.selection-slot')?.querySelector('.selection-label')?.textContent?.includes('bonus')) return;
       const slotK = 'slot'+idx;
       const current = entry2.selections[slotK]||'';
       const prevSels = getPreviousSelections(level, slotK, idx);
@@ -1900,6 +2122,31 @@ function onSelectionChange(level, slotKey, value, selectEl) {
           ${esc(o.label)}</option>`).join('');
     });
   }
+
+  // Refresh Features tab action tables with new selections
+  renderActionTables();
+}
+
+function syncTalentsFromLevelLog() {
+  // Rebuild talentSelections from level log talent choices
+  talentSelections = [];
+  levelEntries.forEach(entry => {
+    if (entry.selections.talent) {
+      const [name, tier] = entry.selections.talent.split('|');
+      if (!name) return;
+      const talent = findTalent(name);
+      if (!talent) return;
+      // Check if already in list (upgrade case)
+      const existing = talentSelections.find(t => t.name === name);
+      if (existing) {
+        existing.tier = Math.max(existing.tier, parseInt(tier)||1);
+      } else {
+        talentSelections.push({name, category: talent.category, tier: parseInt(tier)||1});
+      }
+    }
+  });
+  saveTalents();
+  renderTalents();
 }
 
 function toggleLevelCollapse(lvl) {
@@ -2002,26 +2249,114 @@ function getArchetypeActionsByCategory() {
   return result;
 }
 
+function getLevelSelectionsByCategory() {
+  const result = {actions:[], bonus:[], reactions:[], passives:[], customizations:[]};
+  if (!GD) return result;
+  const cls = getSelectedClass();
+  const archetype = getSelectedArchetype();
+  const classData = cls ? GD.classes[cls] : null;
+
+  levelEntries.forEach(entry => {
+    const progRow = classData?.progressionTable?.find(r => r.level === entry.level);
+    const selType = progRow?.selections?.type;
+
+    // Process each selection slot (slot0, slot1, ..., bonusManeuver)
+    Object.entries(entry.selections).forEach(([key, value]) => {
+      if (!value || value.startsWith('__sep') || key === 'talent') return;
+
+      if (key === 'bonusManeuver' || selType === 'maneuver') {
+        // Look up the maneuver data
+        const all = [...(GD.maneuvers?.standard||[]), ...(GD.maneuvers?.advanced||[]),
+          ...Object.values(GD.maneuvers?.custom||{}).flat()];
+        const m = all.find(x => x.name === value);
+        if (m) {
+          const card = {name: m.name, cost: m.cost, type: m.type, desc: m.desc, source: `L${entry.level}`};
+          const t = (m.type||'').toLowerCase();
+          if (t.includes('reaction')) result.reactions.push(card);
+          else if (t.includes('bonus')) result.bonus.push(card);
+          else if (t.includes('action') || t.includes('move') || t.includes('full')) result.actions.push(card);
+          else result.customizations.push(card);
+        }
+      } else if (selType === 'stance') {
+        const s = Object.values(GD.stances || {}).find(x => x.name === value);
+        if (s) result.passives.push({name: s.name, cost: '—', type: 'Stance', desc: s.desc, source: `L${entry.level}`});
+      } else if (selType === 'augment') {
+        const all = [...Object.values(GD.augments || {}).flat()];
+        const a = all.find(x => x.name === value);
+        if (a) result.customizations.push({name: a.name, cost: a.cost, type: 'Augment', desc: a.desc, source: `L${entry.level}`});
+      } else if (selType === 'inscription') {
+        const all = [...(GD.inscriptions?.universal||[]), ...(GD.inscriptions?.oracle||[]),
+          ...(GD.inscriptions?.templar||[]), ...(GD.inscriptions?.zealot||[])];
+        const ins = all.find(x => x.name === value);
+        if (ins) result.customizations.push({name: ins.name, cost: ins.cost, type: ins.type || 'Inscription', desc: ins.desc, source: `L${entry.level}`});
+      }
+    });
+
+    // Talent selections
+    if (entry.selections.talent) {
+      const [tName, tTier] = entry.selections.talent.split('|');
+      const talent = findTalent(tName);
+      if (talent) {
+        const tierData = talent.tiers?.[(parseInt(tTier)||1)-1];
+        result.passives.push({name: tName + ' (Tier '+tTier+')', cost: '—', type: 'Talent', desc: tierData?.desc||'', source: `L${entry.level}`});
+      }
+    }
+
+    // Free augment
+    if (entry.freeAugment) {
+      const aug = [...Object.values(GD.augments || {}).flat()].find(a => a.name === entry.freeAugment);
+      if (aug) result.customizations.push({name: aug.name + ' (Free)', cost: aug.cost, type: 'Free Augment', desc: aug.desc, source: 'L1'});
+    }
+  });
+
+  return result;
+}
+
 function renderActionTables() {
   const archActions = getArchetypeActionsByCategory();
+  const levelActions = getLevelSelectionsByCategory();
+  const invActions = getInventoryActionsByCategory();
 
   ['actions','bonus','reactions','passives'].forEach(t => {
-    // Render auto-populated archetype rows
     const autoDiv = document.getElementById('am-'+t+'-auto');
     if (autoDiv) {
-      const items = archActions[t] || [];
-      if (items.length > 0) {
-        autoDiv.innerHTML = '<div class="am-auto-label">From Archetype</div>' +
-          items.map(row =>
+      const archItems = archActions[t] || [];
+      const levelItems = levelActions[t] || [];
+      const invItems = invActions[t] || [];
+      let html = '';
+      if (invItems.length > 0) {
+        html += '<div class="am-auto-label">From Equipment</div>' +
+          invItems.map(row =>
+            `<div class="am-auto-card" style="border-left-color:var(--copper-dark)">
+              <div><span class="am-auto-card-name">${esc(row.name)}</span>
+              <span class="am-auto-card-tag">${esc(row.type)}</span>
+              <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.source)}</span></div>
+              <div class="am-auto-card-desc">${esc(row.desc)}</div>
+            </div>`
+          ).join('');
+      }
+      if (archItems.length > 0) {
+        html += '<div class="am-auto-label">From Archetype</div>' +
+          archItems.map(row =>
             `<div class="am-auto-card">
               <div><span class="am-auto-card-name">${esc(row.name)}</span>
               <span class="am-auto-card-tag">${esc(row.cost)}</span></div>
               <div class="am-auto-card-desc">${esc(row.desc)}</div>
             </div>`
           ).join('');
-      } else {
-        autoDiv.innerHTML = '';
       }
+      if (levelItems.length > 0) {
+        html += '<div class="am-auto-label" style="margin-top:.5rem">From Level Selections</div>' +
+          levelItems.map(row =>
+            `<div class="am-auto-card" style="border-left-color:var(--copper)">
+              <div><span class="am-auto-card-name">${esc(row.name)}</span>
+              <span class="am-auto-card-tag">${esc(row.cost)}</span>
+              <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.source)}</span></div>
+              <div class="am-auto-card-desc">${esc(row.desc)}</div>
+            </div>`
+          ).join('');
+      }
+      autoDiv.innerHTML = html;
     }
 
     // Render manual/custom rows
@@ -2043,6 +2378,27 @@ function renderActionTables() {
     const table = document.getElementById('am-'+t+'-table');
     if (table) table.style.display = (actionTableData[t] || []).length > 0 ? '' : 'none';
   });
+
+  // Render Customizations section
+  const custDiv = document.getElementById('am-customizations-auto');
+  const custEmpty = document.getElementById('am-customizations-empty');
+  if (custDiv) {
+    const custItems = levelActions.customizations || [];
+    if (custItems.length > 0) {
+      custDiv.innerHTML = custItems.map(row =>
+        `<div class="am-auto-card" style="border-left-color:var(--copper)">
+          <div><span class="am-auto-card-name">${esc(row.name)}</span>
+          <span class="am-auto-card-tag">${esc(row.cost)}</span>
+          <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.type)} · ${esc(row.source)}</span></div>
+          <div class="am-auto-card-desc">${esc(row.desc)}</div>
+        </div>`
+      ).join('');
+      if (custEmpty) custEmpty.style.display = 'none';
+    } else {
+      custDiv.innerHTML = '';
+      if (custEmpty) custEmpty.style.display = '';
+    }
+  }
 }
 
 function showAmForm(t) { document.getElementById('am-'+t+'-form').style.display='grid'; }
@@ -2178,6 +2534,7 @@ async function saveAll() {
     skillInvestments,
     spells: spellData,
     talents: talentSelections,
+    inventory: inventoryData,
     actionTables: actionTableData,
     dailyUsed: dailyUsed?'1':'0',
     shortRestUsed: shortRestUsed?'1':'0'
@@ -2222,6 +2579,7 @@ function loadFromFile(input) {
       if (parsed.skillInvestments) { skillInvestments = parsed.skillInvestments; localStorage.setItem('aethel-skill-investments', JSON.stringify(skillInvestments)); }
       if (parsed.spells) { spellData = parsed.spells; localStorage.setItem('aethel-spells', JSON.stringify(spellData)); }
       if (parsed.talents) { talentSelections = parsed.talents; localStorage.setItem('aethel-talents', JSON.stringify(talentSelections)); }
+      if (parsed.inventory) { inventoryData = {...{weapons:[],packItems:[],equippedArmor:'',equippedShield:''}, ...parsed.inventory}; localStorage.setItem('aethel-inventory', JSON.stringify(inventoryData)); }
       if (parsed.actionTables) {
         Object.entries(parsed.actionTables).forEach(([t,rows]) => { if (actionTableData[t]!==undefined) actionTableData[t]=rows; });
       }
@@ -2257,6 +2615,9 @@ function loadAll() {
   // Load talents
   const rawTal = localStorage.getItem('aethel-talents');
   if (rawTal) try { talentSelections = JSON.parse(rawTal); } catch {}
+  // Load inventory
+  const rawInv = localStorage.getItem('aethel-inventory');
+  if (rawInv) try { inventoryData = {...{weapons:[],packItems:[],equippedArmor:'',equippedShield:''}, ...JSON.parse(rawInv)}; } catch {}
   // Load action tables
   ['actions','bonus','reactions','passives'].forEach(t => {
     const raw2 = localStorage.getItem('aethel-am-'+t);
@@ -2293,6 +2654,7 @@ function loadAll() {
   renderActionTables();
   renderSpellList();
   renderTalents();
+  renderInventory();
   updateDCTable();
 }
 
@@ -2431,7 +2793,7 @@ function newCharacter() {
 
   // Clear all localStorage keys
   const keys = [LS_KEY, 'aethel-level-log', 'aethel-skill-investments', 'aethel-spells',
-    'aethel-talents', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-reactions', 'aethel-am-passives',
+    'aethel-talents', 'aethel-inventory', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-reactions', 'aethel-am-passives',
     'aethel-daily-used', 'aethel-short-rest-used'];
   keys.forEach(k => localStorage.removeItem(k));
 
@@ -2444,6 +2806,7 @@ function newCharacter() {
   actionTableData = {actions:[], bonus:[], reactions:[], passives:[]};
   spellData = [];
   talentSelections = [];
+  inventoryData = {weapons:[], packItems:[], equippedArmor:'', equippedShield:''};
 
   // Clear all form fields
   document.querySelectorAll('[data-save]').forEach(el => {
@@ -2467,6 +2830,7 @@ function newCharacter() {
   renderActionTables();
   renderSpellList();
   renderTalents();
+  renderInventory();
 
   // Switch to sheet tab
   switchTab('sheet', document.querySelector('.tab-btn'));
@@ -2474,6 +2838,357 @@ function newCharacter() {
   // Flash confirmation
   const msg = document.getElementById('save-msg');
   if (msg) { msg.textContent = 'Sheet cleared!'; msg.classList.add('show'); setTimeout(()=>msg.classList.remove('show'),2000); }
+}
+
+// ── EQUIPMENT DATABASE ────────────────────────────────────────────
+const WEAPONS = [
+  {name:'Dagger',cat:'Light Melee',dmg:'2d4',type:'Piercing',cost:'5sp',role:'Duelist/Survivor',slots:1,feature:'Finesse, Quickdraw: Can be drawn/stowed as part of any attack. Can be thrown up to 20 ft.',twoHand:false},
+  {name:'Shortsword',cat:'Light Melee',dmg:'2d6',type:'Slashing',cost:'2gp',role:'Duelist',slots:1,feature:'Finesse, Pursuit: After hitting same target twice in one turn, next attack gains Advantage.',twoHand:false},
+  {name:'Hand Axe',cat:'Light Melee',dmg:'2d4',type:'Slashing',cost:'1gp',role:'Control',slots:1,feature:'Thrown (20 ft.), Drag: On damage, move up to 10 ft. toward target without provoking OA.',twoHand:false},
+  {name:'Rapier',cat:'Melee',dmg:'2d6',type:'Piercing',cost:'8gp',role:'Duelist',slots:1,feature:'Finesse, Lunge: Strike up to 10 ft. Target cannot OA when you step back within normal range.',twoHand:false},
+  {name:'Warhammer',cat:'Melee',dmg:'3d4',type:'Crushing',cost:'4gp',role:'Control',slots:1,feature:'Shatter: Ignores up to 3 DEF. Full Hit vs Heavy Armor: target loses Reaction until next turn.',twoHand:false},
+  {name:'Battle Axe',cat:'Melee',dmg:'2d8',type:'Slashing',cost:'3gp',role:'Brawler',slots:1,feature:'Cleave: 1/turn, additional melee attack vs different creature within 5 ft (weapon dice only, no mod).',twoHand:false},
+  {name:'Longsword',cat:'Melee',dmg:'2d8',type:'Slashing',cost:'5gp',role:'Survivor',slots:1,feature:'Guard: Full Hit → roll 1d4, increase DEF by that amount until next turn. Can sacrifice bonus to penalize attacker instead.',twoHand:false},
+  {name:'Maul',cat:'Melee',dmg:'3d6',type:'Crushing',cost:'8gp',role:'Brawler',slots:2,feature:'Shatter: Ignores up to 3 DEF. Topple: 12+ damage → Fort Save or Prone (Disadv if Staggered). Two-handed.',twoHand:true},
+  {name:'Greatsword',cat:'Melee',dmg:'3d6',type:'Slashing',cost:'10gp',role:'Brawler',slots:2,feature:'Push: Full Hit → move target up to 10 ft. Sweep: pushed into another → both take 1d6. Two-handed.',twoHand:true},
+  {name:'Halberd',cat:'Melee',dmg:'2d8',type:'Slashing',cost:'6gp',role:'Control',slots:2,feature:'Reach (10 ft). Halt: Full Hit → target speed -10 ft (-15 if you didn\'t move). Two-handed.',twoHand:true},
+  {name:'Sling',cat:'Ranged',dmg:'2d4',type:'Bludgeoning',cost:'2sp',range:'30/60 ft.',role:'Survivor',slots:1,feature:'Harass: Glancing Blows deal normal damage. Full Hit → move 15 ft without provoking OA.',twoHand:false},
+  {name:'Shortbow',cat:'Ranged',dmg:'2d6',type:'Piercing',cost:'2gp',range:'60/120 ft.',role:'Survivor',slots:1,feature:'Agile: Bonus Action attack (1 RP) if moved ≤5 ft this turn.',twoHand:true},
+  {name:'Light Crossbow',cat:'Ranged',dmg:'2d6',type:'Piercing',cost:'4gp',range:'45/90 ft.',role:'Control',slots:1,feature:'Precise: +2d4 damage vs targets with any Condition or reduced Speed.',twoHand:false},
+  {name:'Longbow',cat:'Ranged',dmg:'2d8',type:'Piercing',cost:'8gp',range:'120/200 ft.',role:'Control/Brawler',slots:2,feature:'Halt: Full Hit → target speed -10 ft. Long Range (60+ ft): +1d6 bonus damage.',twoHand:true},
+  {name:'Heavy Crossbow',cat:'Ranged',dmg:'3d6',type:'Piercing',cost:'12gp',range:'100/200 ft.',role:'Control',slots:2,feature:'Armor Piercing: Ignores up to 3 DEF. Requires Bonus Action/Action to reload.',twoHand:true}
+];
+const ARMORS = [
+  {name:'Unarmored',formula:'REF mod',type:'None',stealth:'None',heavy:false},
+  {name:'Simple Robes',formula:'1 + REF mod (Max 2)',type:'None',stealth:'None',heavy:false,cost:'5sp'},
+  {name:'Padded Gambeson',formula:'2 + REF mod (Max 2)',type:'Light',stealth:'None',heavy:false,cost:'2gp'},
+  {name:'Leather Armor',formula:'3 + REF mod (Max 4)',type:'Light',stealth:'None',heavy:false,cost:'6gp'},
+  {name:'Scale Mail',formula:'4 + REF mod (Max 2)',type:'Light',stealth:'None',heavy:false,cost:'10gp'},
+  {name:'Chain Mail',formula:'6',type:'Heavy',stealth:'Disadv Subterfuge',heavy:true,cost:'25gp'},
+  {name:'Half Plate',formula:'7',type:'Heavy',stealth:'Disadv Subterfuge & Mobility',heavy:true,cost:'50gp'},
+  {name:'Plate Armor',formula:'8',type:'Heavy',stealth:'Disadv Subterfuge & Mobility, -5ft Speed',heavy:true,cost:'100gp'}
+];
+const SHIELDS = [
+  {name:'Parrying Dagger',def:0,cost:'5sp',req:'None',feature:'Deflect: 1/round if hit by melee, roll 1d4 and add to DEF for that attack.'},
+  {name:'Buckler',def:1,cost:'2gp',req:'Shields',feature:'Free Hand: Can hold (not attack with) small items in shield hand.'},
+  {name:'Heater Shield',def:2,cost:'5gp',req:'Shields',feature:'Bulwark: Requires Action to don/doff.'},
+  {name:'Tower Shield',def:2,cost:'10gp',req:'Shields',feature:'Heavy. Bulky (2 slots). Resistance to one ranged attack per round.'}
+];
+
+// ── INVENTORY MANAGEMENT ─────────────────────────────────────────
+function initInventorySelects() {
+  const armorSel = document.getElementById('inv-armor-select');
+  if (armorSel) {
+    armorSel.innerHTML = '<option value="">— None (Unarmored) —</option>';
+    ARMORS.forEach(a => {
+      const opt = document.createElement('option');
+      opt.value = a.name;
+      opt.textContent = `${a.name} — DEF: ${a.formula}${a.heavy?' [Heavy]':''}${a.cost?' ('+a.cost+')':''}`;
+      armorSel.appendChild(opt);
+    });
+  }
+  const shieldSel = document.getElementById('inv-shield-select');
+  if (shieldSel) {
+    shieldSel.innerHTML = '<option value="">— None —</option>';
+    SHIELDS.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = `${s.name} — +${s.def} DEF (${s.cost})`;
+      shieldSel.appendChild(opt);
+    });
+  }
+  const weaponSel = document.getElementById('inv-weapon-select');
+  if (weaponSel) {
+    weaponSel.innerHTML = '<option value="">— Choose Weapon —</option>';
+    let lastCat = '';
+    WEAPONS.forEach(w => {
+      if (w.cat !== lastCat) {
+        const grp = document.createElement('optgroup');
+        grp.label = w.cat;
+        weaponSel.appendChild(grp);
+        lastCat = w.cat;
+      }
+      const opt = document.createElement('option');
+      opt.value = w.name;
+      opt.textContent = `${w.name} — ${w.dmg} ${w.type} (${w.cost})`;
+      weaponSel.lastElementChild.appendChild(opt);
+    });
+  }
+}
+
+function saveInventory() {
+  localStorage.setItem('aethel-inventory', JSON.stringify(inventoryData));
+}
+
+function renderInventory() {
+  // Restore selects
+  const armorSel = document.getElementById('inv-armor-select');
+  if (armorSel) armorSel.value = inventoryData.equippedArmor || '';
+  const shieldSel = document.getElementById('inv-shield-select');
+  if (shieldSel) shieldSel.value = inventoryData.equippedShield || '';
+
+  // Armor description
+  const armorDesc = document.getElementById('inv-armor-desc');
+  if (armorDesc) {
+    const a = ARMORS.find(x => x.name === inventoryData.equippedArmor);
+    armorDesc.textContent = a ? `DEF: ${a.formula}. ${a.type} Armor. ${a.stealth !== 'None' ? a.stealth : ''}` : 'DEF: REF modifier only.';
+  }
+  // Shield description
+  const shieldDesc = document.getElementById('inv-shield-desc');
+  if (shieldDesc) {
+    const s = SHIELDS.find(x => x.name === inventoryData.equippedShield);
+    shieldDesc.textContent = s ? `+${s.def} DEF. ${s.feature}` : '';
+  }
+
+  // Weapons list
+  const wList = document.getElementById('inv-weapons-list');
+  if (wList) {
+    if (inventoryData.weapons.length === 0) {
+      wList.innerHTML = '<div class="inv-empty">No weapons. Use "+ Add Weapon" to equip from the armory.</div>';
+    } else {
+      wList.innerHTML = inventoryData.weapons.map((w, idx) => {
+        const data = WEAPONS.find(x => x.name === w.name);
+        const isCustom = !data;
+        const dmg = data?.dmg || w.dmg || '?';
+        const dtype = data?.type || w.type || '?';
+        const feature = data?.feature || w.feature || '';
+        const range = data?.range || w.range || '';
+        const cat = data?.cat || w.cat || '';
+        return `<div class="inv-item ${w.readied?'readied':''}">
+          <div class="inv-item-body">
+            <div class="inv-item-name">${esc(w.name)}</div>
+            <div class="inv-item-tags">
+              <span class="inv-item-tag">${esc(dmg)} ${esc(dtype)}</span>
+              ${range?`<span class="inv-item-tag">${esc(range)}</span>`:''}
+              <span class="inv-item-tag">${esc(cat)}</span>
+              ${w.readied?'<span class="inv-item-tag teal">⚔ READIED</span>':''}
+            </div>
+            <div class="inv-item-desc">${esc(feature)}</div>
+          </div>
+          <div class="inv-item-actions">
+            <button class="inv-ready-btn ${w.readied?'active':''}" onclick="toggleWeaponReady(${idx})">${w.readied?'Stow':'Ready'}</button>
+            <button class="am-del-btn" onclick="removeWeapon(${idx})">✕</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Pack items list
+  const pList = document.getElementById('inv-pack-list');
+  if (pList) {
+    if (inventoryData.packItems.length === 0) {
+      pList.innerHTML = '<div class="inv-empty">No items. Use "+ Add Item" for potions, gear, magic items, tools, or anything else.</div>';
+    } else {
+      pList.innerHTML = inventoryData.packItems.map((item, idx) =>
+        `<div class="inv-item">
+          <div class="inv-item-body">
+            <div class="inv-item-name">${esc(item.name)}</div>
+            <div class="inv-item-tags">
+              ${item.type?`<span class="inv-item-tag">${esc(item.type)}</span>`:''}
+              <span class="inv-item-tag">${item.slots||1} slot${(item.slots||1)>1?'s':''}</span>
+              ${item.attune?'<span class="inv-item-tag teal">Attuned</span>':''}
+            </div>
+            ${item.desc?`<div class="inv-item-desc">${esc(item.desc)}</div>`:''}
+          </div>
+          <div class="inv-item-actions">
+            <div class="inv-qty">
+              <button onclick="changePackQty(${idx},-1)">−</button>
+              <span>${item.qty||1}</span>
+              <button onclick="changePackQty(${idx},1)">+</button>
+            </div>
+            <button class="am-del-btn" onclick="removePackItem(${idx})">✕</button>
+          </div>
+        </div>`
+      ).join('');
+    }
+  }
+
+  updateInventoryCapacity();
+  renderActionTables(); // Refresh Features tab with readied weapon actions
+}
+
+function updateInventoryCapacity() {
+  const refMod = getAbilityMod('REF');
+  const fortMod = getAbilityMod('FORT');
+  const presMod = getAbilityMod('PRES');
+  const readiedMax = 2 + refMod;
+  const packMax = 8 + fortMod;
+  const attuneMax = Math.max(1, presMod + 1);
+
+  // Count used slots
+  let readiedUsed = 0;
+  inventoryData.weapons.forEach(w => {
+    if (w.readied) {
+      const data = WEAPONS.find(x => x.name === w.name);
+      readiedUsed += data?.slots || w.slots || 1;
+    }
+  });
+  let packUsed = 0;
+  inventoryData.weapons.forEach(w => {
+    if (!w.readied) {
+      const data = WEAPONS.find(x => x.name === w.name);
+      packUsed += data?.slots || w.slots || 1;
+    }
+  });
+  inventoryData.packItems.forEach(item => { packUsed += (item.slots||1) * (item.qty||1); });
+
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setEl('inv-readied-max', readiedMax);
+  setEl('inv-readied-used', readiedUsed);
+  setEl('inv-pack-max', packMax);
+  setEl('inv-pack-used', packUsed);
+  setEl('attune-max', attuneMax);
+
+  // Color coding for over-capacity
+  const ru = document.getElementById('inv-readied-used');
+  if (ru) ru.style.color = readiedUsed > readiedMax ? 'var(--crimson-soft)' : '';
+  const pu = document.getElementById('inv-pack-used');
+  if (pu) pu.style.color = packUsed > packMax ? 'var(--crimson-soft)' : '';
+
+  // Calculate suggested DEF
+  calcSuggestedDef();
+}
+
+function calcSuggestedDef() {
+  const refMod = getAbilityMod('REF');
+  const armor = ARMORS.find(a => a.name === inventoryData.equippedArmor);
+  const shield = SHIELDS.find(s => s.name === inventoryData.equippedShield);
+  let def = 0;
+  if (!armor || armor.name === 'Unarmored') {
+    def = refMod;
+  } else if (armor.heavy) {
+    def = parseInt(armor.formula) || 0;
+  } else {
+    // Parse "X + REF mod (Max Y)"
+    const match = armor.formula.match(/(\d+)\s*\+\s*REF mod\s*\(Max\s*(\d+)\)/i);
+    if (match) def = parseInt(match[1]) + Math.min(refMod, parseInt(match[2]));
+    else def = refMod;
+  }
+  if (shield) def += shield.def;
+  const el = document.getElementById('inv-suggested-def');
+  if (el) el.textContent = def;
+}
+
+function onEquipmentChange() {
+  inventoryData.equippedArmor = document.getElementById('inv-armor-select')?.value || '';
+  inventoryData.equippedShield = document.getElementById('inv-shield-select')?.value || '';
+  saveInventory();
+  renderInventory();
+}
+
+function showWeaponPicker() { document.getElementById('inv-weapon-picker').style.display = 'block'; }
+function hideWeaponPicker() { document.getElementById('inv-weapon-picker').style.display = 'none'; }
+function addWeaponFromPicker() {
+  const name = document.getElementById('inv-weapon-select')?.value;
+  if (!name) return;
+  inventoryData.weapons.push({name, readied: false});
+  saveInventory();
+  renderInventory();
+  hideWeaponPicker();
+}
+
+function toggleWeaponReady(idx) {
+  const w = inventoryData.weapons[idx];
+  if (!w) return;
+  w.readied = !w.readied;
+  saveInventory();
+  renderInventory();
+}
+
+function removeWeapon(idx) {
+  inventoryData.weapons.splice(idx, 1);
+  saveInventory();
+  renderInventory();
+}
+
+function showCustomItemForm() { document.getElementById('inv-custom-form').style.display = 'block'; }
+function hideCustomItemForm() { document.getElementById('inv-custom-form').style.display = 'none'; }
+function addCustomItem() {
+  const name = document.getElementById('inv-custom-name')?.value?.trim();
+  if (!name) return;
+  inventoryData.packItems.push({
+    name,
+    qty: parseInt(document.getElementById('inv-custom-qty')?.value) || 1,
+    slots: parseInt(document.getElementById('inv-custom-slots')?.value) || 1,
+    type: document.getElementById('inv-custom-type')?.value?.trim() || '',
+    desc: document.getElementById('inv-custom-desc')?.value?.trim() || '',
+    attune: document.getElementById('inv-custom-attune')?.checked || false
+  });
+  // Clear form
+  ['inv-custom-name','inv-custom-type','inv-custom-desc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('inv-custom-qty').value = '1';
+  document.getElementById('inv-custom-slots').value = '1';
+  const cb = document.getElementById('inv-custom-attune'); if (cb) cb.checked = false;
+  saveInventory();
+  renderInventory();
+  hideCustomItemForm();
+}
+
+function changePackQty(idx, delta) {
+  const item = inventoryData.packItems[idx];
+  if (!item) return;
+  item.qty = Math.max(0, (item.qty||1) + delta);
+  if (item.qty <= 0) { inventoryData.packItems.splice(idx, 1); }
+  saveInventory();
+  renderInventory();
+}
+
+function removePackItem(idx) {
+  inventoryData.packItems.splice(idx, 1);
+  saveInventory();
+  renderInventory();
+}
+
+function getInventoryActionsByCategory() {
+  const result = {actions:[], passives:[]};
+  // Readied weapons → Actions
+  inventoryData.weapons.filter(w => w.readied).forEach(w => {
+    const data = WEAPONS.find(x => x.name === w.name);
+    if (data) {
+      const atkMod = data.cat === 'Ranged' ? 'REF' :
+        (data.feature?.includes('Finesse') ? 'REF or FORT' : 'FORT');
+      result.actions.push({
+        name: `Attack: ${data.name}`,
+        cost: 'Action',
+        type: `${data.dmg} ${data.type}${data.range?' · '+data.range:''}`,
+        desc: `${atkMod} modifier. ${data.feature}`,
+        source: 'Readied Weapon'
+      });
+    } else {
+      // Custom weapon
+      result.actions.push({
+        name: `Attack: ${w.name}`,
+        cost: 'Action',
+        type: `${w.dmg||'?'} ${w.type||''}${w.range?' · '+w.range:''}`,
+        desc: w.feature || '',
+        source: 'Readied Weapon'
+      });
+    }
+  });
+  // Equipped armor → Passives
+  const armor = ARMORS.find(a => a.name === inventoryData.equippedArmor);
+  if (armor && armor.name !== 'Unarmored') {
+    result.passives.push({
+      name: armor.name,
+      cost: '—',
+      type: `${armor.type} Armor`,
+      desc: `DEF: ${armor.formula}.${armor.stealth!=='None'?' '+armor.stealth+'.':''}`,
+      source: 'Equipped'
+    });
+  }
+  // Equipped shield → Passives
+  const shield = SHIELDS.find(s => s.name === inventoryData.equippedShield);
+  if (shield) {
+    result.passives.push({
+      name: shield.name,
+      cost: '—',
+      type: `Shield (+${shield.def} DEF)`,
+      desc: shield.feature,
+      source: 'Equipped'
+    });
+  }
+  return result;
 }
 
 // ── EXPORT PDF ────────────────────────────────────────────────────
