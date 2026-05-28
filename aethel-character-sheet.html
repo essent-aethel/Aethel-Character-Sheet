@@ -507,28 +507,28 @@ select.field-input{cursor:pointer;}
       <div class="ability-grid" id="ability-grid">
         <div class="ability-card">
           <div class="ability-name">Fortitude</div>
-          <input type="number" class="ability-score-input" id="ability-fort" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
+          <input type="number" class="ability-score-input" id="ability-fort" min="1" max="30" placeholder="—" data-save="ability-fort" oninput="updateAbilityDisplays(); saveAbilityScores();" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-fort">—</div>
           <div class="ability-bonus">Melee attacks · HP · Physical saves</div>
           <div class="ability-ancestry" id="bonus-fort"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Reflex</div>
-          <input type="number" class="ability-score-input" id="ability-ref" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
+          <input type="number" class="ability-score-input" id="ability-ref" min="1" max="30" placeholder="—" data-save="ability-ref" oninput="updateAbilityDisplays(); saveAbilityScores();" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-ref">—</div>
           <div class="ability-bonus">Initiative · Defense · Ranged/Finesse</div>
           <div class="ability-ancestry" id="bonus-ref"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Intellect</div>
-          <input type="number" class="ability-score-input" id="ability-int" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
+          <input type="number" class="ability-score-input" id="ability-int" min="1" max="30" placeholder="—" data-save="ability-int" oninput="updateAbilityDisplays(); saveAbilityScores();" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-int">—</div>
           <div class="ability-bonus">Skill points · Tactical awareness</div>
           <div class="ability-ancestry" id="bonus-int"></div>
         </div>
         <div class="ability-card">
           <div class="ability-name">Presence</div>
-          <input type="number" class="ability-score-input" id="ability-pres" min="1" max="30" placeholder="—" oninput="updateAbilityDisplays()" onchange="saveAbilityScores()">
+          <input type="number" class="ability-score-input" id="ability-pres" min="1" max="30" placeholder="—" data-save="ability-pres" oninput="updateAbilityDisplays(); saveAbilityScores();" onchange="saveAbilityScores()">
           <div class="ability-mod" id="mod-pres">—</div>
           <div class="ability-bonus">Will saves · Awareness · Persuasion</div>
           <div class="ability-ancestry" id="bonus-pres"></div>
