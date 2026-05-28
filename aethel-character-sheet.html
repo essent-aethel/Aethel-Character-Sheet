@@ -326,6 +326,19 @@ select.field-input{cursor:pointer;}
 .migration-banner-dismiss{font-family:'Cinzel',serif;font-size:.6rem;background:transparent;
   border:1px solid rgba(184,115,51,.4);color:var(--copper-light);padding:.2rem .6rem;border-radius:2px;cursor:pointer;}
 
+/* ── TALENTS ── */
+.talent-row{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .6rem;
+  background:rgba(184,115,51,.04);border-left:3px solid var(--copper);border-radius:2px;margin-bottom:.35rem;}
+.talent-row-body{flex:1;min-width:0;}
+.talent-row-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--copper-dark);}
+.talent-row-tier{font-family:'Cinzel',serif;font-size:.6rem;color:var(--teal);margin-left:.3rem;}
+.talent-row-cat{font-family:'Cinzel',serif;font-size:.55rem;color:var(--text-label);letter-spacing:.06em;}
+.talent-row-desc{font-size:.82rem;color:var(--text-soft);margin-top:.15rem;line-height:1.4;}
+.talent-row-actions{display:flex;gap:.25rem;align-items:center;flex-shrink:0;}
+.talent-upgrade-btn{font-family:'Cinzel',serif;font-size:.55rem;padding:.15rem .4rem;background:transparent;
+  border:1px solid var(--teal);color:var(--teal);border-radius:2px;cursor:pointer;letter-spacing:.06em;}
+.talent-upgrade-btn:hover{background:rgba(30,95,95,.08);}
+
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
   .ability-grid{grid-template-columns:repeat(2,1fr);}
@@ -335,6 +348,103 @@ select.field-input{cursor:pointer;}
   .cstat-band{grid-template-columns:auto repeat(3,1fr) auto;flex-wrap:wrap;}
   .summary-grid{grid-template-columns:1fr;}
   .am-form{grid-template-columns:1fr 1fr;}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PRINT SHEET — compact character dossier for PDF export
+   ══════════════════════════════════════════════════════════════════ */
+#print-sheet{display:none;}
+
+@media print{
+  /* Hide everything except the print sheet */
+  body>*:not(#print-sheet){display:none!important;}
+  #print-sheet{display:block!important;}
+  body{background:#fff!important;color:#111!important;font-size:9pt;line-height:1.35;
+    font-family:'Crimson Text',Georgia,serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+
+  /* Page setup */
+  @page{size:letter;margin:.45in .5in .4in .5in;}
+
+  /* ── Header ── */
+  .ps-header{display:flex;align-items:baseline;gap:.5rem;border-bottom:2.5px solid #7a4a18;
+    padding-bottom:4pt;margin-bottom:6pt;}
+  .ps-charname{font-family:'Cinzel',serif;font-size:16pt;font-weight:700;color:#7a4a18;letter-spacing:.04em;}
+  .ps-level{font-family:'Cinzel',serif;font-size:10pt;color:#333;margin-left:auto;}
+  .ps-subtitle{font-family:'Cinzel',serif;font-size:7.5pt;letter-spacing:.06em;color:#555;
+    margin-bottom:6pt;text-transform:uppercase;}
+
+  /* ── Section headers ── */
+  .ps-section{font-family:'Cinzel',serif;font-size:7pt;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:#7a4a18;border-bottom:1px solid #ddc9a8;
+    padding-bottom:1pt;margin:7pt 0 3pt;}
+
+  /* ── Stat band ── */
+  .ps-stats{display:flex;gap:0;margin-bottom:2pt;border:1px solid #c9a875;border-radius:2px;overflow:hidden;}
+  .ps-stat{flex:1;text-align:center;padding:3pt 2pt;border-right:1px solid #ddc9a8;}
+  .ps-stat:last-child{border-right:none;}
+  .ps-stat-label{font-family:'Cinzel',serif;font-size:5.5pt;letter-spacing:.1em;
+    text-transform:uppercase;color:#888;display:block;}
+  .ps-stat-val{font-family:'Cinzel',serif;font-size:11pt;font-weight:700;color:#222;display:block;}
+  .ps-stat-sub{font-size:6pt;color:#888;display:block;}
+
+  /* ── Ability scores row ── */
+  .ps-abilities{display:flex;gap:0;margin-bottom:2pt;border:1px solid #c9a875;border-radius:2px;overflow:hidden;}
+  .ps-ability{flex:1;text-align:center;padding:3pt 2pt;border-right:1px solid #ddc9a8;}
+  .ps-ability:last-child{border-right:none;}
+  .ps-ability-name{font-family:'Cinzel',serif;font-size:6pt;letter-spacing:.08em;
+    text-transform:uppercase;color:#7a4a18;display:block;}
+  .ps-ability-score{font-size:13pt;font-weight:700;color:#222;display:block;line-height:1.1;}
+  .ps-ability-mod{font-family:'Cinzel',serif;font-size:8pt;font-weight:700;color:#555;display:block;}
+
+  /* ── Saves row ── */
+  .ps-saves{display:flex;gap:6pt;margin-bottom:2pt;font-family:'Cinzel',serif;font-size:7.5pt;color:#333;}
+  .ps-save-item{padding:2pt 6pt;background:#f5eedd;border-radius:2px;}
+  .ps-save-key{color:#888;font-size:6pt;letter-spacing:.08em;}
+
+  /* ── Skills grid ── */
+  .ps-skills{display:grid;grid-template-columns:repeat(3,1fr);gap:1pt 8pt;margin-bottom:2pt;font-size:8pt;}
+  .ps-skill{display:flex;justify-content:space-between;padding:1pt 3pt;border-bottom:1px dotted #ddd;}
+  .ps-skill-name{color:#333;}
+  .ps-skill-val{font-family:'Cinzel',serif;font-weight:700;color:#7a4a18;}
+
+  /* ── Selections list ── */
+  .ps-selections{display:grid;grid-template-columns:1fr 1fr;gap:1pt 12pt;font-size:7.5pt;margin-bottom:2pt;}
+  .ps-sel-item{padding:1.5pt 0;border-bottom:1px dotted #eee;color:#333;}
+  .ps-sel-lvl{font-family:'Cinzel',serif;font-size:6pt;color:#7a4a18;font-weight:700;}
+
+  /* ── Action tables ── */
+  .ps-actions-table{width:100%;border-collapse:collapse;font-size:7.5pt;margin-bottom:2pt;}
+  .ps-actions-table th{font-family:'Cinzel',serif;font-size:6pt;letter-spacing:.08em;
+    text-transform:uppercase;color:#7a4a18;border-bottom:1.5px solid #c9a875;text-align:left;padding:1.5pt 3pt;}
+  .ps-actions-table td{padding:1.5pt 3pt;border-bottom:1px solid #eee;vertical-align:top;color:#333;}
+  .ps-actions-table td:first-child{font-weight:600;white-space:nowrap;}
+
+  /* ── Inventory ── */
+  .ps-inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:2pt 10pt;font-size:7.5pt;margin-bottom:2pt;}
+  .ps-inv-section{padding:2pt 0;}
+  .ps-inv-label{font-family:'Cinzel',serif;font-size:6pt;letter-spacing:.08em;
+    text-transform:uppercase;color:#7a4a18;margin-bottom:1pt;}
+  .ps-inv-text{color:#333;white-space:pre-line;}
+
+  /* ── Notes ── */
+  .ps-notes{font-size:7.5pt;color:#333;margin-top:2pt;}
+  .ps-note-block{margin-bottom:3pt;}
+  .ps-note-title{font-family:'Cinzel',serif;font-size:6pt;letter-spacing:.08em;
+    text-transform:uppercase;color:#7a4a18;}
+  .ps-note-text{white-space:pre-line;max-height:60pt;overflow:hidden;}
+
+  /* ── Currency inline ── */
+  .ps-currency{display:flex;gap:8pt;font-size:8pt;margin-bottom:2pt;}
+  .ps-cur-item{font-family:'Cinzel',serif;}
+  .ps-cur-label{color:#888;font-size:6pt;letter-spacing:.06em;}
+  .ps-cur-val{font-weight:700;color:#222;}
+
+  /* ── Footer ── */
+  .ps-footer{font-family:'Cinzel',serif;font-size:5.5pt;color:#aaa;text-align:center;
+    border-top:1px solid #ddd;padding-top:3pt;margin-top:6pt;letter-spacing:.1em;}
+
+  /* Page break hint */
+  .ps-page-break{page-break-before:always;margin-top:0;}
 }
 </style>
 </head>
@@ -351,6 +461,7 @@ select.field-input{cursor:pointer;}
   <button class="tab-btn" onclick="switchTab('cheatsheet',this)">Cheat Sheet</button>
   <button class="save-btn" onclick="saveAll()">Save</button>
   <label class="save-btn" style="cursor:pointer">Load<input type="file" accept=".json" style="display:none" onchange="loadFromFile(this)"></label>
+  <button class="save-btn" onclick="exportPDF()" title="Export a compact PDF summary">Export PDF</button>
   <span class="save-msg" id="save-msg">Saved.</span>
 </nav>
 
@@ -550,6 +661,33 @@ select.field-input{cursor:pointer;}
     <div class="section-body">
       <div class="skill-cap-note">Cap per skill: level + 1 (<span id="skill-cap-display">—</span> pts max)</div>
       <div class="skills-grid" id="skills-list"></div>
+    </div>
+  </div>
+
+  <!-- TALENTS -->
+  <div class="sheet-section">
+    <div class="section-header" style="justify-content:space-between">
+      <div class="section-title">Talents</div>
+      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showTalentPicker()">+ Add Talent</button>
+    </div>
+    <div class="section-body">
+      <div id="talent-list"></div>
+      <div id="talent-picker" style="display:none;margin-top:.5rem">
+        <div class="am-form" style="grid-template-columns:2fr 1fr">
+          <select class="selection-select" id="talent-select" onchange="onTalentSelectPreview()">
+            <option value="">— Choose Talent —</option>
+          </select>
+          <select class="selection-select" id="talent-tier-select">
+            <option value="1">Tier 1</option>
+            <option value="2">Tier 2</option>
+          </select>
+          <div class="am-form-full selection-desc show" id="talent-preview" style="min-height:24px"></div>
+          <div class="am-form-btns am-form-full">
+            <button class="am-form-cancel" onclick="hideTalentPicker()">Cancel</button>
+            <button class="am-form-confirm" onclick="confirmTalent()">Add</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -833,6 +971,7 @@ let shortRestUsed = false;
 let dailyUsed = false;
 let actionTableData = {actions:[], bonus:[], passives:[]};
 let spellData = [];
+let talentSelections = [];  // [{name, category, tier}]
 
 // ── INIT ──────────────────────────────────────────────────────────
 async function init() {
@@ -1843,6 +1982,7 @@ async function saveAll() {
     levelLog: levelEntries,
     skillInvestments,
     spells: spellData,
+    talents: talentSelections,
     actionTables: actionTableData,
     dailyUsed: dailyUsed?'1':'0',
     shortRestUsed: shortRestUsed?'1':'0'
@@ -1886,6 +2026,7 @@ function loadFromFile(input) {
       if (parsed.levelLog) { levelEntries = parsed.levelLog; localStorage.setItem('aethel-level-log', JSON.stringify(levelEntries)); }
       if (parsed.skillInvestments) { skillInvestments = parsed.skillInvestments; localStorage.setItem('aethel-skill-investments', JSON.stringify(skillInvestments)); }
       if (parsed.spells) { spellData = parsed.spells; localStorage.setItem('aethel-spells', JSON.stringify(spellData)); }
+      if (parsed.talents) { talentSelections = parsed.talents; localStorage.setItem('aethel-talents', JSON.stringify(talentSelections)); }
       if (parsed.actionTables) {
         Object.entries(parsed.actionTables).forEach(([t,rows]) => { if (actionTableData[t]!==undefined) actionTableData[t]=rows; });
       }
@@ -1918,6 +2059,9 @@ function loadAll() {
   // Load spells
   const rawSpl = localStorage.getItem('aethel-spells');
   if (rawSpl) try { spellData = JSON.parse(rawSpl); } catch {}
+  // Load talents
+  const rawTal = localStorage.getItem('aethel-talents');
+  if (rawTal) try { talentSelections = JSON.parse(rawTal); } catch {}
   // Load action tables
   ['actions','bonus','passives'].forEach(t => {
     const raw2 = localStorage.getItem('aethel-am-'+t);
@@ -1948,11 +2092,332 @@ function loadAll() {
   renderArchetypeAbilities();
   renderActionTables();
   renderSpellList();
+  renderTalents();
   updateDCTable();
 }
 
 function dismissMigrationBanner() {
   document.getElementById('migration-banner')?.classList.remove('show');
+}
+
+// ── TALENTS ───────────────────────────────────────────────────────
+function renderTalents() {
+  const list = document.getElementById('talent-list');
+  if (!list || !GD || !GD.talents) return;
+  if (talentSelections.length === 0) {
+    list.innerHTML = '<div style="color:var(--text-label);font-size:.82rem;font-style:italic">No talents selected yet.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  talentSelections.forEach((sel, idx) => {
+    const talent = findTalent(sel.name);
+    if (!talent) return;
+    const tierData = talent.tiers[(sel.tier||1)-1];
+    const maxTier = talent.tiers.length;
+    const row = document.createElement('div');
+    row.className = 'talent-row';
+    row.innerHTML = `
+      <div class="talent-row-body">
+        <div>
+          <span class="talent-row-name">${esc(sel.name)}</span>
+          <span class="talent-row-tier">Tier ${sel.tier||1}</span>
+          <span class="talent-row-cat">${esc(sel.category)}</span>
+        </div>
+        <div class="talent-row-desc">${esc(tierData?.desc||'')}</div>
+      </div>
+      <div class="talent-row-actions">
+        ${(sel.tier||1) < maxTier ?
+          `<button class="talent-upgrade-btn" onclick="upgradeTalent(${idx})" title="Upgrade to Tier ${(sel.tier||1)+1}">▲ Tier ${(sel.tier||1)+1}</button>` : ''}
+        ${(sel.tier||1) > 1 ?
+          `<button class="talent-upgrade-btn" onclick="downgradeTalent(${idx})" title="Downgrade to Tier ${(sel.tier||1)-1}" style="border-color:var(--text-label);color:var(--text-label)">▼</button>` : ''}
+        <button class="am-del-btn" onclick="removeTalent(${idx})">✕</button>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function findTalent(name) {
+  if (!GD?.talents) return null;
+  for (const [cat, talents] of Object.entries(GD.talents)) {
+    const t = talents.find(t => t.name === name);
+    if (t) return {...t, category: cat};
+  }
+  return null;
+}
+
+function showTalentPicker() {
+  const picker = document.getElementById('talent-picker');
+  const sel = document.getElementById('talent-select');
+  if (!picker || !sel || !GD?.talents) return;
+  picker.style.display = 'block';
+  sel.innerHTML = '<option value="">— Choose Talent —</option>';
+  const chosen = new Set(talentSelections.map(s => s.name));
+  Object.entries(GD.talents).forEach(([cat, talents]) => {
+    const group = document.createElement('optgroup');
+    group.label = cat;
+    talents.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.name;
+      opt.textContent = t.name;
+      if (chosen.has(t.name)) { opt.disabled = true; opt.textContent += ' (taken)'; }
+      group.appendChild(opt);
+    });
+    sel.appendChild(group);
+  });
+  document.getElementById('talent-preview').textContent = '';
+  document.getElementById('talent-tier-select').value = '1';
+}
+
+function hideTalentPicker() {
+  document.getElementById('talent-picker').style.display = 'none';
+}
+
+function onTalentSelectPreview() {
+  const name = document.getElementById('talent-select')?.value;
+  const tierVal = parseInt(document.getElementById('talent-tier-select')?.value)||1;
+  const preview = document.getElementById('talent-preview');
+  if (!preview) return;
+  if (!name) { preview.textContent = ''; return; }
+  const talent = findTalent(name);
+  if (!talent) { preview.textContent = ''; return; }
+  const tierData = talent.tiers[tierVal-1];
+  preview.textContent = tierData?.desc || '';
+}
+
+function confirmTalent() {
+  const name = document.getElementById('talent-select')?.value;
+  const tier = parseInt(document.getElementById('talent-tier-select')?.value)||1;
+  if (!name) return;
+  if (talentSelections.some(s => s.name === name)) return;
+  const talent = findTalent(name);
+  if (!talent) return;
+  talentSelections.push({name, category: talent.category, tier});
+  saveTalents();
+  renderTalents();
+  hideTalentPicker();
+}
+
+function upgradeTalent(idx) {
+  const sel = talentSelections[idx];
+  if (!sel) return;
+  const talent = findTalent(sel.name);
+  if (!talent || (sel.tier||1) >= talent.tiers.length) return;
+  sel.tier = (sel.tier||1) + 1;
+  saveTalents();
+  renderTalents();
+}
+
+function downgradeTalent(idx) {
+  const sel = talentSelections[idx];
+  if (!sel || (sel.tier||1) <= 1) return;
+  sel.tier = (sel.tier||1) - 1;
+  saveTalents();
+  renderTalents();
+}
+
+function removeTalent(idx) {
+  talentSelections.splice(idx, 1);
+  saveTalents();
+  renderTalents();
+}
+
+function saveTalents() {
+  localStorage.setItem('aethel-talents', JSON.stringify(talentSelections));
+}
+
+// ── EXPORT PDF ────────────────────────────────────────────────────
+function exportPDF() {
+  const ps = document.getElementById('print-sheet');
+  if (!ps) return;
+  ps.innerHTML = buildPrintSheet();
+  // Small delay so the DOM is ready, then trigger print
+  requestAnimationFrame(() => { window.print(); });
+}
+
+function buildPrintSheet() {
+  const g = id => document.getElementById(id)?.value || '';
+  const cls = getSelectedClass();
+  const archetype = getSelectedArchetype();
+  const classData = GD?.classes?.[cls];
+
+  // ── Header
+  let html = `
+    <div class="ps-header">
+      <span class="ps-charname">${esc(g('char-name')||'Unnamed')}</span>
+      <span class="ps-level">Level ${esc(g('char-level')||'1')} ${esc(cls)} ${archetype?'· '+esc(archetype):''}</span>
+    </div>
+    <div class="ps-subtitle">
+      ${[g('char-ancestry'), g('char-background'), g('char-alignment'), g('char-languages')].filter(Boolean).map(esc).join(' · ')}
+      ${g('char-player') ? ' · Player: '+esc(g('char-player')) : ''}
+    </div>`;
+
+  // ── Combat Stats Band
+  const saves = ['fort','reflex','intellect','will'].map(id =>
+    document.getElementById('save-'+id)?.textContent||'—');
+  html += `
+    <div class="ps-section">Combat</div>
+    <div class="ps-stats">
+      <div class="ps-stat"><span class="ps-stat-label">Initiative</span><span class="ps-stat-val">${esc(g('stat-initiative')||'—')}</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">Speed</span><span class="ps-stat-val">${esc(g('stat-speed')||'30')}</span><span class="ps-stat-sub">ft</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">Defense</span><span class="ps-stat-val">${esc(g('stat-defense')||'—')}</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">HP</span><span class="ps-stat-val">${esc(g('stat-hp-cur')||'—')} / ${esc(g('stat-hp-max')||'—')}</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">${esc(classData?.resourceAbbr||'RP')}</span><span class="ps-stat-val">${esc(g('stat-rp-cur')||'—')} / ${esc(g('stat-rp-max')||'—')}</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">Saves</span><span class="ps-stat-sub" style="font-size:7pt;line-height:1.3">F ${esc(saves[0])} · R ${esc(saves[1])}<br>I ${esc(saves[2])} · P ${esc(saves[3])}</span></div>
+    </div>`;
+
+  // ── Ability Scores
+  html += `
+    <div class="ps-section">Ability Scores</div>
+    <div class="ps-abilities">`;
+  ['FORT','REF','INT','PRES'].forEach(abbr => {
+    const score = getAbilityScore(abbr);
+    const mod = scoreToMod(score);
+    const names = {FORT:'Fortitude',REF:'Reflex',INT:'Intellect',PRES:'Presence'};
+    html += `<div class="ps-ability">
+      <span class="ps-ability-name">${names[abbr]}</span>
+      <span class="ps-ability-score">${score||'—'}</span>
+      <span class="ps-ability-mod">${score ? modDisplay(mod) : ''}</span>
+    </div>`;
+  });
+  html += '</div>';
+
+  // ── Skills
+  if (GD?.skills) {
+    html += '<div class="ps-section">Skills</div><div class="ps-skills">';
+    Object.entries(GD.skills).forEach(([name, data]) => {
+      const pts = skillInvestments[name]||0;
+      const govMod = getGoverningStat(name);
+      const bgBonus = getBackgroundSkillBonus(name);
+      const total = pts + govMod + bgBonus;
+      html += `<div class="ps-skill"><span class="ps-skill-name">${esc(name)}</span><span class="ps-skill-val">${modDisplay(total)}</span></div>`;
+    });
+    html += '</div>';
+  }
+
+  // ── Talents
+  if (talentSelections.length > 0) {
+    html += '<div class="ps-section">Talents</div><div class="ps-selections">';
+    talentSelections.forEach(sel => {
+      const talent = findTalent(sel.name);
+      const tierData = talent?.tiers?.[(sel.tier||1)-1];
+      html += `<div class="ps-sel-item"><span class="ps-sel-lvl">T${sel.tier||1}</span> <strong>${esc(sel.name)}</strong> <em style="color:#888;font-size:6.5pt">${esc(sel.category||'')}</em>${tierData?' — '+esc(tierData.desc.substring(0,120))+(tierData.desc.length>120?'...':''):''}</div>`;
+    });
+    html += '</div>';
+  }
+
+  // ── Level Selections (compact)
+  if (levelEntries.length > 0 && classData) {
+    const allSelections = [];
+    levelEntries.forEach(entry => {
+      const progRow = classData.progressionTable?.find(r=>r.level===entry.level);
+      const selType = progRow?.selections?.type;
+      Object.values(entry.selections).forEach(v => {
+        if (v && !v.startsWith('__sep')) {
+          allSelections.push({name:v, level:entry.level, type:selType});
+        }
+      });
+    });
+    if (allSelections.length > 0) {
+      const typeName = {maneuver:'Maneuvers',stance:'Stances',augment:'Augments',inscription:'Inscriptions'};
+      // Group by type
+      const grouped = {};
+      allSelections.forEach(s => {
+        const key = typeName[s.type] || 'Selections';
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(s);
+      });
+      Object.entries(grouped).forEach(([label, items]) => {
+        html += `<div class="ps-section">${esc(label)}</div><div class="ps-selections">`;
+        items.forEach(s => {
+          const desc = getSelectionDesc(s.type, s.name, cls, archetype);
+          html += `<div class="ps-sel-item"><span class="ps-sel-lvl">L${s.level}</span> <strong>${esc(s.name)}</strong>${desc?' — '+esc(desc.substring(0,100))+(desc.length>100?'...':''):''}</div>`;
+        });
+        html += '</div>';
+      });
+    }
+  }
+
+  // ── Actions / Bonus / Passives
+  const actionSections = [
+    {key:'actions', label:'Actions'},
+    {key:'bonus', label:'Bonus Actions'},
+    {key:'passives', label:'Reactions & Passives'}
+  ];
+  actionSections.forEach(({key, label}) => {
+    if (actionTableData[key]?.length > 0) {
+      html += `<div class="ps-section">${esc(label)}</div>
+        <table class="ps-actions-table"><thead><tr><th>Name</th><th>Cost</th><th>Type</th><th>Description</th></tr></thead><tbody>`;
+      actionTableData[key].forEach(row => {
+        html += `<tr><td>${esc(row.name)}</td><td>${esc(row.cost)}</td><td>${esc(row.type)}</td><td>${esc(row.desc)}</td></tr>`;
+      });
+      html += '</tbody></table>';
+    }
+  });
+
+  // ── Spells
+  if (spellData.length > 0) {
+    html += `<div class="ps-section">Spells</div><table class="ps-actions-table"><thead><tr><th>Name</th><th>Form</th><th>Cost</th><th>Description</th></tr></thead><tbody>`;
+    spellData.forEach(s => {
+      html += `<tr><td>${esc(s.name||'')}</td><td>${esc(s.form||'')}</td><td>${esc(s.cost||'')}</td><td>${esc((s.description||s.desc||'').substring(0,120))}</td></tr>`;
+    });
+    html += '</tbody></table>';
+  }
+
+  // ── Inventory
+  const invFields = [
+    {id:'inv-weapons', label:'Weapons & Combat'},
+    {id:'inv-armor', label:'Armor & Shields'},
+    {id:'inv-magic', label:'Magic Items'},
+    {id:'inv-gear', label:'Consumables & Gear'}
+  ];
+  const hasInv = invFields.some(f => g(f.id).trim());
+  const hasCur = ['cur-cp','cur-sp','cur-gp'].some(id => g(id).trim());
+  if (hasInv || hasCur) {
+    html += '<div class="ps-section">Inventory</div>';
+    if (hasCur) {
+      html += '<div class="ps-currency">';
+      [['cur-cp','CP'],['cur-sp','SP'],['cur-gp','GP']].forEach(([id,label]) => {
+        const v = g(id);
+        if (v) html += `<span class="ps-cur-item"><span class="ps-cur-label">${label}</span> <span class="ps-cur-val">${esc(v)}</span></span>`;
+      });
+      html += '</div>';
+    }
+    html += '<div class="ps-inv-grid">';
+    invFields.forEach(f => {
+      const v = g(f.id).trim();
+      if (v) html += `<div class="ps-inv-section"><div class="ps-inv-label">${esc(f.label)}</div><div class="ps-inv-text">${esc(v)}</div></div>`;
+    });
+    html += '</div>';
+  }
+
+  // ── Notes (abbreviated)
+  const noteFields = [
+    {id:'note-backstory', label:'Backstory'},
+    {id:'note-factions', label:'Factions'},
+    {id:'note-campaign', label:'Campaign Notes'},
+    {id:'note-npcs', label:'NPCs'},
+    {id:'note-misc', label:'Misc'}
+  ];
+  const hasNotes = noteFields.some(f => g(f.id).trim());
+  if (hasNotes) {
+    html += '<div class="ps-section">Notes</div><div class="ps-notes">';
+    noteFields.forEach(f => {
+      const v = g(f.id).trim();
+      if (v) {
+        const abbreviated = v.length > 300 ? v.substring(0,300) + '...' : v;
+        html += `<div class="ps-note-block"><div class="ps-note-title">${esc(f.label)}</div><div class="ps-note-text">${esc(abbreviated)}</div></div>`;
+      }
+    });
+    html += '</div>';
+  }
+
+  // ── Footer
+  const now = new Date();
+  html += `<div class="ps-footer">
+    Aethel Character Dossier · Exported ${now.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}
+  </div>`;
+
+  return html;
 }
 
 // Auto-save to localStorage on any input change
@@ -1964,5 +2429,8 @@ document.addEventListener('input', function(e) {
   }
 });
 </script>
+<!-- Print-only character dossier (hidden on screen, shown on print) -->
+<div id="print-sheet"></div>
+
 </body>
 </html>
