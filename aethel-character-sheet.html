@@ -1004,15 +1004,14 @@ select.field-input{cursor:pointer;}
     <div class="section-body">
       <div id="inv-weapons-list"></div>
       <div id="inv-weapon-picker" style="display:none;margin-top:.5rem">
-        <div class="am-form" style="grid-template-columns:2fr 1fr">
-          <select class="selection-select" id="inv-weapon-select">
+        <div class="am-form" style="grid-template-columns:1fr auto auto">
+          <select class="selection-select" id="inv-weapon-select" onchange="onWeaponPreview()">
             <option value="">— Choose Weapon —</option>
           </select>
-          <div class="am-form-btns">
-            <button class="am-form-cancel" onclick="hideWeaponPicker()">Cancel</button>
-            <button class="am-form-confirm" onclick="addWeaponFromPicker()">Add</button>
-          </div>
+          <button class="am-form-cancel" onclick="hideWeaponPicker()">Cancel</button>
+          <button class="am-form-confirm" onclick="addWeaponFromPicker()">Add</button>
         </div>
+        <div id="inv-weapon-preview" style="margin-top:.35rem;display:none;background:rgba(184,115,51,.06);border:1px solid rgba(184,115,51,.2);border-radius:2px;padding:.45rem .6rem;font-size:.8rem;color:var(--text-soft)"></div>
       </div>
     </div>
   </div>
@@ -1021,9 +1020,24 @@ select.field-input{cursor:pointer;}
   <div class="sheet-section">
     <div class="section-header" style="justify-content:space-between">
       <div class="section-title">Pack &amp; Gear</div>
-      <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showCustomItemForm()">+ Add Item</button>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="toggleMundanePicker()">+ Quick Add</button>
+        <button class="am-add-btn" style="margin:0;padding:.2rem .7rem;font-size:.6rem" onclick="showCustomItemForm()">+ Custom Item</button>
+      </div>
     </div>
     <div class="section-body">
+      <!-- Mundane quick-add picker -->
+      <div id="inv-mundane-picker" style="display:none;margin-bottom:.65rem">
+        <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.3rem;text-transform:uppercase">Quick Add from Equipment List</div>
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:.4rem;align-items:center">
+          <select class="selection-select" id="inv-mundane-select" onchange="onMundanePreview()">
+            <option value="">— Choose item —</option>
+          </select>
+          <input type="number" min="1" value="1" id="inv-mundane-qty" style="width:52px;text-align:center;background:var(--field-bg);border:1px solid var(--field-border);border-radius:2px;font-size:.9rem;padding:.25rem .3rem" title="Quantity">
+          <button class="am-form-confirm" style="padding:.28rem .8rem;font-size:.75rem" onclick="addMundaneItem()">Add</button>
+        </div>
+        <div id="inv-mundane-preview" style="margin-top:.3rem;font-size:.78rem;color:var(--text-soft);font-style:italic;min-height:1.2em"></div>
+      </div>
       <div id="inv-pack-list"></div>
       <div id="inv-custom-form" style="display:none;margin-top:.5rem">
         <div class="am-form" style="grid-template-columns:2fr 1fr 1fr">
@@ -1226,6 +1240,11 @@ async function init() {
   }
   populateAncestrySelect();
   populateBackgroundSelect();
+  // Sync equipment data from GD into runtime arrays (falls back to hardcoded if missing)
+  if (GD.weapons && GD.weapons.length) WEAPONS.length = 0, GD.weapons.forEach(w => WEAPONS.push(w));
+  if (GD.armor && GD.armor.length) ARMORS.length = 0, GD.armor.forEach(a => ARMORS.push(a));
+  if (GD.shields && GD.shields.length) SHIELDS.length = 0, GD.shields.forEach(s => SHIELDS.push(s));
+  if (GD.mundaneItems && GD.mundaneItems.length) MUNDANE_ITEMS.length = 0, GD.mundaneItems.forEach(m => MUNDANE_ITEMS.push(m));
   renderAbilities();
   renderSkills();
   loadAll();
@@ -3063,28 +3082,49 @@ const SHIELDS = [
   {name:'Tower Shield',def:2,cost:'10gp',req:'Shields',feature:'Heavy. Bulky (2 slots). Resistance to one ranged attack per round.'}
 ];
 
+// Mundane items — populated from aethel-data.json on load; minimal fallback here
+const MUNDANE_ITEMS = [
+  {name:'Standard Rations (5 days)',category:'Sustenance & Camp',price:'5sp',slots:1,desc:'Basic cured meats and hardtack.'},
+  {name:'Standard Medkit (5 Uses)',category:'Specialty & Aid',price:'10gp',slots:1,desc:'Spend 1 RP to instantly stabilize a dying ally at 0 HP.'},
+  {name:'Torches (Bundle of 5)',category:'Dungeoneering',price:'5sp',slots:1,desc:'Burns for 1 hour. Can be used as a makeshift weapon (1 Fire on Full Hit).'},
+  {name:'Hemp Rope (50 ft.)',category:'Dungeoneering',price:'1gp',slots:1,desc:'Standard, heavy rope. Supports up to 300 lbs safely.'},
+  {name:'Thieves\' Tools / Lockpicks',category:'Tools',price:'10gp',slots:1,desc:'Required to pick locks or disarm mechanical traps.'}
+];
+
 // ── INVENTORY MANAGEMENT ─────────────────────────────────────────
 function initInventorySelects() {
-  const armorSel = document.getElementById('inv-armor-select');
-  if (armorSel) {
-    armorSel.innerHTML = '<option value="">— None (Unarmored) —</option>';
+  // Build armor options helper
+  function buildArmorOpts(sel) {
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— None (Unarmored) —</option>';
     ARMORS.forEach(a => {
+      if (a.name === 'Unarmored') return; // already represented by empty option
       const opt = document.createElement('option');
       opt.value = a.name;
       opt.textContent = `${a.name} — DEF: ${a.formula}${a.heavy?' [Heavy]':''}${a.cost?' ('+a.cost+')':''}`;
-      armorSel.appendChild(opt);
+      sel.appendChild(opt);
     });
   }
-  const shieldSel = document.getElementById('inv-shield-select');
-  if (shieldSel) {
-    shieldSel.innerHTML = '<option value="">— None —</option>';
+  // Build shield options helper
+  function buildShieldOpts(sel) {
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— None —</option>';
     SHIELDS.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.name;
       opt.textContent = `${s.name} — +${s.def} DEF (${s.cost})`;
-      shieldSel.appendChild(opt);
+      sel.appendChild(opt);
     });
   }
+
+  // Hidden compat selects (kept for legacy DEF calc code)
+  buildArmorOpts(document.getElementById('inv-armor-select'));
+  buildShieldOpts(document.getElementById('inv-shield-select'));
+  // Visible slot selects in the equipment grid
+  buildArmorOpts(document.getElementById('slot-chest'));
+  buildShieldOpts(document.getElementById('slot-offHand'));
+
+  // Weapon picker
   const weaponSel = document.getElementById('inv-weapon-select');
   if (weaponSel) {
     weaponSel.innerHTML = '<option value="">— Choose Weapon —</option>';
@@ -3098,8 +3138,30 @@ function initInventorySelects() {
       }
       const opt = document.createElement('option');
       opt.value = w.name;
-      opt.textContent = `${w.name} — ${w.dmg} ${w.type} (${w.cost})`;
+      opt.textContent = `${w.name} — ${w.dmg} ${w.type}${w.range?' ('+w.range+')':''}  (${w.cost})`;
       weaponSel.lastElementChild.appendChild(opt);
+    });
+  }
+
+  // Mundane item picker — group by category
+  const mundaneSel = document.getElementById('inv-mundane-select');
+  if (mundaneSel) {
+    mundaneSel.innerHTML = '<option value="">— Choose item —</option>';
+    const cats = {};
+    MUNDANE_ITEMS.forEach(m => {
+      if (!cats[m.category]) cats[m.category] = [];
+      cats[m.category].push(m);
+    });
+    Object.entries(cats).forEach(([cat, items]) => {
+      const grp = document.createElement('optgroup');
+      grp.label = cat;
+      items.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.name;
+        opt.textContent = `${m.name}${m.price?' ('+m.price+')':''}${m.slots?' · '+m.slots+' slot'+(m.slots!==1?'s':''):''}`;
+        grp.appendChild(opt);
+      });
+      mundaneSel.appendChild(grp);
     });
   }
 }
@@ -3402,7 +3464,24 @@ function removeContainer(id) {
 }
 
 function showWeaponPicker() { document.getElementById('inv-weapon-picker').style.display = 'block'; }
-function hideWeaponPicker() { document.getElementById('inv-weapon-picker').style.display = 'none'; }
+function hideWeaponPicker() {
+  document.getElementById('inv-weapon-picker').style.display = 'none';
+  const prev = document.getElementById('inv-weapon-preview');
+  if (prev) prev.style.display = 'none';
+}
+function onWeaponPreview() {
+  const name = document.getElementById('inv-weapon-select')?.value;
+  const prev = document.getElementById('inv-weapon-preview');
+  if (!prev) return;
+  if (!name) { prev.style.display='none'; return; }
+  const w = WEAPONS.find(x => x.name === name);
+  if (!w) { prev.style.display='none'; return; }
+  prev.innerHTML = `<strong style="color:var(--copper-dark)">${esc(w.name)}</strong>
+    <span style="margin-left:.5rem;font-family:'Cinzel',serif;font-size:.7rem;color:var(--text-label)">${esc(w.cat)} · ${esc(w.dmg)} ${esc(w.type)}${w.range?' · '+esc(w.range):''}${w.twoHand?' · Two-handed':''}  (${esc(w.cost)})</span>
+    <div style="margin-top:.2rem;font-size:.75rem"><em style="color:var(--text-label)">Role:</em> ${esc(w.role)}</div>
+    <div style="margin-top:.15rem">${esc(w.feature)}</div>`;
+  prev.style.display = 'block';
+}
 function addWeaponFromPicker() {
   const name = document.getElementById('inv-weapon-select')?.value;
   if (!name) return;
@@ -3410,6 +3489,46 @@ function addWeaponFromPicker() {
   saveInventory();
   renderInventory();
   hideWeaponPicker();
+  document.getElementById('inv-weapon-select').value = '';
+}
+
+function toggleMundanePicker() {
+  const el = document.getElementById('inv-mundane-picker');
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (el.style.display === 'none') {
+    document.getElementById('inv-mundane-preview').textContent = '';
+    document.getElementById('inv-mundane-select').value = '';
+  }
+}
+function onMundanePreview() {
+  const name = document.getElementById('inv-mundane-select')?.value;
+  const prev = document.getElementById('inv-mundane-preview');
+  if (!prev) return;
+  if (!name) { prev.textContent = ''; return; }
+  const m = MUNDANE_ITEMS.find(x => x.name === name);
+  if (!m) { prev.textContent = ''; return; }
+  prev.innerHTML = `<span style="font-family:'Cinzel',serif;font-size:.65rem;color:var(--copper-dark)">${esc(m.category)} · ${m.slots} slot${m.slots!==1?'s':''} · ${esc(m.price)}</span><br>${esc(m.desc)}`;
+}
+function addMundaneItem() {
+  const name = document.getElementById('inv-mundane-select')?.value;
+  if (!name) return;
+  const m = MUNDANE_ITEMS.find(x => x.name === name);
+  if (!m) return;
+  const qty = parseInt(document.getElementById('inv-mundane-qty')?.value)||1;
+  inventoryData.packItems.push({
+    name: m.name,
+    qty,
+    slots: m.slots||0,
+    type: m.category,
+    desc: m.desc||'',
+    attune: false
+  });
+  document.getElementById('inv-mundane-select').value = '';
+  document.getElementById('inv-mundane-qty').value = '1';
+  document.getElementById('inv-mundane-preview').textContent = '';
+  saveInventory();
+  renderInventory();
 }
 
 function toggleWeaponReady(idx) {
