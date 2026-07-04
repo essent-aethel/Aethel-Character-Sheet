@@ -10,7 +10,7 @@ A pair of web apps for the **Aethel** tabletop RPG system.
 -Full digital character sheet with live calculations, class-aware level tracking, and PDF export.
 
 **[Aethel Character Sheet - MOBILE](https://essent-aethel.github.io/Aethel-Character-Sheet/aethel-character-sheet-mobile.html)**
--Mobile compatible version of the V0.9.1 character sheet.
+-Mobile compatible version of the V0.9.1 character sheet. (Outdated)
 
 **[Pasqually's Spell Slinger](https://essent-aethel.github.io/Aethel-Character-Sheet/pasqually-spell-slinger.html)**
 -Spell builder and library for The Mind and The Spirit classes.
