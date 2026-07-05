@@ -1118,7 +1118,7 @@ select.field-input{cursor:pointer;}
     <div class="section-body" style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
       <div style="flex:1;min-width:140px">
         <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">READIED SLOTS</div>
-        <div style="font-size:.85rem;color:var(--text-soft)"><strong id="inv-readied-used">0</strong> / <strong id="inv-readied-max">—</strong> <span style="font-size:.7rem;color:var(--text-label)">(2 + REF mod)</span></div>
+        <div style="font-size:.85rem;color:var(--text-soft)"><strong id="inv-readied-used">0</strong> / <strong id="inv-readied-max">—</strong> <span style="font-size:.7rem;color:var(--text-label)" id="inv-readied-formula">(2 + REF mod)</span></div>
       </div>
       <div style="flex:1;min-width:140px">
         <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.1em;color:var(--copper-dark);margin-bottom:.2rem">PACK SLOTS</div>
@@ -3156,6 +3156,10 @@ function buildSaveData() {
 async function saveAll() {
   const data = buildSaveData();
   localStorage.setItem(LS_KEY, JSON.stringify(data));
+  // Always pull the freshest saved attacks from localStorage — the in-memory
+  // savedAttacks variable is only current if the Attack Builder tab has been rendered.
+  let attackBuilderData = [];
+  try { attackBuilderData = JSON.parse(localStorage.getItem(AB_LS_KEY) || '[]'); } catch { attackBuilderData = []; }
   const payload = JSON.stringify({
     version: SAVE_VERSION,
     fields: data,
@@ -3165,6 +3169,7 @@ async function saveAll() {
     talents: talentSelections,
     inventory: inventoryData,
     actionTables: actionTableData,
+    attackBuilder: attackBuilderData,
     dailyUsed: dailyUsed?'1':'0',
     shortRestUsed: shortRestUsed?'1':'0'
   }, null, 2);
@@ -3220,6 +3225,10 @@ function loadFromFile(input) {
       }
       if (parsed.actionTables) {
         Object.entries(parsed.actionTables).forEach(([t,rows]) => { if (actionTableData[t]!==undefined) actionTableData[t]=rows; });
+      }
+      if (parsed.attackBuilder) {
+        savedAttacks = Array.isArray(parsed.attackBuilder) ? parsed.attackBuilder : [];
+        localStorage.setItem(AB_LS_KEY, JSON.stringify(savedAttacks));
       }
       if (parsed.dailyUsed) { dailyUsed = parsed.dailyUsed==='1'; localStorage.setItem('aethel-daily-used',parsed.dailyUsed); }
       if (parsed.shortRestUsed) { shortRestUsed = parsed.shortRestUsed==='1'; localStorage.setItem('aethel-short-rest-used',parsed.shortRestUsed); }
@@ -3626,17 +3635,19 @@ function saveInventory() {
   localStorage.setItem('aethel-inventory', JSON.stringify(inventoryData));
 }
 
-// Renders a single pack item row with location selector (Pack / Equipped / In Container)
+// Renders a single pack item row with location selector (Pack / Equipped / Readied / In Container)
 function renderPackItemRow(item, idx) {
   const loc = item.location || 'pack';
   const isEquipped = loc === 'equipped';
+  const isReadied = loc === 'readied';
   const inContainer = loc.startsWith('container:');
   const equippedBg = isEquipped ? 'background:rgba(184,115,51,.07);border-color:var(--copper-dark);' : '';
 
   // Build location dropdown options
   const containers = inventoryData.containers || [];
   let locOpts = `<option value="pack" ${loc==='pack'?'selected':''}>🎒 Pack</option>
-    <option value="equipped" ${isEquipped?'selected':''}>👤 Equipped</option>`;
+    <option value="equipped" ${isEquipped?'selected':''}>👤 Equipped</option>
+    <option value="readied" ${isReadied?'selected':''}>⚔ Readied</option>`;
   containers.forEach(c => {
     const val = 'container:' + c.id;
     locOpts += `<option value="${esc(val)}" ${loc===val?'selected':''}>📦 In ${esc(c.name)}</option>`;
@@ -3646,14 +3657,17 @@ function renderPackItemRow(item, idx) {
     ? `<span class="inv-item-tag" style="color:var(--copper-dark)">no pack slot</span>`
     : inContainer
       ? `<span class="inv-item-tag" style="color:var(--copper-dark)">in container</span>`
-      : `<span class="inv-item-tag">${item.slots||1} slot${(item.slots||1)>1?'s':''}</span>`;
+      : isReadied
+        ? `<span class="inv-item-tag teal">${item.slots||1} readied slot${(item.slots||1)>1?'s':''}</span>`
+        : `<span class="inv-item-tag">${item.slots||1} slot${(item.slots||1)>1?'s':''}</span>`;
 
-  return `<div class="inv-item" style="${equippedBg}">
+  return `<div class="inv-item ${isReadied?'readied':''}" style="${equippedBg}">
     <div class="inv-item-body">
       <div class="inv-item-name">${esc(item.name)}</div>
       <div class="inv-item-tags">
         ${item.type ? `<span class="inv-item-tag">${esc(item.type)}</span>` : ''}
         ${slotLabel}
+        ${isReadied ? '<span class="inv-item-tag teal">⚔ READIED</span>' : ''}
         ${item.attune ? '<span class="inv-item-tag teal">Attuned</span>' : ''}
       </div>
       ${item.desc ? `<div class="inv-item-desc">${esc(item.desc)}</div>` : ''}
@@ -3744,6 +3758,15 @@ function renderInventory() {
   if (pList) {
     let html = '';
 
+    // ── READIED section (non-weapon items readied for quick access) ──
+    const readiedItems = inventoryData.packItems
+      .map((item, idx) => ({item, idx}))
+      .filter(({item}) => (item.location || 'pack') === 'readied');
+    if (readiedItems.length) {
+      html += `<div class="inv-section-label">Readied <span class="inv-section-sub">(quick access · counts toward Readied Slots)</span></div>`;
+      readiedItems.forEach(({item, idx}) => { html += renderPackItemRow(item, idx); });
+    }
+
     // ── EQUIPPED section (wearable pack items — no pack slot cost) ──
     const equippedItems = inventoryData.packItems
       .map((item, idx) => ({item, idx}))
@@ -3830,7 +3853,7 @@ function renderInventory() {
         return loc === 'pack';
       });
     if (packItems.length) {
-      const hasOther = equippedItems.length || inventoryData.containers?.length;
+      const hasOther = readiedItems.length || equippedItems.length || inventoryData.containers?.length;
       if (hasOther) html += `<div class="inv-section-label">Pack</div>`;
       packItems.forEach(({item, idx}) => { html += renderPackItemRow(item, idx); });
     }
@@ -3847,7 +3870,10 @@ function updateInventoryCapacity() {
   const refMod = getAbilityMod('REF');
   const fortMod = getAbilityMod('FORT');
   const presMod = getAbilityMod('PRES');
-  const readiedMax = 2 + refMod;
+  // Tactical Bandolier grants +1 Readied Slot while Equipped
+  const bandolierEquipped = inventoryData.packItems.some(item =>
+    item.name === 'Tactical Bandolier' && (item.location || 'pack') === 'equipped');
+  const readiedMax = 2 + refMod + (bandolierEquipped ? 1 : 0);
   const packMax = 8 + fortMod;
   const attuneMax = Math.max(1, presMod + 1);
 
@@ -3855,13 +3881,17 @@ function updateInventoryCapacity() {
   inventoryData.weapons.forEach(w => {
     if (w.readied) { const d=WEAPONS.find(x=>x.name===w.name); readiedUsed += d?.slots||w.slots||1; }
   });
+  inventoryData.packItems.forEach(item => {
+    // Readied non-weapon items (potions, sidearms, utility items, etc.) also count here
+    if ((item.location || 'pack') === 'readied') readiedUsed += (item.slots||1) * (item.qty||1);
+  });
   let packUsed = 0;
   inventoryData.weapons.forEach(w => {
     if (!w.readied) { const d=WEAPONS.find(x=>x.name===w.name); packUsed += d?.slots||w.slots||1; }
   });
   inventoryData.packItems.forEach(item => {
     const loc = item.location || 'pack';
-    // Only count items in main pack — equipped items and items inside containers are free
+    // Only count items in main pack — equipped/readied items and items inside containers are free
     if (loc === 'pack') packUsed += (item.slots||1) * (item.qty||1);
   });
   (inventoryData.containers||[]).forEach(c => {
@@ -3875,6 +3905,7 @@ function updateInventoryCapacity() {
   setEl('inv-pack-max', packMax);
   setEl('inv-pack-used', packUsed);
   setEl('attune-max', attuneMax);
+  setEl('inv-readied-formula', bandolierEquipped ? '(2 + REF mod + 1 Bandolier)' : '(2 + REF mod)');
 
   const ru = document.getElementById('inv-readied-used');
   if (ru) ru.style.color = readiedUsed > readiedMax ? 'var(--crimson-soft)' : '';
