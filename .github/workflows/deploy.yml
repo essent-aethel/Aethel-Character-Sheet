@@ -26,7 +26,7 @@ jobs:
       - name: Prepare deployment folder
         run: |
           mkdir -p _site
-          cp *.html _site/ 2>/dev/null || true
+          cp aethel-character-sheet.html _site/index.html
           cp *.json _site/ 2>/dev/null || true
           cp *.css  _site/ 2>/dev/null || true
           cp *.js   _site/ 2>/dev/null || true
@@ -41,4 +41,4 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
