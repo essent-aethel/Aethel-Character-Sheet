@@ -26,7 +26,13 @@ jobs:
       - name: Prepare deployment folder
         run: |
           mkdir -p _site
-          cp aethel-character-sheet.html _site/index.html
+          # Copy your landing page and ALL tool sheets safely into the deployment folder
+          cp index.html _site/
+          cp aethel-character-sheet.html _site/
+          cp aethel-character-sheet-mobile.html _site/
+          cp pasqually-spell-slinger.html _site/
+          
+          # Copy accompanying asset files if they exist
           cp *.json _site/ 2>/dev/null || true
           cp *.css  _site/ 2>/dev/null || true
           cp *.js   _site/ 2>/dev/null || true
