@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aethel Apps - Landing Page</title>
+  <style>
+    :root {
+      --bg-color: #121214;
+      --card-bg: #1a1a1e;
+      --accent-color: #ff4757;
+      --text-color: #e1e1e6;
+      --text-muted: #a4a4ac;
+      --border-color: #2f2f37;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 2rem;
+    }
+
+    h1 {
+      color: #fff;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 1.8rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-top: 2.5rem;
+    }
+
+    h3 {
+      color: var(--accent-color);
+      font-size: 1.3rem;
+      margin-top: 1.5rem;
+    }
+
+    h4 {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--text-color);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 600px) {
+      .app-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-color);
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 1rem;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #e03d4f;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+      margin-left: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    ul {
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    blockquote {
+      background-color: rgba(255, 71, 87, 0.1);
+      border-left: 4px solid var(--accent-color);
+      margin: 1.5rem 0;
+      padding: 1rem;
+      border-radius: 0 4px 4px 0;
+    }
+
+    blockquote p {
+      margin: 0;
+      color: #fff;
+    }
+
+    strong {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Aethel Apps</h1>
+      <p class="subtitle">A pair of web apps for the <strong>Aethel</strong> tabletop RPG system.</p>
+    </header>
+
+    <section>
+      <h2>Apps</h2>
+      <p>Open any link below in your browser. No download or installation required. All game data is embedded — no companion files needed.</p>
+      
+      <div class="app-grid">
+        <!-- App 1 -->
+        <div class="card">
+          <h3>Aethel Character Sheet</h3>
+          <p>Full digital character sheet with live calculations, class-aware level tracking, and PDF export.</p>
+          <a href="./aethel-character-sheet.html" class="btn">Launch App</a>
+          <a href="./aethel-character-sheet-mobile.html" class="btn btn-secondary">Mobile Version (v0.9.1 Outdated)</a>
+        </div>
+
+        <!-- App 2 -->
+        <div class="card">
+          <h3>Pasqually's Spell Slinger</h3>
+          <p>Spell builder and library for The Mind and The Spirit classes.</p>
+          <a href="./pasqually-spell-slinger.html" class="btn">Launch App</a>
+        </div>
+      </div>
+    </section>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 3rem 0;">
+
+    <section>
+      <h2>Aethel Character Sheet Documentation</h2>
+      
+      <h3>Getting Started</h3>
+      <ol>
+        <li>Enter your <strong>ability scores</strong> first — modifiers, saving throws, and skill totals calculate automatically.</li>
+        <li>Fill in your identity fields — name, ancestry, class, archetype, background, alignment, and languages.</li>
+        <li>Open the <strong>Level Log</strong> tab and click <strong>+ Add Level</strong> to add your starting level. Your class and archetype determine the features and selection options available at each level. The character level on the main sheet is driven by the log and cannot be edited directly.</li>
+        <li>Add your combat actions, bonus actions, reactions, and passives on the <strong>Features</strong> tab.</li>
+        <li>Use the <strong>Save</strong> button to export your sheet as a <code>.json</code> file, or <strong>Export PDF</strong> for a printable character dossier.</li>
+      </ol>
+
+      <h3>Toolbar</h3>
+      <p>The top toolbar contains six tabs and four utility buttons:</p>
+      <ul>
+        <li><strong>New Character</strong> — clears all data and resets the sheet for a fresh build (prompts for confirmation)</li>
+        <li><strong>Save</strong> — exports the full character as a <code>.json</code> file</li>
+        <li><strong>Load</strong> — imports a previously saved <code>.json</code> file</li>
+        <li><strong>Export PDF</strong> — generates a compact, print-optimized character summary via the browser's print dialog (choose "Save as PDF")</li>
+      </ul>
+
+      <h3>Tabs</h3>
+      
+      <h4>Character Sheet</h4>
+      <p>The main tab. Contains:</p>
+      <ul>
+        <li><strong>Identity</strong> — character name, player name, ancestry (dropdown), class, archetype, background, alignment, and languages. Level is read-only and driven by the Level Log.</li>
+        <li><strong>Ability Scores</strong> — Fortitude, Reflex, Intellect, and Presence. Enter raw scores; modifiers calculate automatically using the game's score-to-modifier table and feed into saving throws, skills, and derived stats.</li>
+        <li>
+          <strong>Combat Stats</strong> — a single compact band containing:
+          <ul>
+            <li><em>Initiative, Speed, Defense</em> — manual entry fields</li>
+            <li><em>Saving Throws</em> — FORT, REF, INT, and PRES, calculated live from ability modifiers</li>
+            <li><em>HP</em> — current and max, manual entry</li>
+            <li><em>Resource Pool</em> — current and max. The label updates automatically based on class: Feat Points (FP) for The Body, Arcane Points (AP) for The Mind, Spirit Points (SP) for The Spirit</li>
+            <li><em>Short Rest</em> button — tracks once-per-long-rest usage</li>
+            <li><em>Daily Archetype Ability</em> — hex toggle to mark as used; resets on long rest</li>
+          </ul>
+        </li>
+        <li><strong>Skills</strong> — eleven skills from the game system, each showing invested points, ability modifier, and total bonus. Displays points available, points spent, and remaining. Skills exceeding the cap for the current level are flagged. Cap is level + 1.</li>
+        <li><strong>Talents</strong> — select talents from the game's five categories (Combat, Magic, Skill, Social, Exploration) via a grouped dropdown. Each talent has two tiers; upgrade or downgrade in place with the ▲/▼ buttons. Talent descriptions display inline.</li>
+        <li><strong>Character Summary</strong> — placeholder section that populates as the character is built through the Level Log.</li>
+      </ul>
+
+      <h4>Features</h4>
+      <p>Contains class and combat ability management:</p>
+      <ul>
+        <li><strong>Archetype Abilities</strong> — auto-populated reference list of your archetype's passive abilities, active abilities, and level features. Updates when you change your class or archetype on the Character Sheet tab.</li>
+        <li><strong>Actions / Bonus Actions / Reactions & Passives</strong> — three manually managed tables for tracking combat abilities. Each entry has fields for name, cost, type, and description. Add entries with the <strong>+ Add</strong> button; delete with the row's ✕ button.</li>
+        <li><strong>Spell Forms & Crafted Spells</strong> — import spells built in Pasqually's Spell Slinger. Click <strong>Import JSON</strong> and select a <code>.json</code> file exported from the Spell Slinger. Imported spells display as styled cards showing name, spell form, cost, and full description.</li>
+      </ul>
+
+      <h4>Inventory</h4>
+      <p>A streamlined inventory system:</p>
+      <ul>
+        <li><strong>Currency</strong> — Copper (CP), Silver (SP), and Gold (GP) fields</li>
+        <li><strong>Capacity</strong> — Readied Slots (2 + REF mod) and Pack Slots (8 + FORT mod), calculated automatically</li>
+        <li><strong>Four text areas</strong> — Weapons & Combat Gear, Armor & Shields, Magic Items (Attuned), and Consumables & Gear. Free-form entry for maximum flexibility</li>
+        <li><strong>Attunement Slots</strong> — max slots calculated from PRES modifier + 1, with a manual "used" counter</li>
+      </ul>
+
+      <h4>Level Log</h4>
+      <p>The core character-building interface. Each level entry is class-aware and shows:</p>
+      <ul>
+        <li><strong>Status banner</strong> — displays your current class and archetype, or prompts you to set them (with a quick-link button to the Character Sheet tab)</li>
+        <li><strong>Features gained</strong> — pulled from the game data's progression table for your class at that level</li>
+        <li><strong>Archetype features</strong> — displayed at the appropriate levels (typically 4, 7, and 10) with full name and description</li>
+        <li><strong>Selection dropdowns</strong> — choose your level-appropriate maneuvers, battle stances, strand augments, or divine inscriptions depending on your class. Options are level-gated (standard, advanced at L3+, expert at L5+), archetype-filtered, and previously selected choices are grayed out across all levels</li>
+        <li><strong>Starting info</strong> — Level 1 entries show your hit die and resource pool details; Level 2+ entries show HP roll, resource gain, and skill points gained</li>
+      </ul>
+      <p>The <strong>+ Add Level</strong> button is disabled until a class is selected. Entries can be collapsed by clicking the header and deleted with the ✕ button (which also removes all higher-level entries). The level cap is 10.</p>
+
+      <p><strong>Class-specific selection types:</strong></p>
+      <ul>
+        <li><strong>The Body</strong> — Tactical Maneuvers (standard + advanced + archetype-exclusive) and Battle Stances</li>
+        <li><strong>The Mind</strong> — Strand Augments (basic, damage, control, utility, defensive, combination + archetype-exclusive pools for Arcanist/Warden/Animist)</li>
+        <li><strong>The Spirit</strong> — Divine Inscriptions (universal + archetype-specific for Oracle/Templar/Zealot)</li>
+      </ul>
+      <p><strong>Archetype bonuses:</strong> Arcanists receive extra augment slots per level. Vanguards receive two extra maneuver slots at Level 1.</p>
+
+      <h4>Notes & Lore</h4>
+      <p>Five free-form text areas:</p>
+      <ul>
+        <li>Character Background & Backstory</li>
+        <li>Faction Standing & Reputation</li>
+        <li>Campaign Notes</li>
+        <li>NPC Relationships</li>
+        <li>Miscellaneous Notes</li>
+      </ul>
+
+      <h4>Cheat Sheet</h4>
+      <p>Quick in-session reference covering:</p>
+      <ul>
+        <li><strong>Attack Resolution</strong> — roll mechanics, glancing blow/full hit/critical hit thresholds, advantage and disadvantage (2d10 system with 3d10 for adv/disadv)</li>
+        <li><strong>Conditions</strong> — Prone, Staggered, Distracted, Frightened, Restrained, Blinded, Stunned, Paralyzed, Bloodied</li>
+        <li><strong>Actions on Your Turn</strong> — move, action, bonus action, reaction, free action, and the Scaling Threat DC formula</li>
+        <li><strong>Rest & Recovery</strong> — short rest, long rest, death saves, stabilize ally</li>
+        <li><strong>Skill DC Reference</strong> — Easy, Medium, Hard, and Legendary DCs scaled to your current level</li>
+        <li><strong>Spell Forms</strong> — all nine spell forms with base cost, range, and mechanic</li>
+      </ul>
+
+      <h3>Saving & Loading</h3>
+      <ul>
+        <li>The <strong>Save</strong> button exports a <code>.json</code> file containing all sheet data: identity, ability scores, combat stats, level log, skill investments, talents, action tables, spells, inventory, notes, and rest state.</li>
+        <li><strong>Load</strong> imports a <code>.json</code> file — useful for moving between devices or sharing with your GM.</li>
+        <li>Data also persists automatically in browser <code>localStorage</code> between sessions on the same device and browser.</li>
+        <li><strong>Export PDF</strong> generates a compact print-optimized dossier covering identity, combat stats, ability scores, skills, talents, level selections, actions, spells, inventory, and notes.</li>
+      </ul>
+
+      <blockquote>
+        <p>Local storage is per browser, per device. Use Save / Load to move between machines.</p>
+      </blockquote>
+
+      <h3>Embedded Game Data</h3>
+      <p>The character sheet includes the full Aethel game data (ancestries, backgrounds, skills, classes, archetypes, progression tables, maneuvers, stances, augments, inscriptions, spell forms, and talents) embedded directly in the HTML. No external <code>aethel-data.json</code> file is required. If an external file is present alongside the HTML, it takes priority — this allows updating game data without regenerating the sheet.</p>
+    </section>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 3rem 0;">
+
+    <section>
+      <h2>Pasqually's Spell Slinger Documentation</h2>
+      <p>A spell builder and library for <strong>The Mind</strong> and <strong>The Spirit</strong> classes.</p>
+
+      <h3>Building a Spell</h3>
+      <ul>
+        <li>Select your <strong>class</strong> (Mind or Spirit). The augments update to show only what's relevant to you.</li>
+        <li>For Spirit, select your <strong>subclass</strong> (Oracle, Templar, or Zealot) to filter subclass-specific augments.</li>
+        <li>Choose a <strong>Spell Form</strong>. This is the shape and delivery method of your spell.</li>
+        <li>Add <strong>Strand Augments</strong>. Each one adds to the spell's cost and effect.</li>
+        <li>The running <strong>Resource Point cost</strong> and <strong>power tier</strong> update live as you build.</li>
+        <li>Name your spell and save it to your <strong>spell library</strong>.</li>
+      </ul>
+
+      <h3>Spell Library</h3>
+      <ul>
+        <li>Saved spells persist between sessions in your browser.</li>
+        <li><strong>Export</strong> your library as a <code>.json</code> file to back it up or share it.</li>
+        <li><strong>Import</strong> a <code>.json</code> file to load spells from another device or player.</li>
+      </ul>
+
+      <h3>Integration with the Character Sheet</h3>
+      <p>The Spell Slinger and Character Sheet are separate apps connected by JSON export/import:</p>
+      <ol>
+        <li>Build your spells in the Spell Slinger and export the library as a <code>.json</code> file.</li>
+        <li>On the Character Sheet's <strong>Features</strong> tab, click <strong>Import JSON</strong> under Spell Forms & Crafted Spells.</li>
+        <li>Imported spells display as styled cards with their form, cost, and full description.</li>
+      </ol>
+
+      <h3>Notes</h3>
+      <ul>
+        <li>Higher-tier augments are gated by class level; these are flagged in the interface.</li>
+        <li>Condition augments include a dropdown to choose the specific condition applied.</li>
+        <li>The power tier reference table highlights your current spell's tier as you build.</li>
+      </ul>
+    </section>
+  </div>
+
+</body>
+</html>
