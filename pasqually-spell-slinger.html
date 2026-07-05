@@ -1638,7 +1638,7 @@ const AUG_SECTIONS = [
     title: 'Basic Augments',
     augments: [
       { id: 'destructive',    name: 'Destructive',       cost: 2, desc: 'Adds 2d6 damage to each affected enemy. Required for damage spells.' },
-      { id: 'restorative',    name: 'Restorative',       cost: 3, desc: 'Restores 2d8 HP to each affected ally.' },
+      { id: 'restorative',    name: 'Restorative',       cost: 3, desc: 'Restores 2d8 HP to each affected ally. Spend +3 AP for an additional 2d8. AoE Modifier: when Restorative or temporary HP is applied via an AoE Spell Form, healing/shielding dice drop one step (d8→d6) and max affected targets is capped at 3.' },
     ]
   },
   {
@@ -1745,6 +1745,16 @@ const WARDEN_AUG_SECTIONS = [
       { id: 'regenerative_hide',   name: 'Regenerative Hide',   cost: 2, gate: 'Beast Aspect required', desc: 'Used with a Self Channel Spell Form while in Beast Aspect only. You channel primal vitality through your transformed form, recovering 2d6 + Presence modifier HP.' },
       { id: 'spiritual_frenzy',    name: 'Spiritual Frenzy',    cost: 3, desc: 'If this Spell Form deals damage, the target is Staggered. The target must also succeed a Will Save or be compelled to direct its next attack this round against you rather than any other ally within range.' },
       { id: 'life_bloom',          name: 'Life Bloom',          cost: 3, desc: 'This Spell Form must include the Restorative Augment. Each affected ally recovers an additional 1d4 HP and may immediately end one Basic condition currently affecting them.' },
+      { id: 'verdant_mending',     name: 'Verdant Mending',     cost: 3, gate: 'Self Channel or Simple Projection', desc: 'The target is wreathed in living energy. They recover 1d6 HP at the start of each of their turns for the next 3 rounds, increasing by one die size each round (1d6 → 1d8 → 1d10).' },
+    ]
+  },
+  {
+    title: 'Healing over Time Wild Augments',
+    augments: [
+      { id: 'cycle_of_growth',     name: 'Cycle of Growth',     cost: 3, gate: 'Mind Level 3+', desc: 'Target within 30 ft. recovers 1d6 HP at the start of each of their turns for 4 rounds. Each consecutive tick increases the healing by +1 (1d6, 1d6+1, 1d6+2, 1d6+3). Ends early if the target takes Fire damage.' },
+      { id: 'seedlings_gift',      name: "Seedling's Gift",     cost: 2, desc: 'Bonus Action. Plant a healing seed on one ally within touch range. At the start of their next 2 turns, they recover 1d6 HP. If they are reduced to 0 HP while the seed is active, they instead drop to 1 HP and the seed is consumed.' },
+      { id: 'lifebloom',           name: 'Lifebloom',           cost: 4, gate: 'Mind Level 5+', desc: 'Target within 30 ft. recovers 1d4 HP at the start of each of their turns for 5 rounds. When the effect ends (naturally or by being dispelled), the target recovers an additional 3d6 HP as the bloom bursts.' },
+      { id: 'symbiotic_restoration',name: 'Symbiotic Restoration',cost: 3, gate: 'Beast Aspect required', desc: 'While in Beast Aspect, choose one ally within 30 ft. For the next 3 rounds, whenever you deal damage to an enemy, that ally recovers HP equal to half the damage dealt (maximum 1d8 per round).' },
     ]
   },
   {
@@ -1762,10 +1772,11 @@ const SPIRIT_AUGMENTS = [
   { id: 'radiant_surge',       name: 'Radiant Surge',       cost: 4, archetypes: ['oracle','templar','zealot'],  gate: 'Spirit Level 5+', desc: 'One ally within 60 ft. gains 2d6 temporary HP, +10 ft. movement speed, and Advantage on their next attack roll — all until the start of your next turn.' },
   // ── Oracle, Templar ──
   { id: 'ward_of_faith',       name: 'Ward of Faith',       cost: 2, archetypes: ['oracle','templar'],           desc: 'Grants one ally within 30 ft. +2 Defense Score until the start of your next turn.' },
-  { id: 'aegis_of_light',      name: 'Aegis of Light',      cost: 2, archetypes: ['oracle','templar'],           desc: 'One ally within 30 ft. gains temporary HP equal to 1d8 + your Presence modifier until the start of your next turn or until depleted. Does not stack with other temporary HP sources — use the higher value.' },
+  { id: 'aegis_of_light',      name: 'Aegis of Light',      cost: 2, archetypes: ['oracle','templar'],           desc: 'One ally within 30 ft. gains temporary HP equal to 2d8 + your Presence modifier until the start of your next turn or until depleted. Does not stack with other temporary HP sources.' },
+  { id: 'radiant_bulwark',     name: 'Radiant Bulwark',     cost: 4, archetypes: ['oracle','templar'],           gate: 'Spirit Level 3+', desc: 'One ally within 30 ft. gains temporary HP equal to 3d8 + twice your Presence modifier. This shield lasts only until the end of the target\'s next turn. If the shield absorbs all damage from a single attack, the attacker is Dazed until the end of their next turn.' },
   { id: 'blessed_reflexes',    name: 'Blessed Reflexes',    cost: 3, archetypes: ['oracle','templar'],           gate: 'Spirit Level 3+', desc: 'One ally within 30 ft. gains +2 Defense Score and may reroll one Reflex Save before the start of your next turn, taking the higher result.' },
   // ── Oracle, Templar, Zealot ──
-  { id: 'purify_condition',    name: 'Purify Condition',    cost: 3, archetypes: ['oracle','templar','zealot'],  desc: 'Removes one Advanced condition from one ally within 30 ft. That ally also gains +1 Defense Score until the start of your next turn.' },
+  { id: 'purify_condition',    name: 'Purify Condition',    cost: 3, archetypes: ['oracle','templar'],           desc: 'Removes one Advanced condition from one ally within 30 ft. That ally also gains +1 Defense Score until the start of your next turn.' },
   { id: 'hallowed_ground',     name: 'Hallowed Ground',     cost: 4, archetypes: ['oracle','templar','zealot'],  desc: 'Affects all creatures in the Spell Form\'s area of effect. Enemies must make a Will Save or suffer the Frightened condition. Allies in the area gain +2 Defense Score until the start of your next turn.' },
   // ── All Spirit (Augment Only) ──
   { id: 'restore_vitality',    name: 'Restore Vitality',    cost: 4, archetypes: ['oracle','templar','zealot'],  gate: 'Spirit Level 5+', desc: 'If the Spell Form includes Restorative healing, the target recovers an additional 2d6 HP and gains Resistance to Physical damage until the start of your next turn.' },
@@ -1780,6 +1791,9 @@ const SPIRIT_AUGMENTS = [
   { id: 'mass_renewal',        name: 'Mass Renewal',        cost: 3, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'If the Spell Form targets a single ally with a Restorative effect, it also affects two additional allies within 15 ft. of the first target. Alternatively, remove one Basic or Advanced condition from the primary target instead of extending the heal.' },
   { id: 'vision_of_fate',      name: 'Vision of Fate',      cost: 4, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'Until the start of your next turn, one ally within 60 ft. makes their first attack roll or Saving Throw with Advantage. If that action would result in a Glancing Blow, it is treated as a Full Hit instead.' },
   { id: 'shared_burden',       name: 'Shared Burden',       cost: 5, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'Until the start of your next turn, whenever an ally within 60 ft. would take damage, you may absorb up to half that damage (rounded down), taking it yourself instead. May be applied to up to two separate instances of incoming damage per turn.' },
+  { id: 'divine_cocoon',       name: 'Divine Cocoon',       cost: 3, archetypes: ['oracle'],                     gate: 'Spirit Level 3+', desc: 'Reaction. When an ally within 30 ft. is targeted by an attack, grant them 2d10 temporary HP before the damage is resolved. This shield lasts only for that single attack.' },
+  { id: 'life_anchor',         name: 'Life Anchor',         cost: 6, archetypes: ['oracle'],                     gate: 'Spirit Level 5+', desc: 'Reaction. When an ally within 60 ft. would be reduced to 0 HP, they are instead reduced to 1 HP and immediately recover 2d10 HP. You take 1d8 unavoidable damage. Once per Short Rest.' },
+  { id: 'martyrs_mantle',      name: "Martyr's Mantle",     cost: 5, archetypes: ['oracle'],                     gate: 'Spirit Level 5+', desc: 'One ally within 30 ft. gains temporary HP equal to 4d6. While this shield persists, any damage that would exceed the remaining shield is instead dealt to you. Lasts until the start of your next turn or until depleted.' },
   { id: 'sanctuary',           name: 'Sanctuary',           cost: 4, archetypes: ['oracle'],                     gate: 'Spirit Level 7+', desc: 'One target within 30 ft. gains Immunity to all Advanced and Basic conditions until the start of your next turn. That target also gains Advantage on their next Will Save.' },
   // ── Templar Exclusive ──
   { id: 'aura_of_protection',  name: 'Aura of Protection',  cost: 2, archetypes: ['templar'],                    desc: 'You and all allies within 10 ft. gain +2 Defense Score until the start of your next turn.' },
@@ -1788,9 +1802,10 @@ const SPIRIT_AUGMENTS = [
   { id: 'aura_of_retribution', name: 'Aura of Retribution', cost: 4, archetypes: ['templar'],                    gate: 'Spirit Level 7+', desc: 'You and all allies within 15 ft. gain Advantage on their next Attack Roll. That attack deals +2d6 Radiant damage if it hits.' },
   // ── Zealot Exclusive ──
   { id: 'chained_punishment',  name: 'Chained Punishment',  cost: 2, archetypes: ['zealot'],                     desc: 'When you deal damage with a weapon attack or Spell Form, immediately deal half that damage to one enemy within 10 ft. of the target. No attack roll required for the chain.' },
+  { id: 'furious_reckoning',   name: 'Furious Reckoning',   cost: 3, archetypes: ['zealot'],                     desc: 'Augment Only. When you add this to a Spell Form that deals damage, one chosen damage die automatically rolls its maximum value. This can trigger your Covenant Surge passive.' },
+  { id: 'chained_condemnation',name: 'Chained Condemnation', cost: 2, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: 'When Chaotic Blast damages an enemy affected by Mark of the Pact, all other enemies in the burst also become Marked.' },
   { id: 'covenants_edge',      name: "Covenant's Edge",     cost: 3, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: "One ally within 30 ft. burns with covenant fire until the start of your next turn. Their attacks deal +1d6 Radiant damage and their Critical Hit threshold is reduced by 1 (e.g. 18+ becomes 17+)." },
   { id: 'wrathful_condemnation',name: 'Wrathful Condemnation',cost: 4, archetypes: ['zealot'],                   gate: 'Spirit Level 3+', desc: "When you deal damage, the target is Condemned until the start of your next turn. While Condemned: the target cannot benefit from Resistance or Immunity to any damage type. The first ally to hit the Condemned target deals +1d8 Radiant bonus damage." },
-  { id: 'fervent_absolution',  name: 'Fervent Absolution',  cost: 3, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: "Remove one Basic condition from one ally within 30 ft. That ally also recovers 1d6 + your Presence modifier HP." },
   { id: 'agony',               name: 'Agony',               cost: 4, archetypes: ['zealot'],                     gate: 'Spirit Level 3+', desc: 'When you deal damage with a weapon attack or Spell Form, the target is Distracted and takes an extra 1d6 damage from all sources until the start of your next turn.' },
   { id: 'soul_brand',          name: 'Soul Brand',          cost: 5, archetypes: ['zealot'],                     gate: 'Spirit Level 5+', desc: 'When you deal damage, place a divine Brand on that target until the start of your next turn. While Branded: the target takes an additional 1d6 Radiant damage from every source that hits them. If the target is reduced to 0 HP while Branded, you immediately recover 1d8 SP.' },
   { id: 'oblivion',            name: 'Oblivion',            cost: 4, archetypes: ['zealot'],                     gate: 'Spirit Level 7+', desc: 'When you deal damage, the target automatically suffers Disadvantage on all Saving Throws and −2 Defense Score until the end of your next turn.' },
@@ -2212,6 +2227,17 @@ function buildSpellDescriptionHTML(spell) {
   if (mindAugs.has('chained_punishment')) effects.push('deals half damage to a second target within 10 ft.');
   if (mindAugs.has('agony')) effects.push('inflicts Distracted and +1d6 ongoing damage');
   if (mindAugs.has('oblivion')) effects.push('inflicts Disadvantage on all Saves and -2 Defense Score');
+  if (mindAugs.has('furious_reckoning')) effects.push('maximises one chosen damage die (can trigger Covenant Surge)');
+  if (mindAugs.has('chained_condemnation')) effects.push('marks all burst targets when Chaotic Blast hits a Marked foe');
+  if (mindAugs.has('radiant_bulwark')) effects.push('grants an ally 3d8 + 2×PRES temporary HP; attacker is Dazed if shield fully absorbs a hit');
+  if (mindAugs.has('divine_cocoon')) effects.push('grants an ally 2d10 temporary HP as a Reaction before damage resolves');
+  if (mindAugs.has('life_anchor')) effects.push('prevents an ally from dropping to 0 HP — they stabilise at 1 HP and recover 2d10 HP instead');
+  if (mindAugs.has('martyrs_mantle')) effects.push('grants 4d6 temporary HP; excess damage redirects to you');
+  if (mindAugs.has('verdant_mending')) effects.push('wraps the target in living energy for 1d6/1d8/1d10 HP regeneration over 3 rounds');
+  if (mindAugs.has('cycle_of_growth')) effects.push('regenerates 1d6+escalating HP per turn for 4 rounds (ends on Fire damage)');
+  if (mindAugs.has('seedlings_gift')) effects.push('plants a seed that heals 1d6/turn for 2 turns, or saves ally at 1 HP on lethal hit');
+  if (mindAugs.has('lifebloom')) effects.push('regenerates 1d4 HP/turn for 5 rounds then bursts for an additional 3d6 HP');
+  if (mindAugs.has('symbiotic_restoration')) effects.push('converts your damage into healing for a chosen ally (max 1d8/round) while in Beast Aspect');
   if (effects.length > 0) parts.push('The spell ' + effects.join(', and ') + '.');
 
   const st = spell.sustainType || 'none';
