@@ -1463,7 +1463,7 @@ let inventoryData = {weapons:[], packItems:[], equippedArmor:'', equippedShield:
 async function init() {
   // Try external file first, fall back to embedded data
   try {
-    const resp = await fetch('aethel-data-expansion_v0_9_4.json');
+    const resp = await fetch('aethel-data.json');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     GD = await resp.json();
   } catch(e) {
