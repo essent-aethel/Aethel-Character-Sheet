@@ -2589,6 +2589,10 @@ function buildSelectionOptions(level, cls, archetype, progRow, previousSelection
   const opts = [];
   // Any selection may instead be swapped for a +1 Ability Score Improvement (Leveling Up rules).
   opts.push({value:'__asi__', label:'⬆ Ability Score Improvement (+1) — swap this pick for a stat increase', disabled:false});
+  // Converted Spell/Cantrip — lets players slot a spell adapted from 5e or another source (Mind/Spirit only).
+  if (selType === 'augment' || selType === 'inscription') {
+    opts.push({value:'__converted__', label:'✎ Converted Spell/Cantrip — track an adapted spell from 5e or another source', disabled:false});
+  }
 
   if (selType === 'maneuver') {
     const unlockAdvanced = level >= 3;
