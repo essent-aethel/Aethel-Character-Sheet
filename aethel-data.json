@@ -2372,7 +2372,7 @@
         "cost": "+5 AP",
         "level": 5,
         "access": "animist",
-        "desc": "Anima unleashes shockwave of primal force. All enemies within 15 ft. of Anima must REF Save or be pushed 10 ft. and Dazed. All allies in same radius cleared of Dazed and Staggered. Anima does not attack this turn."
+        "desc": "Anima unleashes shockwave of primal force. All enemies within 15 ft. of Anima must WILL Save or be pushed 10 ft. and Dazed until the end of their next turn. All allies in same radius cleared of Dazed and Staggered. Anima does not attack this turn."
       }
     ]
   },
@@ -3211,6 +3211,10 @@
           {
             "level": 1,
             "desc": "You have the ability to do something that's simply impossible for other people. This Talent acts as a catch-all for anything not described in the rules, but is fitting for the character. It's up to the GM how this mechanically functions, including the Level system."
+          },
+          {
+            "level": 2,
+            "desc": "Your gift deepens or broadens. Work with your GM to expand the Talent's scope or potency — a wider range of situations it applies to, a stronger effect, or a second related knack. As with Tier 1, the GM sets how this functions mechanically and how it scales."
           }
         ]
       }
@@ -3481,62 +3485,6 @@
       "cost": "10gp",
       "req": "Shields",
       "feature": "Heavy: Requires an Action to don/doff. Bulky (2 Slots). You gain resistance to one ranged attack per round."
-    }
-  ],
-  "foci": [
-    {
-      "name": "Focus — Wand",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "Spellcaster",
-      "hands": 1,
-      "feature": "Generic arcane/divine focus (off-hand). No inherent mechanical bonus; enchant or replace with a custom magic focus as needed."
-    },
-    {
-      "name": "Focus — Orb",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "Spellcaster",
-      "hands": 1,
-      "feature": "Generic focus orb (off-hand). No inherent mechanical bonus; use as a base for custom magic items."
-    },
-    {
-      "name": "Focus — Tome",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "Spellcaster",
-      "hands": 1,
-      "feature": "Generic focus tome/grimoire (off-hand). No inherent mechanical bonus; use as a base for custom magic items."
-    },
-    {
-      "name": "Focus — Rod",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "Spellcaster",
-      "hands": 1,
-      "feature": "Generic focus rod (off-hand). No inherent mechanical bonus; use as a base for custom magic items."
-    },
-    {
-      "name": "Focus — Sigil / Talisman",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "Spellcaster",
-      "hands": 1,
-      "feature": "Worn/held focus sigil or talisman (off-hand). No inherent mechanical bonus; use as a base for custom magic items."
-    },
-    {
-      "name": "Focus — Custom (blank)",
-      "cat": "Focus",
-      "def": 0,
-      "cost": "—",
-      "req": "None",
-      "hands": 1,
-      "feature": "Blank off-hand focus slot. Rename and add mechanics via a custom magic item, or note the bonus manually."
     }
   ],
   "mundaneItems": [
