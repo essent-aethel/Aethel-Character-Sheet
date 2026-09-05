@@ -3173,22 +3173,67 @@ function renderActionTables() {
   const custDiv = document.getElementById('am-customizations-auto');
   const custEmpty = document.getElementById('am-customizations-empty');
   if (custDiv) {
-    const custItems = levelActions.customizations || [];
+    let custItems = levelActions.customizations || [];
+    // Apply the player's saved manual ordering (survives the level-log rebuild).
+    // Each item gets a stable key; unknown items fall back to natural level order.
+    const savedOrder = getCustomOrder();
+    custItems = custItems.slice().sort((a, b) => {
+      const ia = savedOrder.indexOf(custKey(a));
+      const ib = savedOrder.indexOf(custKey(b));
+      if (ia === -1 && ib === -1) return 0;      // both unsorted → keep level order
+      if (ia === -1) return 1;                    // unsorted items sink below sorted
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
     if (custItems.length > 0) {
-      custDiv.innerHTML = custItems.map(row =>
-        `<div class="am-auto-card" style="border-left-color:var(--copper)">
-          <div><span class="am-auto-card-name">${esc(row.name)}</span>
-          <span class="am-auto-card-tag">${esc(row.cost)}</span>
-          <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.type)} · ${esc(row.source)}</span></div>
-          <div class="am-auto-card-desc">${esc(row.desc)}</div>
+      const last = custItems.length - 1;
+      // Stash the current sorted key order so moveCustom can resolve an index → key
+      // without embedding (possibly quote-containing) keys into onclick attributes.
+      _custOrderCache = custItems.map(custKey);
+      custDiv.innerHTML = custItems.map((row, i) =>
+        `<div class="am-auto-card" style="border-left-color:var(--copper);display:flex;align-items:flex-start;gap:.5rem">
+          <div style="display:flex;flex-direction:column;gap:.15rem;padding-top:.1rem">
+            <button class="am-move-btn" title="Move up" ${i===0?'disabled':''} onclick="moveCustom(${i},-1)" style="opacity:${i===0?'.3':'1'}">▲</button>
+            <button class="am-move-btn" title="Move down" ${i===last?'disabled':''} onclick="moveCustom(${i},1)" style="opacity:${i===last?'.3':'1'}">▼</button>
+          </div>
+          <div style="flex:1">
+            <div><span class="am-auto-card-name">${esc(row.name)}</span>
+            <span class="am-auto-card-tag">${esc(row.cost)}</span>
+            <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.type)} · ${esc(row.source)}</span></div>
+            <div class="am-auto-card-desc">${esc(row.desc)}</div>
+          </div>
         </div>`
       ).join('');
       if (custEmpty) custEmpty.style.display = 'none';
+      // Keep the saved order pruned to what currently exists.
+      persistCustomOrder(_custOrderCache.slice());
     } else {
       custDiv.innerHTML = '';
       if (custEmpty) custEmpty.style.display = '';
     }
   }
+}
+
+// ── Customizations manual ordering (persists across level-log rebuilds) ───────
+// Items are derived from the level log, so we can't reorder an array in place —
+// instead we store an ordered list of stable keys and sort the derived list by it.
+let _custOrderCache = [];
+function custKey(item) { return `${item.type}|${item.name}|${item.source}`; }
+function getCustomOrder() {
+  try { return JSON.parse(localStorage.getItem('aethel-custom-order')) || []; }
+  catch { return []; }
+}
+function persistCustomOrder(keys) {
+  localStorage.setItem('aethel-custom-order', JSON.stringify(keys));
+}
+function moveCustom(idx, dir) {
+  // Operate on the exact order currently shown (cached at render time).
+  const order = _custOrderCache.slice();
+  const j = idx + dir;
+  if (idx < 0 || j < 0 || j >= order.length) return;
+  [order[idx], order[j]] = [order[j], order[idx]];
+  persistCustomOrder(order);
+  renderActionTables();
 }
 
 function showAmForm(t) { document.getElementById('am-'+t+'-form').style.display='grid'; }
