@@ -229,6 +229,9 @@ select.field-input{cursor:pointer;}
 .section-header .am-add-btn:hover{background:rgba(240,230,208,.15);}
 .am-del-btn{font-size:.65rem;padding:.1rem .3rem;background:transparent;
   border:1px solid rgba(122,26,26,.3);color:var(--crimson-soft);border-radius:2px;cursor:pointer;}
+.am-move-btn{font-size:.6rem;line-height:1;padding:.1rem .28rem;background:var(--vellum-mid);
+  border:1px solid var(--vellum-dark);color:var(--ink);border-radius:2px;cursor:pointer;margin-right:.15rem;}
+.am-move-btn:disabled{cursor:default;}
 
 /* ── EQUIPMENT SLOTS ── */
 .equip-slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;}
@@ -858,6 +861,16 @@ select.field-input{cursor:pointer;}
           <div class="cstat-save-row"><span class="cstat-save-key">REF</span><span class="cstat-save-val" id="save-reflex">—</span></div>
           <div class="cstat-save-row"><span class="cstat-save-key">INT</span><span class="cstat-save-val" id="save-intellect">—</span></div>
           <div class="cstat-save-row"><span class="cstat-save-key">PRES</span><span class="cstat-save-val" id="save-will">—</span></div>
+        </div>
+        <div id="l6-save-wrap" style="display:none;margin-top:.35rem;width:100%">
+          <label style="font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.06em;color:var(--copper-dark);text-transform:uppercase;display:block;margin-bottom:.15rem">Lv 6 Save Focus (+2)</label>
+          <select id="l6-save-choice" data-save="l6-save-choice" onchange="this.dataset.userSet='1';updateSavingThrows()"
+            style="width:100%;font-size:.72rem;padding:.15rem .25rem;border:1px solid var(--field-border);border-radius:2px;background:var(--field-bg);color:var(--text-main);cursor:pointer">
+            <option value="FORT">Fortitude</option>
+            <option value="REF">Reflex</option>
+            <option value="INT">Intellect</option>
+            <option value="PRES">Presence (Will)</option>
+          </select>
         </div>
       </div>
       <div class="cstat-panel">
@@ -1661,11 +1674,36 @@ function updateDerivedStats() {
   if (typeof calcSuggestedDef === 'function') calcSuggestedDef();
 }
 
+// Canonical Level 6 save focus per class (PG default). Player may override via
+// the Lv 6 Save Focus dropdown per the flexibility spec.
+function getDefaultL6Save() {
+  const cls = getSelectedClass();
+  if (cls === 'The Body') return 'FORT';
+  return 'PRES'; // Mind, Spirit, and Bond canonically boost Will (PRES)
+}
+
 function updateSavingThrows() {
+  const level = getCharLevel();
+  const l6Active = level >= 6;
+  const wrap = document.getElementById('l6-save-wrap');
+  const choiceEl = document.getElementById('l6-save-choice');
+  if (wrap) wrap.style.display = l6Active ? 'block' : 'none';
+  // The <select> always has a value (FORT is first), so we can't use emptiness to
+  // detect "unset". Track explicit user choice via a data flag; until the player
+  // picks, mirror the class default.
+  if (choiceEl && l6Active && choiceEl.dataset.userSet !== '1') {
+    choiceEl.value = getDefaultL6Save();
+  }
+  const l6Choice = choiceEl?.value || getDefaultL6Save();
+
   ['FORT','REF','INT','PRES'].forEach(abbr => {
     const id = {FORT:'save-fort',REF:'save-reflex',INT:'save-intellect',PRES:'save-will'}[abbr];
     const el = document.getElementById(id);
-    if (el) el.textContent = modDisplay(getAbilityMod(abbr));
+    if (!el) return;
+    let total = getAbilityMod(abbr);
+    if (l6Active && abbr === l6Choice) total += 2;
+    el.textContent = modDisplay(total);
+    el.classList.toggle('positive', l6Active && abbr === l6Choice);
   });
 }
 
@@ -2113,18 +2151,24 @@ const ASI_STAT_NAMES = {FORT:'Fortitude', REF:'Reflex', INT:'Intellect', PRES:'P
 function renderSelectionSlotHTML(level, slotKey, selType, current, opts, cls, archetype, labelHtml) {
   const isASI = current.startsWith('__asi__');
   const asiStat = isASI ? (current.split(':')[1] || '') : '';
+  const isConverted = current.startsWith('__converted__');
+  const convName = isConverted ? current.split(':').slice(1).join(':') : '';
   let descText = '';
   if (isASI) {
     descText = asiStat
       ? `+1 to ${ASI_STAT_NAMES[asiStat]} (${asiStat}). Remember to manually increase your ${ASI_STAT_NAMES[asiStat]} score by 1 on the Character Sheet tab.`
       : 'Choose which ability score to increase by +1 below.';
+  } else if (isConverted) {
+    descText = convName
+      ? `Converted Spell/Cantrip: “${convName}”. Adapted from another source — track its cost and effect on the Features / Crafted Spells list.`
+      : 'Name the spell or cantrip you\'re converting below.';
   } else if (current) {
     descText = getSelectionDesc(selType, current, cls, archetype);
   }
   return `
     <select class="selection-select" onchange="onSelectionChange(${level},'${slotKey}',this.value,this)">
       <option value="">— Choose ${esc(getSelectionTypeName(selType))} —</option>
-      ${opts.map(o => `<option value="${esc(o.value)}" ${(o.value === current || (o.value==='__asi__' && isASI)) ? 'selected' : ''} ${o.disabled ? 'disabled' : ''}>
+      ${opts.map(o => `<option value="${esc(o.value)}" ${(o.value === current || (o.value==='__asi__' && isASI) || (o.value==='__converted__' && isConverted)) ? 'selected' : ''} ${o.disabled ? 'disabled' : ''}>
         ${esc(o.label)}
       </option>`).join('')}
     </select>
@@ -2133,7 +2177,11 @@ function renderSelectionSlotHTML(level, slotKey, selType, current, opts, cls, ar
       <option value="">— Choose Ability Score —</option>
       ${['FORT','REF','INT','PRES'].map(a => `<option value="${a}" ${a===asiStat?'selected':''}>${ASI_STAT_NAMES[a]} (${a})</option>`).join('')}
     </select>` : ''}
-    <div class="selection-desc ${(isASI || current) ? 'show' : ''}" id="sel-desc-${level}-${slotKey}">
+    ${isConverted ? `
+    <input class="selection-select" style="margin-top:.35rem" type="text" placeholder="Name the converted spell/cantrip…"
+      value="${esc(convName)}"
+      onchange="onSelectionChange(${level},'${slotKey}','__converted__:'+this.value,null)">` : ''}
+    <div class="selection-desc ${(isASI || isConverted || current) ? 'show' : ''}" id="sel-desc-${level}-${slotKey}">
       ${esc(descText)}
     </div>
   `;
@@ -2553,6 +2601,11 @@ function buildSelectionOptions(level, cls, archetype, progRow, previousSelection
   const opts = [];
   // Any selection may instead be swapped for a +1 Ability Score Improvement (Leveling Up rules).
   opts.push({value:'__asi__', label:'⬆ Ability Score Improvement (+1) — swap this pick for a stat increase', disabled:false});
+  // Converted Spell/Cantrip — lets players slot a spell adapted from 5e or another
+  // source (Mind augments / Spirit inscriptions only), instead of leaving it blank.
+  if (selType === 'augment' || selType === 'inscription') {
+    opts.push({value:'__converted__', label:'✎ Converted Spell/Cantrip — track an adapted spell from 5e or another source', disabled:false});
+  }
 
   if (selType === 'maneuver') {
     const unlockAdvanced = level >= 3;
@@ -2693,6 +2746,7 @@ function getSelectionTypeName(selType) {
 function getSelectionDesc(selType, name, cls, archetype) {
   if (!GD || !name) return '';
   if (name.startsWith('__asi__')) return '';
+  if (name.startsWith('__converted__')) return '';
   if (selType === 'maneuver') {
     const all = [...(GD.maneuvers.standard||[]),...(GD.maneuvers.advanced||[]),
       ...Object.values(GD.maneuvers.custom||{}).flat()];
@@ -2959,6 +3013,19 @@ function getLevelSelectionsByCategory() {
     Object.entries(entry.selections).forEach(([key, value]) => {
       if (!value || value.startsWith('__sep') || key === 'talent') return;
 
+      // Converted Spell/Cantrip — a player-named spell adapted from another source.
+      // Surface it as a customization card so it's tracked, not silently dropped.
+      if (value.startsWith('__converted__')) {
+        const nm = value.split(':').slice(1).join(':').trim();
+        result.customizations.push({
+          name: nm || 'Converted Spell/Cantrip',
+          cost: '—', type: 'Converted Spell',
+          desc: 'Adapted from 5e or another source. Track its cost and effect on the Crafted Spells list.',
+          source: `L${entry.level}`
+        });
+        return;
+      }
+
       // Determine effective type: bonusManeuver is always a maneuver;
       // regular slots use the progRow selType; GM bonus slots use progRow selType too
       let effectiveType = selType;
@@ -3081,13 +3148,19 @@ function renderActionTables() {
     if (!tbody) return;
     tbody.innerHTML = '';
     (actionTableData[t] || []).forEach((row, idx) => {
+      const rows = actionTableData[t] || [];
+      const isFirst = idx === 0, isLast = idx === rows.length - 1;
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="am-row-name">${esc(row.name)}</td>
         <td class="am-row-cost">${esc(row.cost)}</td>
         <td class="am-row-type">${esc(row.type)}</td>
         <td class="am-row-desc">${esc(row.desc)}</td>
-        <td><button class="am-del-btn" onclick="deleteAmRow('${t}',${idx})">✕</button></td>`;
+        <td style="white-space:nowrap">
+          <button class="am-move-btn" title="Move up" ${isFirst?'disabled':''} onclick="moveAmRow('${t}',${idx},-1)" style="opacity:${isFirst?'.3':'1'}">▲</button>
+          <button class="am-move-btn" title="Move down" ${isLast?'disabled':''} onclick="moveAmRow('${t}',${idx},1)" style="opacity:${isLast?'.3':'1'}">▼</button>
+          <button class="am-del-btn" onclick="deleteAmRow('${t}',${idx})">✕</button>
+        </td>`;
       tbody.appendChild(tr);
     });
 
@@ -3133,6 +3206,15 @@ function confirmAmRow(t) {
 function deleteAmRow(t, idx) {
   actionTableData[t].splice(idx,1);
   localStorage.setItem('aethel-am-'+t, JSON.stringify(actionTableData[t]));
+  renderActionTables();
+}
+// Reorder a manual custom row (up = -1, down = +1). Persists immediately.
+function moveAmRow(t, idx, dir) {
+  const arr = actionTableData[t];
+  const j = idx + dir;
+  if (!arr || j < 0 || j >= arr.length) return;
+  [arr[idx], arr[j]] = [arr[j], arr[idx]];
+  localStorage.setItem('aethel-am-'+t, JSON.stringify(arr));
   renderActionTables();
 }
 
@@ -3353,7 +3435,12 @@ function loadAll() {
     try {
       const d = JSON.parse(raw);
       document.querySelectorAll('[data-save]').forEach(el => {
-        if (d[el.dataset.save] !== undefined) el.value = d[el.dataset.save];
+        if (d[el.dataset.save] !== undefined) {
+          el.value = d[el.dataset.save];
+          // A persisted L6 save focus is an explicit choice — don't let the class
+          // default overwrite it on the next recompute.
+          if (el.id === 'l6-save-choice') el.dataset.userSet = '1';
+        }
       });
       loadAbilityScores(d);
     } catch {}
@@ -4151,8 +4238,18 @@ function calcSuggestedDef() {
     else def = refMod;
   }
   if (shield) def += shield.def;
+  const armorSubtotal = def;
+  // Level 6 grants +2 Defense Score to every class. Auto-applied at Level 6+.
+  const l6Def = getCharLevel() >= 6 ? 2 : 0;
+  def += l6Def;
   const el = document.getElementById('inv-suggested-def');
-  if (el) el.textContent = def;
+  if (el) {
+    if (l6Def) {
+      el.innerHTML = `${def} <span style="font-size:.72rem;color:var(--text-label);font-weight:400">(${armorSubtotal} + Lv6 ${l6Def})</span>`;
+    } else {
+      el.textContent = def;
+    }
+  }
   // Also auto-update the Character Sheet defense field
   const defField = document.getElementById('stat-defense');
   if (defField) defField.value = def;
@@ -4570,6 +4667,7 @@ function buildPrintSheet() {
   if (levelEntries.length > 0 && classData) {
     const allSelections = [];
     const asiPicks = [];
+    const convertedPicks = [];
     levelEntries.forEach(entry => {
       const progRow = classData.progressionTable?.find(r=>r.level===entry.level);
       const selType = progRow?.selections?.type;
@@ -4577,6 +4675,9 @@ function buildPrintSheet() {
         if (v && v.startsWith('__asi__')) {
           const stat = v.split(':')[1] || '';
           asiPicks.push({level: entry.level, stat});
+        } else if (v && v.startsWith('__converted__')) {
+          const nm = v.split(':').slice(1).join(':').trim();
+          convertedPicks.push({level: entry.level, name: nm});
         } else if (v && !v.startsWith('__sep')) {
           allSelections.push({name:v, level:entry.level, type:selType});
         }
@@ -4586,6 +4687,13 @@ function buildPrintSheet() {
       html += '<div class="ps-section">Ability Score Improvements</div><div class="ps-selections">';
       asiPicks.forEach(p => {
         html += `<div class="ps-sel-item"><span class="ps-sel-lvl">L${p.level}</span> +1 ${p.stat ? esc(ASI_STAT_NAMES[p.stat]||p.stat) : '(unassigned)'}</div>`;
+      });
+      html += '</div>';
+    }
+    if (convertedPicks.length > 0) {
+      html += '<div class="ps-section">Converted Spells / Cantrips</div><div class="ps-selections">';
+      convertedPicks.forEach(p => {
+        html += `<div class="ps-sel-item"><span class="ps-sel-lvl">L${p.level}</span> <strong>${esc(p.name || 'Converted Spell')}</strong> <em style="color:#888;font-size:6.5pt">adapted source</em></div>`;
       });
       html += '</div>';
     }
@@ -5057,6 +5165,15 @@ function deleteAttack(id) {
   saveSavedAttacks();
   renderSavedAttacks();
 }
+// Reorder a saved attack (up = -1, down = +1). Persists immediately.
+function moveAttack(id, dir) {
+  const idx = savedAttacks.findIndex(a => a.id === id);
+  const j = idx + dir;
+  if (idx < 0 || j < 0 || j >= savedAttacks.length) return;
+  [savedAttacks[idx], savedAttacks[j]] = [savedAttacks[j], savedAttacks[idx]];
+  saveSavedAttacks();
+  renderSavedAttacks();
+}
 
 function toggleAttackExpand(id) {
   const atk = savedAttacks.find(a => a.id === id);
@@ -5091,6 +5208,8 @@ function renderSavedAttacks() {
         <div style="display:flex;gap:.5rem;align-items:center">
           <span style="font-size:.73rem;color:var(--ink-soft)">${riderCount} rider${riderCount!==1?'s':''}${hasWeaponProp?' · property':''}
           </span>
+          <button class="am-move-btn" onclick="event.stopPropagation();moveAttack('${atk.id}',-1)" title="Move up">▲</button>
+          <button class="am-move-btn" onclick="event.stopPropagation();moveAttack('${atk.id}',1)" title="Move down">▼</button>
           <button class="am-del-btn" onclick="event.stopPropagation();deleteAttack('${atk.id}')" title="Delete">✕</button>
         </div>
       </div>`;
