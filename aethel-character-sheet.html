@@ -925,6 +925,11 @@ select.field-input{cursor:pointer;}
         <div style="font-size:.62rem;color:var(--text-label);margin-top:.1rem">REF + Armor</div>
       </div>
       <div class="cstat-panel">
+        <div class="cstat-label">Threat DC</div>
+        <div class="cstat-input" id="stat-threat-dc" style="display:flex;align-items:center;justify-content:center;font-weight:700">—</div>
+        <div style="font-size:.62rem;color:var(--text-label);margin-top:.1rem" id="threat-dc-note">8 + ½Lvl + Gov</div>
+      </div>
+      <div class="cstat-panel">
         <div class="cstat-label">Saving Throws</div>
         <div class="cstat-save-grid">
           <div class="cstat-save-row"><span class="cstat-save-key">FORT</span><span class="cstat-save-val" id="save-fort">—</span></div>
@@ -1880,6 +1885,43 @@ function updateDerivedStats() {
   refreshResourceDisplays();
   updateSavingThrows();
   if (typeof calcSuggestedDef === 'function') calcSuggestedDef();
+  updateThreatDC();
+}
+
+// ── SCALING THREAT DC ─────────────────────────────────────────────
+// Canon: 8 + (Level ÷ 2, rounded UP) + Governing Ability Modifier.
+// The governing modifier is the HIGHEST of the class's governing pair:
+//   Body → max(FORT, REF) · Mind → max(INT, PRES) · Spirit → PRES · Bond → PRES.
+const GOVERNING_PAIRS = {
+  'The Body':  ['FORT','REF'],
+  'The Mind':  ['INT','PRES'],
+  'The Spirit':['PRES'],
+  'The Bond':  ['PRES']
+};
+function getGoverningMod() {
+  const cls = getSelectedClass();
+  const pair = GOVERNING_PAIRS[cls];
+  if (!pair) {
+    // No class chosen yet — fall back to the single best of all four so the
+    // panel still shows something sensible.
+    return { mod: Math.max(...['FORT','REF','INT','PRES'].map(getAbilityMod)), stat: null };
+  }
+  let best = pair[0], bestMod = getAbilityMod(pair[0]);
+  pair.forEach(a => { const m = getAbilityMod(a); if (m > bestMod) { bestMod = m; best = a; } });
+  return { mod: bestMod, stat: best };
+}
+function updateThreatDC() {
+  const el = document.getElementById('stat-threat-dc');
+  if (!el) return;
+  const level = getCharLevel();
+  const gov = getGoverningMod();
+  const dc = 8 + Math.ceil(level / 2) + gov.mod;
+  el.textContent = dc;
+  const note = document.getElementById('threat-dc-note');
+  if (note) {
+    const govLabel = gov.stat || 'best';
+    note.textContent = `8 + ${Math.ceil(level/2)} (½Lvl) + ${gov.mod} (${govLabel})`;
+  }
 }
 
 // Canonical Level 6 save focus per class (PG default). Player may override via
@@ -5074,6 +5116,7 @@ function buildPrintSheet() {
       <div class="ps-stat"><span class="ps-stat-label">Initiative</span><span class="ps-stat-val">${esc(g('stat-initiative')||'—')}</span></div>
       <div class="ps-stat"><span class="ps-stat-label">Speed</span><span class="ps-stat-val">${esc(g('stat-speed')||'30')}</span><span class="ps-stat-sub">ft</span></div>
       <div class="ps-stat"><span class="ps-stat-label">Defense</span><span class="ps-stat-val">${esc(g('stat-defense')||'—')}</span></div>
+      <div class="ps-stat"><span class="ps-stat-label">Threat DC</span><span class="ps-stat-val">${esc(document.getElementById('stat-threat-dc')?.textContent||'—')}</span></div>
       <div class="ps-stat"><span class="ps-stat-label">HP</span><span class="ps-stat-val">${esc(g('stat-hp-cur')||'—')} / ${esc(g('stat-hp-max')||'—')}</span></div>
       <div class="ps-stat"><span class="ps-stat-label">${esc(classData?.resourceAbbr||'RP')}</span><span class="ps-stat-val">${esc(g('stat-rp-cur')||'—')} / ${esc(g('stat-rp-max')||'—')}</span></div>
       <div class="ps-stat"><span class="ps-stat-label">Saves</span><span class="ps-stat-sub" style="font-size:7pt;line-height:1.3">F ${esc(saves[0])} · R ${esc(saves[1])}<br>I ${esc(saves[2])} · P ${esc(saves[3])}</span></div>
