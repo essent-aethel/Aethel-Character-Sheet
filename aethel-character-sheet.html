@@ -461,6 +461,18 @@ select.field-input{cursor:pointer;}
 .migration-banner-dismiss{font-family:'Cinzel',serif;font-size:.6rem;background:transparent;
   border:1px solid rgba(184,115,51,.4);color:var(--copper-light);padding:.2rem .6rem;border-radius:2px;cursor:pointer;}
 
+/* ── IMPORT REPORT ── */
+.import-report{max-width:640px;max-height:82vh;overflow-y:auto;color:var(--ink);}
+.ir-sub{font-size:.78rem;color:var(--text-label);margin:-.6rem 0 .6rem;}
+.ir-carried{font-size:.82rem;background:rgba(30,95,95,.07);border-left:3px solid var(--teal);padding:.45rem .6rem;border-radius:2px;margin-bottom:.6rem;}
+.ir-ok{font-size:.85rem;color:var(--teal);}
+.ir-sec{font-family:'Cinzel',serif;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--copper-dark);font-weight:700;margin:.7rem 0 .25rem;}
+.ir-list{list-style:none;margin:0;padding:0;}
+.ir-list li{display:flex;gap:.45rem;align-items:flex-start;font-size:.84rem;line-height:1.35;padding:.22rem 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.ir-ico{flex:0 0 1.1rem;text-align:center;font-weight:700;}
+.ir-fixed{color:var(--teal);} .ir-kept{color:var(--copper-dark);} .ir-lost{color:var(--crimson-soft);} .ir-info{color:var(--text-label);}
+.ir-legend{font-size:.72rem;color:var(--text-label);margin-top:.8rem;}
+
 /* ── TALENTS ── */
 .talent-row{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .6rem;
   background:rgba(184,115,51,.04);border-left:3px solid var(--copper);border-radius:2px;margin-bottom:.35rem;}
@@ -832,6 +844,14 @@ select.field-input{cursor:pointer;}
   <button class="migration-banner-dismiss" onclick="dismissMigrationBanner()">Dismiss</button>
 </div>
 
+<div class="modal-overlay" id="import-report-overlay" onclick="if(event.target===this)closeImportReport()">
+  <div class="modal import-report" role="dialog" aria-labelledby="import-report-title">
+    <button class="modal-close" onclick="closeImportReport()" aria-label="Close">✕</button>
+    <div class="modal-title" id="import-report-title">Import Report</div>
+    <div id="import-report-body"></div>
+  </div>
+</div>
+
 <!-- ═══════════════════════ PAGE: SHEET ═══════════════════════ -->
 <div class="page active" id="page-sheet">
 
@@ -934,7 +954,7 @@ select.field-input{cursor:pointer;}
       <div class="cstat-panel">
         <div class="cstat-label">Initiative</div>
         <input class="cstat-input" id="stat-initiative" placeholder="—" data-save="stat-initiative"
-          oninput="this.dataset.manualOverride='1';localStorage.setItem('aethel-init-override','1')">
+          oninput="onDerivedOverrideInput(this,'aethel-init-override')">
       </div>
       <div class="cstat-panel">
         <div class="cstat-label">Speed (ft)</div>
@@ -975,7 +995,7 @@ select.field-input{cursor:pointer;}
           <input class="cstat-curmax-cur" id="stat-hp-cur" placeholder="—" data-save="stat-hp-cur">
           <span class="cstat-curmax-sep">/</span>
           <input class="cstat-curmax-max" id="stat-hp-max" placeholder="—" data-save="stat-hp-max"
-            oninput="this.dataset.manualOverride='1';localStorage.setItem('aethel-hpmax-override','1')">
+            oninput="onDerivedOverrideInput(this,'aethel-hpmax-override')">
         </div>
         <div class="cstat-delta-row">
           <input type="number" class="cstat-delta-input" id="hp-delta-input" min="0" placeholder="±">
@@ -989,7 +1009,7 @@ select.field-input{cursor:pointer;}
           <input class="cstat-curmax-cur" id="stat-rp-cur" placeholder="—" data-save="stat-rp-cur">
           <span class="cstat-curmax-sep">/</span>
           <input class="cstat-curmax-max" id="stat-rp-max" placeholder="—" data-save="stat-rp-max"
-            oninput="this.dataset.manualOverride='1';localStorage.setItem('aethel-rpmax-override','1')">
+            oninput="onDerivedOverrideInput(this,'aethel-rpmax-override')">
         </div>
         <div class="cstat-delta-row">
           <input type="number" class="cstat-delta-input" id="rp-delta-input" min="0" placeholder="±">
@@ -1536,6 +1556,14 @@ select.field-input{cursor:pointer;}
           <li>Death Save reference: 2d10 (11+ success; 2–4 two failures; 18–20 revive at 1 HP).</li>
           <li>Conditions tracker: added Ablaze and Rooted (Basic) and Hidden (state); Encumbered and Exhausted marked as states, matching the Handbook's Condition Severity table.</li>
           <li>Level 6 saves: the Mind's Warded Mind now adds +2 to both Int and Will.</li>
+          <li>Loading older characters: every section of a character file is now converted on load. Missing sections get defaults, renamed content is updated, and a blank archetype is worked out from the character's picks.</li>
+          <li>Anything that can't be matched to the current rules (a pick, talent, ancestry, armor, and so on) is kept and marked ⚠ instead of disappearing. After each load, an Import Report lists what was converted and what needs a look, grouped by section.</li>
+          <li>Data with no place on this sheet (removed skills, unknown sections, old fields) stays inside the file every time you Save. Old text fields are also copied into Notes → Misc.</li>
+          <li>Loading a character now fully replaces the previous one. Custom action rows, saved attacks, conditions and rest toggles no longer carry over from whoever was loaded before, and imported custom action rows are no longer lost on reload.</li>
+          <li>Characters autosaved in the browser by an older sheet get the same one-time check the first time a new sheet version opens.</li>
+          <li>Clear error messages replace "invalid JSON file". A failed load leaves the current character untouched.</li>
+          <li>If aethel-data.json is missing or holds the wrong file (such as the Bond expansion), the sheet falls back to its built-in base rules, still loads the expansion, and shows a setup notice.</li>
+          <li>Max HP, resource points and Initiative: clearing a hand-typed value switches the box back to the calculated value.</li>
         </ul>
       </div>
       <div class="cl-entry">
@@ -1692,6 +1720,7 @@ window.AETHEL_DATA_FALLBACK = {"meta":{"version":"0.9.5","game":"Aethel","editio
 // DATA — loaded from aethel-data.json at startup
 // ══════════════════════════════════════════════════════════════════
 let GD = null; // Game Data (loaded from JSON)
+let _dataNotice = ''; // set when aethel-data.json is missing base data (shown in the banner)
 const LS_KEY = 'aethel-sheet-v2';
 const SAVE_VERSION = '2.0.0';
 
@@ -1781,6 +1810,7 @@ async function loadExpansions() {
     if (resp.ok) bond = await resp.json();
   } catch(e) { /* no expansion file — base game build */ }
   if (!bond && window.AETHEL_BOND_FALLBACK) bond = window.AETHEL_BOND_FALLBACK;
+  if (!bond && window.__misplacedExpansion) bond = window.__misplacedExpansion;
   mergeExpansion(bond);
   const opt = document.querySelector('#char-class option[value="The Bond"]');
   if (opt && !(GD && GD.classes && GD.classes['The Bond'])) opt.remove();
@@ -1802,22 +1832,23 @@ const BOND_NAME_MIGRATIONS = {
   'Necromancer':   {'Soul Rend':'Grave Rend', 'Soul Harvest':'Reaping Command'}
 };
 function migrateLegacyNames() {
+  // Runs on every load (including autosaved characters from older sheets). A rename is
+  // applied only when the old name is gone from the loaded rules and the new one exists.
   const arch = document.getElementById('char-archetype')?.value || '';
-  const bondMap = BOND_NAME_MIGRATIONS[arch] || {};
-  const fix = v => {
-    if (typeof v !== 'string') return v;
+  const fix = (v, kinds) => {
+    if (typeof v !== 'string' || v.startsWith('__')) return v;
     const [nm, ...rest] = v.split('|');
-    const n2 = bondMap[nm] || NAME_MIGRATIONS[nm] || nm;
-    return [n2, ...rest].join('|');
+    return [legacyRename(nm, arch, kinds), ...rest].join('|');
   };
   let changed = false;
   (levelEntries || []).forEach(e => {
     Object.keys(e.selections || {}).forEach(k => {
-      const nv = fix(e.selections[k]); if (nv !== e.selections[k]) { e.selections[k] = nv; changed = true; }
+      const nv = fix(e.selections[k], k === 'talent' ? ['talent'] : undefined);
+      if (nv !== e.selections[k]) { e.selections[k] = nv; changed = true; }
     });
   });
-  (talentSelections || []).forEach(t => { const nv = fix(t.name); if (nv !== t.name) { t.name = nv; changed = true; } });
-  (inventoryData?.packItems || []).forEach(it => { if (it && it.name) { const nv = fix(it.name); if (nv !== it.name) { it.name = nv; changed = true; } } });
+  (talentSelections || []).forEach(t => { const nv = fix(t.name, ['talent']); if (nv !== t.name) { t.name = nv; changed = true; } });
+  (inventoryData?.packItems || []).forEach(it => { if (it && it.name) { const nv = fix(it.name, ['item']); if (nv !== it.name) { it.name = nv; changed = true; } } });
   if (changed) {
     localStorage.setItem('aethel-level-log', JSON.stringify(levelEntries));
     localStorage.setItem('aethel-talents', JSON.stringify(talentSelections));
@@ -1825,16 +1856,676 @@ function migrateLegacyNames() {
   }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// SAVE IMPORT & MIGRATION
+// Any character file from an earlier sheet version is normalised here before
+// it touches the sheet: missing sections get defaults, renamed rules content
+// is rewritten, a blank archetype is inferred from the character's picks, and
+// anything that can't be matched to the current rules is KEPT (shown with a ⚠)
+// rather than silently dropped. Every change is listed in an Import Report.
+// ══════════════════════════════════════════════════════════════════
+const IMPORT_REPORT_LS = 'aethel-import-report';
+const LEGACY_LS = 'aethel-legacy-extras';
+const SLOT_KEYS = ['head','neck','shouldersBack','chest','hands','waist','legs','feet','ring1','ring2','trinket1','trinket2','mainHand','offHand'];
+// Older/alternate slot names → current slot keys
+const SLOT_ALIASES = {back:'shouldersBack',shoulders:'shouldersBack',cloak:'shouldersBack',armor:'chest',body:'chest',
+  gloves:'hands',belt:'waist',boots:'feet',ring:'ring1',trinket:'trinket1',weapon:'mainHand',mainhand:'mainHand',
+  shield:'offHand',offhand:'offHand'};
+const SKILL_RENAMES = {'Stealth':'Subterfuge'};
+const RETIRED_CONDITIONS = {'Distracted':'Distracted was retired in Rules 0.9.5'};
+const KNOWN_TOP_KEYS = ['version','fields','levelLog','skillInvestments','spells','talents','inventory','actionTables',
+  'attackBuilder','dailyUsed','shortRestUsed','deathSaves','inspiration','conditions','leveledStatuses',
+  'hpMaxOverride','initOverride','rpMaxOverride','customOrder','legacy','abilities','abilityScores'];
+let legacyExtras = null;   // data from an older file with no home on this sheet — carried through every Save
+
+function isBaseGameData(d) {
+  return !!(d && d.classes && Array.isArray(d.scoreToMod) && d.abilityScores &&
+    (d.classes['The Body'] || d.classes['The Mind'] || d.classes['The Spirit']));
+}
+
+// ── Rules index: every named, selectable thing in the loaded rules ──
+let _rulesIndex = null;
+function getRulesIndex() {
+  if (_rulesIndex && _rulesIndex.gd === GD) return _rulesIndex.map;
+  const map = new Map();
+  const add = (name, kind, cls, arch, plane) => {
+    if (!name) return;
+    const k = name.trim().toLowerCase();
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push({name, kind, cls, arch: arch || null, plane: plane || null});
+  };
+  if (GD) {
+    const mindArchs = GD.classes?.['The Mind']?.archetypes || [];
+    const archFromAccess = acc => {
+      if (!acc || acc === 'all') return null;
+      const hit = mindArchs.find(a => a.toLowerCase() === String(acc).toLowerCase());
+      return hit ? [hit] : [String(acc)];
+    };
+    (GD.maneuvers?.standard || []).forEach(m => add(m.name, 'maneuver', 'The Body'));
+    (GD.maneuvers?.advanced || []).forEach(m => add(m.name, 'maneuver', 'The Body'));
+    Object.entries(GD.maneuvers?.custom || {}).forEach(([a, list]) => (list || []).forEach(m => add(m.name, 'maneuver', 'The Body', [a])));
+    Object.values(GD.stances || {}).forEach(s => add(s.name, 'stance', 'The Body'));
+    Object.values(GD.augments || {}).forEach(list => (list || []).forEach(a => add(a.name, 'augment', 'The Mind', archFromAccess(a.access))));
+    Object.values(GD.inscriptions || {}).forEach(list => (list || []).forEach(i => add(i.name, 'inscription', 'The Spirit', Array.isArray(i.access) ? i.access : null)));
+    Object.entries(GD.pactBonds || {}).forEach(([arch, pool]) => {
+      const tiers = p => ['basic','advanced','expert'].forEach(t => (p?.[t] || []).forEach(b => add(b.name, 'pactBond', 'The Bond', [arch], p.__plane)));
+      if (pool && (pool.basic || pool.advanced || pool.expert)) tiers(pool);
+      else Object.entries(pool || {}).forEach(([plane, p]) => tiers({...p, __plane: plane}));
+    });
+    Object.entries(GD.archetypeFeatures || {}).forEach(([arch, af]) => (af.abilities || []).forEach(ab => add(ab.name, 'ability', af.class, [arch])));
+    Object.values(GD.talents || {}).forEach(list => (list || []).forEach(t => add(t.name, 'talent', null)));
+    (GD.mundaneItems || []).forEach(m => add(m.name, 'item', null));
+  }
+  _rulesIndex = {gd: GD, map};
+  return map;
+}
+function findRule(name, kinds) {
+  if (typeof name !== 'string') return [];
+  const clean = name.replace(/^[✦⚠]\s*/, '').trim().toLowerCase();
+  const hits = getRulesIndex().get(clean) || [];
+  return kinds ? hits.filter(h => kinds.includes(h.kind)) : hits;
+}
+function ruleExists(name, kinds) { return findRule(name, kinds).length > 0; }
+
+// Rename only when the old name is gone from the current rules and the new one exists —
+// so a stale aethel-data.json (still using old names) never has its picks renamed away.
+function legacyRename(name, archetype, kinds) {
+  if (typeof name !== 'string' || !name) return name;
+  const bondMap = BOND_NAME_MIGRATIONS[archetype] || {};
+  const target = bondMap[name] || NAME_MIGRATIONS[name];
+  if (!target) return name;
+  if (ruleExists(name, kinds) && !(bondMap[name] && archetype)) return name;
+  return (ruleExists(target, kinds) || !GD) ? target : name;
+}
+
+// ── Archetype inference from the character's own picks ──
+function inferArchetype(cls, names) {
+  const archs = GD?.classes?.[cls]?.archetypes || [];
+  if (!archs.length) return null;
+  const score = {}; archs.forEach(a => score[a] = {pts: 0, bad: 0, evidence: []});
+  names.forEach(n => {
+    const hits = findRule(n).filter(h => h.cls === cls);
+    if (!hits.length) return;
+    archs.forEach(a => {
+      const fits = hits.some(h => !h.arch || h.arch.includes(a));
+      if (!fits) { score[a].bad++; return; }
+      if (hits.every(h => h.arch && h.arch.length === 1 && h.arch[0] === a)) { score[a].pts += 2; score[a].evidence.push(hits[0].name); }
+    });
+  });
+  const ranked = archs.filter(a => score[a].bad === 0 && score[a].pts > 0).sort((x, y) => score[y].pts - score[x].pts);
+  if (!ranked.length) return null;
+  if (ranked.length > 1 && score[ranked[0]].pts === score[ranked[1]].pts) return null;
+  return {archetype: ranked[0], evidence: [...new Set(score[ranked[0]].evidence)]};
+}
+function inferPlane(names) {
+  const planes = {};
+  names.forEach(n => findRule(n, ['pactBond']).forEach(h => { if (h.plane) planes[h.plane] = (planes[h.plane] || 0) + 1; }));
+  const ranked = Object.entries(planes).sort((a, b) => b[1] - a[1]);
+  if (!ranked.length || (ranked[1] && ranked[1][1] === ranked[0][1])) return null;
+  return ranked[0][0];
+}
+
+// ── Small coercion helpers ──
+const _str = v => (v === null || v === undefined) ? '' : (typeof v === 'object' ? JSON.stringify(v) : String(v));
+const _int = (v, d = 0) => { const n = parseInt(v, 10); return Number.isFinite(n) ? n : d; };
+const _flag = v => v === true || v === 1 || v === '1' || v === 'true';
+const _ciFind = (list, v) => { if (!v) return ''; const lv = String(v).trim().toLowerCase(); return list.find(x => String(x).toLowerCase() === lv) || ''; };
+
+// ── Normalise a parsed save file into the current shape + a report ──
+function normalizeSave(parsed) {
+  const report = [];
+  const note = (section, kind, text) => report.push({section, kind, text});   // kind: fixed | kept | lost | info
+  const extras = {};
+  const isV2 = parsed && typeof parsed.fields === 'object' && parsed.fields !== null;
+  const fromVersion = isV2 ? _str(parsed.version || 'unversioned') : 'pre-2.0 (flat)';
+  const knownFieldKeys = new Set([...document.querySelectorAll('[data-save]')].map(el => el.dataset.save));
+  ['fort','ref','int','pres'].forEach(a => knownFieldKeys.add('ability-' + a));
+
+  // ── FIELDS ──
+  const rawFields = isV2 ? parsed.fields : Object.fromEntries(Object.entries(parsed || {}).filter(([k, v]) => !KNOWN_TOP_KEYS.includes(k) && typeof v !== 'object'));
+  const fields = {};
+  const orphanFields = {};
+  Object.entries(rawFields || {}).forEach(([k, v]) => {
+    if (knownFieldKeys.has(k)) fields[k] = _str(v);
+    else if (_str(v).trim()) orphanFields[k] = _str(v);
+  });
+  // Ability scores stored as an object in some older files
+  const absObj = parsed.abilities || parsed.abilityScores;
+  if (absObj && typeof absObj === 'object') ['FORT','REF','INT','PRES'].forEach(a => {
+    const v = absObj[a] ?? absObj[a.toLowerCase()];
+    if (v !== undefined && !fields['ability-' + a.toLowerCase()]) { fields['ability-' + a.toLowerCase()] = _str(v); }
+  });
+  knownFieldKeys.forEach(k => { if (fields[k] === undefined && k !== 'l6-save-choice') fields[k] = ''; });
+  if (Object.keys(orphanFields).length) {
+    extras.fields = orphanFields;
+    const block = Object.entries(orphanFields).map(([k, v]) => `${k}: ${v}`).join('\n');
+    fields['note-misc'] = (fields['note-misc'] ? fields['note-misc'] + '\n\n' : '') + '── Imported from an older sheet (no matching box on this version) ──\n' + block;
+    note('Character', 'fixed', `${Object.keys(orphanFields).length} field(s) with no box on this sheet (${Object.keys(orphanFields).join(', ')}) were copied into Notes → Misc.`);
+  }
+
+  // Class
+  const classNames = Object.keys(GD?.classes || {});
+  let cls = fields['char-class'];
+  if (cls && !GD?.classes?.[cls]) {
+    const ci = _ciFind(classNames, cls);
+    if (ci) { note('Character', 'fixed', `Class "${cls}" matched to "${ci}".`); cls = ci; }
+    else if (cls === 'The Bond') note('Character', 'kept', 'This character uses The Bond expansion, which is not installed in this build. Class, archetype and Pact Bonds are kept in the file but cannot be displayed — open it in the build that includes aethel-bond.json.');
+    else note('Character', 'kept', `Class "${cls}" is not in the current rules — kept as-is.`);
+  }
+  fields['char-class'] = cls || '';
+
+  // ── LEVEL LOG ──
+  let levelLog = Array.isArray(parsed.levelLog) ? parsed.levelLog : [];
+  if (parsed.levelLog && !Array.isArray(parsed.levelLog) && typeof parsed.levelLog === 'object') {
+    levelLog = Object.values(parsed.levelLog);
+  }
+  levelLog = levelLog.filter(e => e && typeof e === 'object').map((e, i) => ({
+    ...e, level: _int(e.level, i + 1),
+    selections: (e.selections && typeof e.selections === 'object') ? {...e.selections} : {},
+    archetypeNote: _str(e.archetypeNote || e.notes || '')
+  })).sort((a, b) => a.level - b.level);
+  // De-duplicate levels, then make the sequence 1..N so the level count survives
+  const byLevel = new Map(); levelLog.forEach(e => { if (!byLevel.has(e.level)) byLevel.set(e.level, e); });
+  const maxLogged = byLevel.size ? Math.max(...byLevel.keys()) : 0;
+  const typedLevel = _int(fields['char-level'], 0);
+  const targetLevel = Math.min(10, Math.max(maxLogged, typedLevel));
+  const filled = [];
+  for (let l = 1; l <= targetLevel; l++) {
+    if (byLevel.has(l)) filled.push(byLevel.get(l));
+    else filled.push({level: l, selections: {}, archetypeNote: ''});
+  }
+  const padded = targetLevel - byLevel.size;
+  if (padded > 0) note('Level Log', 'fixed', byLevel.size
+    ? `Missing level entries were added so the character stays Level ${targetLevel} (${padded} empty level${padded>1?'s':''} — fill in their picks in the Level Log).`
+    : `This save has no Level Log. Created ${targetLevel} empty level${targetLevel>1?'s':''} so the character stays Level ${targetLevel} — fill in each level's picks in the Level Log.`);
+  levelLog = filled;
+
+  // Archetype (validate, then infer if blank)
+  let arch = fields['char-archetype'];
+  const archList = GD?.classes?.[cls]?.archetypes || [];
+  const pickNames = [];
+  levelLog.forEach(e => Object.entries(e.selections).forEach(([k, v]) => { if (typeof v === 'string' && v && !v.startsWith('__') && k !== 'talent') pickNames.push(v); }));
+  (Array.isArray(parsed.attackBuilder) ? parsed.attackBuilder : []).forEach(a => (a?.riders || []).forEach(r => r?.name && pickNames.push(r.name)));
+  Object.values(parsed.actionTables || {}).forEach(rows => Array.isArray(rows) && rows.forEach(r => r?.name && pickNames.push(r.name)));
+  if (arch && archList.length && !archList.includes(arch)) {
+    const ci = _ciFind(archList, arch);
+    if (ci) { note('Character', 'fixed', `Archetype "${arch}" matched to "${ci}".`); arch = ci; }
+    else { note('Character', 'kept', `Archetype "${arch}" is not a ${cls} archetype in the current rules — kept as-is.`); }
+  }
+  if (!arch && archList.length) {
+    const guess = inferArchetype(cls, pickNames);
+    if (guess) {
+      arch = guess.archetype;
+      note('Character', 'fixed', `Archetype was blank in this save. Set to ${arch}, based on ${guess.evidence.slice(0, 4).join(', ')}${guess.evidence.length > 4 ? '…' : ''}. Change it on the Character Sheet if that's wrong.`);
+    } else if (pickNames.length) {
+      note('Character', 'kept', 'Archetype is blank in this save and could not be worked out from the character\'s picks. Choose it on the Character Sheet — the Level Log picks will reappear once it is set.');
+    } else {
+      note('Character', 'info', 'Archetype is not set in this save.');
+    }
+  }
+  fields['char-archetype'] = arch || '';
+  if (arch === 'Planewalker' && !fields['char-bond-plane']) {
+    const plane = inferPlane(pickNames);
+    if (plane) { fields['char-bond-plane'] = plane; note('Character', 'fixed', `Planewalker plane was blank — set to ${plane} from the character's Planar Bonds.`); }
+  }
+
+  // Ancestry / background / L6 save
+  [['char-ancestry', Object.keys(GD?.ancestries || {}), 'Ancestry'], ['char-background', Object.keys(GD?.backgrounds || {}), 'Background']].forEach(([key, list, label]) => {
+    const v = fields[key];
+    if (!v) { if (fields['char-class']) note('Character', 'info', `${label} is not set in this save.`); return; }
+    if (list.includes(v)) return;
+    const ci = _ciFind(list, v);
+    if (ci) { fields[key] = ci; note('Character', 'fixed', `${label} "${v}" matched to "${ci}".`); }
+    else note('Character', 'kept', `${label} "${v}" is not in the current rules — kept as-is (its bonuses are not applied automatically).`);
+  });
+  if (fields['l6-save-choice'] !== undefined) {
+    const v = _ciFind(['FORT','REF','INT','PRES'], fields['l6-save-choice']) ||
+      ({fortitude:'FORT', reflex:'REF', intellect:'INT', presence:'PRES', will:'PRES'})[String(fields['l6-save-choice']).toLowerCase()] || '';
+    if (v) fields['l6-save-choice'] = v; else delete fields['l6-save-choice'];
+  }
+
+  // Level Log picks: renames, case fixes, existence checks
+  const classInstalled = !!GD?.classes?.[cls];
+  // Picks for a class this build doesn't have (e.g. The Bond without its expansion) are kept untouched;
+  // the single Character note above already explains why they can't be shown.
+  const selKinds = classInstalled ? ({'The Body':['maneuver','stance'], 'The Mind':['augment'], 'The Spirit':['inscription'], 'The Bond':['pactBond']}[cls] || null) : null;
+  levelLog.forEach(e => {
+    Object.keys(e.selections).forEach(slot => {
+      let v = e.selections[slot];
+      if (v === null || v === undefined) { delete e.selections[slot]; return; }
+      if (typeof v !== 'string') v = _str(v);
+      if (!v || v.startsWith('__')) { e.selections[slot] = v; return; }
+      const where = `Level ${e.level}`;
+      if (slot === 'talent') {
+        let [tn, tier] = v.split('|');
+        const renamed = legacyRename(tn, arch, ['talent']);
+        if (renamed !== tn) { note('Level Log', 'fixed', `${where}: talent "${tn}" renamed to "${renamed}".`); tn = renamed; }
+        const hit = findRule(tn, ['talent'])[0];
+        if (hit) tn = hit.name; else note('Level Log', 'kept', `${where}: talent "${tn}" is not in the current rules — kept, marked ⚠.`);
+        e.selections[slot] = tn + '|' + (_int(tier, 1) || 1);
+        return;
+      }
+      if (!selKinds) { e.selections[slot] = v; return; }
+      const renamed = legacyRename(v, arch, selKinds);
+      if (renamed !== v) { note('Level Log', 'fixed', `${where}: "${v}" renamed to "${renamed}".`); v = renamed; }
+      const hits = findRule(v, selKinds);
+      if (!hits.length) note('Level Log', 'kept', `${where}: "${v}" is not in the current rules — kept, marked ⚠ in the Level Log.`);
+      else {
+        if (hits[0].name !== v) { note('Level Log', 'fixed', `${where}: "${v}" matched to "${hits[0].name}".`); v = hits[0].name; }
+        if (arch && !hits.some(h => !h.arch || h.arch.includes(arch)))
+          note('Level Log', 'kept', `${where}: "${v}" is not available to ${arch} in the current rules — kept, marked ⚠.`);
+      }
+      e.selections[slot] = v;
+    });
+    if (e.freeAugment && !['Destructive', 'Restorative'].includes(e.freeAugment)) {
+      const ci = _ciFind(['Destructive', 'Restorative'], e.freeAugment);
+      if (ci) e.freeAugment = ci; else { note('Level Log', 'lost', `Level 1 free augment "${e.freeAugment}" is not a valid choice — cleared.`); delete e.freeAugment; }
+    }
+    if (e.bonusSlotCount !== undefined) e.bonusSlotCount = Math.max(0, _int(e.bonusSlotCount, 0));
+  });
+
+  // ── TALENTS ──
+  let talents = Array.isArray(parsed.talents) ? parsed.talents : [];
+  talents = talents.map(t => typeof t === 'string' ? {name: t.split('|')[0], tier: _int(t.split('|')[1], 1)} : t)
+    .filter(t => t && t.name).map(t => {
+      let name = legacyRename(_str(t.name), arch, ['talent']);
+      if (name !== t.name) note('Talents', 'fixed', `Talent "${t.name}" renamed to "${name}".`);
+      const hit = findTalent(name) || findTalent(findRule(name, ['talent'])[0]?.name);
+      if (!hit) note('Talents', 'kept', `Talent "${name}" is not in the current rules — kept, marked ⚠.`);
+      const tier = Math.max(1, _int(t.tier, 1));
+      return {name: hit ? hit.name : name, category: hit ? hit.category : _str(t.category), tier: hit ? Math.min(tier, hit.tiers.length) : tier};
+    });
+
+  // ── SKILLS ──
+  const skills = {};
+  const skillNames = Object.keys(GD?.skills || {});
+  const orphanSkills = {};
+  Object.entries(parsed.skillInvestments || {}).forEach(([k, v]) => {
+    const pts = _int(v, 0); if (!pts) return;
+    let name = skillNames.includes(k) ? k : (_ciFind(skillNames, k) || '');
+    if (!name && SKILL_RENAMES[k] && skillNames.includes(SKILL_RENAMES[k])) { name = SKILL_RENAMES[k]; note('Skills', 'fixed', `Skill "${k}" is now "${name}" — ${pts} point${pts>1?'s':''} moved.`); }
+    if (name) skills[name] = (skills[name] || 0) + pts;
+    else orphanSkills[k] = pts;
+  });
+  if (Object.keys(orphanSkills).length) {
+    extras.skillInvestments = orphanSkills;
+    Object.entries(orphanSkills).forEach(([k, v]) => note('Skills', 'lost', `Skill "${k}" (${v} point${v>1?'s':''}) does not exist in the current rules. Those points are free to reassign.`));
+  }
+
+  // ── SPELLS ──
+  const spells = (Array.isArray(parsed.spells) ? parsed.spells : (parsed.spells ? [parsed.spells] : []))
+    .map(s => typeof s === 'string' ? {name: s} : s).filter(s => s && typeof s === 'object');
+
+  // ── INVENTORY ──
+  const inv0 = (parsed.inventory && typeof parsed.inventory === 'object') ? parsed.inventory : {};
+  const weaponNames = WEAPONS.map(w => w.name);
+  const weapons = (Array.isArray(inv0.weapons) ? inv0.weapons : []).map(w => typeof w === 'string' ? {name: w, readied: false} : w)
+    .filter(w => w && w.name).map(w => {
+      const out = {...w, name: _str(w.name), readied: _flag(w.readied)};
+      if (!weaponNames.includes(out.name)) {
+        const ci = _ciFind(weaponNames, out.name);
+        if (ci) { note('Inventory', 'fixed', `Weapon "${out.name}" matched to "${ci}".`); out.name = ci; }
+        else if (!out.dmg) note('Inventory', 'kept', `Weapon "${out.name}" is not in the current armory and the save has no stats for it — kept by name; its damage shows as "?".`);
+      }
+      return out;
+    });
+  const containers = (Array.isArray(inv0.containers) ? inv0.containers : []).filter(c => c && typeof c === 'object').map((c, i) => ({
+    ...c, id: c.id || ('c_legacy_' + i), name: _str(c.name || 'Container'), capacity: _int(c.capacity, 0),
+    contents: (Array.isArray(c.contents) ? c.contents : []).map(x => typeof x === 'string' ? {name: x, slots: 1} : x).filter(Boolean)
+  }));
+  const containerIds = new Set(containers.map(c => 'container:' + c.id));
+  const packItems = (Array.isArray(inv0.packItems) ? inv0.packItems : []).map(it => typeof it === 'string' ? {name: it} : it)
+    .filter(it => it && it.name).map(it => {
+      const out = {qty: 1, slots: 1, type: '', desc: '', attune: false, ...it};
+      out.name = _str(out.name); out.qty = Math.max(1, _int(out.qty, 1)); out.slots = Math.max(0, _int(out.slots, 1)); out.attune = _flag(out.attune);
+      const renamed = legacyRename(out.name, arch, ['item']);
+      if (renamed !== out.name) { note('Inventory', 'fixed', `Item "${out.name}" renamed to "${renamed}".`); out.name = renamed; }
+      const loc = out.location || 'pack';
+      if (!['pack', 'readied', 'equipped'].includes(loc) && !containerIds.has(loc)) {
+        note('Inventory', 'fixed', `"${out.name}" was stored in a container that no longer exists — moved to the Pack.`);
+        out.location = 'pack';
+      }
+      return out;
+    });
+  const eq0 = (inv0.equippedSlots && typeof inv0.equippedSlots === 'object') ? inv0.equippedSlots : {};
+  const equippedSlots = Object.fromEntries(SLOT_KEYS.map(k => [k, '']));
+  Object.entries(eq0).forEach(([k, v]) => {
+    const key = SLOT_KEYS.includes(k) ? k : SLOT_ALIASES[k] || SLOT_ALIASES[k.toLowerCase()];
+    const val = _str(v);
+    if (key) { if (!equippedSlots[key]) equippedSlots[key] = val; }
+    else if (val.trim()) {
+      const free = ['trinket1', 'trinket2'].find(s => !equippedSlots[s] && !eq0[s]);
+      if (free) { equippedSlots[free] = val; note('Inventory', 'fixed', `Equipment slot "${k}" no longer exists — "${val}" moved to ${free === 'trinket1' ? 'Trinket 1' : 'Trinket 2'}.`); }
+      else { (extras.equippedSlots = extras.equippedSlots || {})[k] = val; note('Inventory', 'lost', `Equipment slot "${k}" no longer exists and no free slot was left for "${val}". It is kept in the file but not shown.`); }
+    }
+  });
+  if (!equippedSlots.chest && inv0.equippedArmor) equippedSlots.chest = _str(inv0.equippedArmor);
+  if (!equippedSlots.offHand && inv0.equippedShield) equippedSlots.offHand = _str(inv0.equippedShield);
+  const armorNames = ARMORS.map(a => a.name), shieldNames = SHIELDS.map(s => s.name);
+  if (equippedSlots.chest && !armorNames.includes(equippedSlots.chest)) {
+    const ci = _ciFind(armorNames, equippedSlots.chest);
+    if (ci) equippedSlots.chest = ci;
+    else note('Inventory', 'kept', `Chest armor "${equippedSlots.chest}" is not a standard armor — kept, but DEF is not calculated from it automatically.`);
+  }
+  if (equippedSlots.offHand && !shieldNames.includes(equippedSlots.offHand)) {
+    const ci = _ciFind(shieldNames, equippedSlots.offHand);
+    if (ci) equippedSlots.offHand = ci;
+    else note('Inventory', 'kept', `Off-hand "${equippedSlots.offHand}" is not a standard shield — kept, but DEF is not calculated from it automatically.`);
+  }
+  const inventory = {...inv0, weapons, packItems, containers, equippedSlots,
+    equippedArmor: equippedSlots.chest, equippedShield: equippedSlots.offHand};
+
+  // ── ACTION TABLES ──
+  const actionTables = {actions: [], bonus: [], reactions: [], passives: []};
+  const TABLE_ALIASES = {action: 'actions', bonusActions: 'bonus', bonusAction: 'bonus', reaction: 'reactions', passive: 'passives'};
+  Object.entries(parsed.actionTables || {}).forEach(([t, rows]) => {
+    const key = actionTables[t] ? t : TABLE_ALIASES[t];
+    const list = (Array.isArray(rows) ? rows : []).map(r => typeof r === 'string' ? {name: r, cost: '', type: '', desc: ''} : r)
+      .filter(r => r && typeof r === 'object').map(r => ({...r, name: _str(r.name), cost: _str(r.cost), type: _str(r.type), desc: _str(r.desc ?? r.description)}));
+    if (key) actionTables[key] = actionTables[key].concat(list);
+    else if (list.length) { actionTables.passives = actionTables.passives.concat(list); note('Features', 'fixed', `Action table "${t}" no longer exists — its ${list.length} row(s) were moved to Passives.`); }
+  });
+
+  // ── ATTACK BUILDER ──
+  const attackBuilder = (Array.isArray(parsed.attackBuilder) ? parsed.attackBuilder : []).filter(a => a && typeof a === 'object').map((a, i) => {
+    const riders = (Array.isArray(a.riders) ? a.riders : []).filter(r => r && r.name).map(r => {
+      const nm = legacyRename(r.name, arch);
+      if (nm !== r.name) note('Attack Builder', 'fixed', `"${a.name || 'Attack'}": rider "${r.name}" renamed to "${nm}".`);
+      else if (GD && classInstalled && !ruleExists(nm)) note('Attack Builder', 'kept', `"${a.name || 'Attack'}": rider "${nm}" is not in the current rules — kept with its saved text.`);
+      return {...r, name: nm};
+    });
+    return {...a, id: a.id || ('atk_legacy_' + Date.now() + '_' + i), name: _str(a.name || 'Attack'), riders,
+      weaponData: (a.weaponData && typeof a.weaponData === 'object') ? a.weaponData : (WEAPONS.find(w => w.name === a.baseWeapon) || {}),
+      totalCost: _str(a.totalCost || '0'), expanded: false};
+  });
+
+  // ── TRACKERS ──
+  const conditions = {};
+  const condNames = CONDITIONS.map(c => c.name);
+  const condIn = Array.isArray(parsed.conditions) ? Object.fromEntries(parsed.conditions.map(n => [n, true])) : (parsed.conditions || {});
+  Object.entries(condIn).forEach(([n, on]) => {
+    if (!_flag(on)) return;
+    const ci = _ciFind(condNames, n);
+    if (ci) conditions[ci] = true;
+    else note('Trackers', 'lost', RETIRED_CONDITIONS[n] ? `${RETIRED_CONDITIONS[n]} — the active "${n}" condition was cleared.` : `Condition "${n}" is not in the current rules — cleared.`);
+  });
+  let leveledStatuses = (Array.isArray(parsed.leveledStatuses) ? parsed.leveledStatuses : []).filter(s => s && s.name)
+    .map((s, i) => ({...s, id: s.id || ('ls_legacy_' + i), max: Math.max(1, _int(s.max, 10)), level: Math.max(0, _int(s.level, 0))}));
+  if (!leveledStatuses.some(s => s.id === 'exhaustion')) leveledStatuses.unshift({id: 'exhaustion', name: 'Exhaustion', max: 10, level: 0, builtin: true});
+  const ds = parsed.deathSaves || {};
+  const deathSavesN = {successes: Math.min(3, Math.max(0, _int(ds.successes, 0))), failures: Math.min(3, Math.max(0, _int(ds.failures, 0)))};
+
+  // ── UNKNOWN TOP-LEVEL DATA ──
+  if (isV2) {
+    const unknownTop = Object.keys(parsed).filter(k => !KNOWN_TOP_KEYS.includes(k));
+    if (unknownTop.length) {
+      extras.top = Object.fromEntries(unknownTop.map(k => [k, parsed[k]]));
+      note('Other', 'lost', `Section${unknownTop.length > 1 ? 's' : ''} ${unknownTop.map(k => '"' + k + '"').join(', ')} ${unknownTop.length > 1 ? 'have' : 'has'} no place on this sheet — not shown, but kept inside the file when you Save.`);
+    }
+  }
+  // Carry forward extras from a file that was itself converted earlier
+  if (parsed.legacy && typeof parsed.legacy === 'object' && Object.keys(parsed.legacy).length) {
+    Object.entries(parsed.legacy).forEach(([k, v]) => { if (extras[k] === undefined) extras[k] = v; });
+    note('Other', 'info', `This file still carries data from an older sheet that has no place here (${Object.keys(parsed.legacy).join(', ')}). It stays inside the file each time you Save.`);
+  }
+
+  const payload = {
+    version: SAVE_VERSION, fields, levelLog, skillInvestments: skills, spells, talents, inventory, actionTables, attackBuilder,
+    dailyUsed: _flag(parsed.dailyUsed) ? '1' : '0', shortRestUsed: _flag(parsed.shortRestUsed) ? '1' : '0',
+    deathSaves: deathSavesN, inspiration: _flag(parsed.inspiration), conditions, leveledStatuses,
+    hpMaxOverride: parsed.hpMaxOverride, initOverride: parsed.initOverride, rpMaxOverride: parsed.rpMaxOverride,
+    customOrder: Array.isArray(parsed.customOrder) ? parsed.customOrder : null
+  };
+  const counts = {
+    levels: levelLog.length,
+    picks: levelLog.reduce((n, e) => n + Object.values(e.selections).filter(v => v && typeof v === 'string').length, 0),
+    talents: talents.length, skills: Object.keys(skills).length, spells: spells.length,
+    weapons: weapons.length, items: packItems.length + containers.length, equipped: Object.values(equippedSlots).filter(Boolean).length,
+    attacks: attackBuilder.length, actionRows: Object.values(actionTables).reduce((n, r) => n + r.length, 0),
+    notes: ['note-backstory','note-factions','note-campaign','note-npcs','note-misc'].filter(k => (fields[k] || '').trim()).length
+  };
+  return {payload, report, extras: Object.keys(extras).length ? extras : null, fromVersion, counts};
+}
+
+// Make a <select> show a value that isn't among its options (kept from an older save)
+function ensureSelectValue(sel, value, suffix) {
+  if (!sel || !value) return false;
+  if ([...sel.options].some(o => o.value === value)) { sel.value = value; return false; }
+  const opt = document.createElement('option');
+  opt.value = value; opt.textContent = `⚠ ${value} — ${suffix || 'from an older sheet'}`;
+  opt.dataset.legacy = '1';
+  sel.appendChild(opt);
+  sel.value = value;
+  return true;
+}
+
+// ── Apply a normalised save: reset everything, write it, render it, verify it ──
+function applyImportedSave(result, fileName) {
+  const {payload, report} = result;
+  const note = (section, kind, text) => report.push({section, kind, text});
+
+  // 1. Full reset, so nothing from the previously loaded character leaks in
+  [LS_KEY, 'aethel-level-log', 'aethel-skill-investments', 'aethel-spells', 'aethel-talents', 'aethel-inventory',
+   'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-reactions', 'aethel-am-passives', 'aethel-daily-used',
+   'aethel-short-rest-used', 'aethel-death-saves', 'aethel-inspiration', 'aethel-hpmax-override', 'aethel-custom-order',
+   'aethel-init-override', 'aethel-rpmax-override', 'aethel-conditions', 'aethel-leveled-statuses', AB_LS_KEY, LEGACY_LS
+  ].forEach(k => localStorage.removeItem(k));
+  skillGrants = [];
+  ['stat-hp-max', 'stat-initiative', 'stat-rp-max'].forEach(id => { const el = document.getElementById(id); if (el) delete el.dataset.manualOverride; });
+  const l6 = document.getElementById('l6-save-choice'); if (l6) delete l6.dataset.userSet;
+  document.querySelectorAll('select[data-save] option[data-legacy]').forEach(o => o.remove());
+
+  // 2. Write the normalised save
+  localStorage.setItem(LS_KEY, JSON.stringify(payload.fields));
+  localStorage.setItem('aethel-level-log', JSON.stringify(payload.levelLog));
+  localStorage.setItem('aethel-skill-investments', JSON.stringify(payload.skillInvestments));
+  localStorage.setItem('aethel-spells', JSON.stringify(payload.spells));
+  localStorage.setItem('aethel-talents', JSON.stringify(payload.talents));
+  localStorage.setItem('aethel-inventory', JSON.stringify(payload.inventory));
+  Object.entries(payload.actionTables).forEach(([t, rows]) => localStorage.setItem('aethel-am-' + t, JSON.stringify(rows)));
+  actionTableData = {actions: [], bonus: [], reactions: [], passives: [], ...payload.actionTables};
+  savedAttacks = payload.attackBuilder;
+  localStorage.setItem(AB_LS_KEY, JSON.stringify(savedAttacks));
+  localStorage.setItem('aethel-daily-used', payload.dailyUsed);
+  localStorage.setItem('aethel-short-rest-used', payload.shortRestUsed);
+  localStorage.setItem('aethel-death-saves', JSON.stringify(payload.deathSaves));
+  localStorage.setItem('aethel-inspiration', payload.inspiration ? '1' : '0');
+  localStorage.setItem('aethel-conditions', JSON.stringify(payload.conditions));
+  localStorage.setItem('aethel-leveled-statuses', JSON.stringify(payload.leveledStatuses));
+  if (payload.customOrder) localStorage.setItem('aethel-custom-order', JSON.stringify(payload.customOrder));
+  if (_flag(payload.hpMaxOverride)) localStorage.setItem('aethel-hpmax-override', '1');
+  if (_flag(payload.initOverride)) localStorage.setItem('aethel-init-override', '1');
+  if (_flag(payload.rpMaxOverride)) localStorage.setItem('aethel-rpmax-override', '1');
+  legacyExtras = result.extras;
+  if (legacyExtras) localStorage.setItem(LEGACY_LS, JSON.stringify(legacyExtras));
+  // Reset in-memory trackers that loadAll only overwrites when present
+  dailyUsed = payload.dailyUsed === '1'; shortRestUsed = payload.shortRestUsed === '1';
+  document.getElementById('daily-toggle')?.classList.toggle('used', dailyUsed);
+  const srb = document.getElementById('short-rest-btn'); if (srb) { if (shortRestUsed) srb.setAttribute('disabled', ''); else srb.removeAttribute('disabled'); }
+  activeConditions = {}; deathSaves = {successes: 0, failures: 0};
+
+  // 3. Render
+  loadAll();
+
+  // 4. Verify every dropdown actually shows what the file holds; keep anything that didn't match
+  const f = payload.fields;
+  let reRender = false;
+  [['char-class', 'not installed in this build'], ['char-archetype', 'not in the current rules'], ['char-ancestry', 'not in the current rules'],
+   ['char-background', 'not in the current rules'], ['char-bond-plane', 'not in the current rules']].forEach(([id, why]) => {
+    const el = document.getElementById(id);
+    if (el && f[id] && el.value !== f[id]) {
+      if (id === 'char-archetype' && !f['char-class']) return;
+      ensureSelectValue(el, f[id], id === 'char-class' && f[id] === 'The Bond' ? 'expansion not installed' : why);
+      reRender = true;
+    }
+  });
+  if (reRender) { onArchetypeChange(); onAncestryChange(); onBackgroundChange(); warnMissingExpansion(); }
+
+  // 5. Hand-entered derived stats. Saves from before the override flags existed can't say
+  //    whether a value was typed by hand, so the value the player last saw is kept.
+  //    Where the file says "calculated", the sheet recalculates and reports any difference.
+  [['stat-hp-max', 'aethel-hpmax-override', 'Max HP', 'hpMaxOverride'], ['stat-rp-max', 'aethel-rpmax-override', 'Max resource points', 'rpMaxOverride'],
+   ['stat-initiative', 'aethel-init-override', 'Initiative', 'initOverride']].forEach(([id, key, label, flag]) => {
+    const el = document.getElementById(id);
+    const saved = (f[id] || '').trim();
+    if (!el || !saved || _flag(payload[flag])) return;
+    const calc = (el.value || '').trim();
+    if (calc === saved || (id === 'stat-initiative' && _int(calc) === _int(saved))) return;
+    if (payload[flag] === undefined) {
+      el.value = saved; el.dataset.manualOverride = '1'; localStorage.setItem(key, '1');
+      note('Character', 'kept', `${label}: kept your saved value ${saved} (the current rules calculate ${calc || '—'}). Clear the box to switch to the calculated value.`);
+    } else {
+      note('Character', 'kept', `${label}: the file had ${saved}, but it was set to auto-calculate, so the sheet now shows ${calc || '—'} under the current rules. If ${saved} is right for this character, type it into the box.`);
+    }
+  });
+  refreshResourceDisplays?.();
+
+  // 6. Report
+  const rep = {character: f['char-name'] || fileName || 'Character', file: fileName || '', fromVersion: result.fromVersion,
+    counts: result.counts, items: report, at: Date.now()};
+  localStorage.setItem(IMPORT_REPORT_LS, JSON.stringify(rep));
+  console.info('[import] ' + rep.character + ' — ' + report.length + ' note(s)', report);
+  return rep;
+}
+
+// ── Import report UI ──
+function showImportBanner(rep) {
+  const banner = document.getElementById('migration-banner');
+  const txt = document.getElementById('migration-banner-text');
+  if (!banner || !txt || !rep) return;
+  const issues = rep.items.filter(i => i.kind === 'kept' || i.kind === 'lost').length;
+  const fixes = rep.items.filter(i => i.kind === 'fixed').length;
+  let msg = rep.autosave ? `${esc(rep.character)} was checked against this version of the sheet. `
+    : `Loaded ${esc(rep.character)}${rep.fromVersion && rep.fromVersion !== SAVE_VERSION ? ` from an older save (${esc(rep.fromVersion)})` : ''}. `;
+  if (!issues && !fixes) msg += 'Everything carried over.';
+  else {
+    const parts = [];
+    if (fixes) parts.push(`${fixes} thing${fixes > 1 ? 's were' : ' was'} converted automatically`);
+    if (issues) parts.push(`<strong>${issues} need${issues > 1 ? '' : 's'} a look</strong>`);
+    msg += parts.join('; ') + '.';
+  }
+  txt.innerHTML = msg + ` <button class="migration-banner-dismiss" style="margin-left:.5rem" onclick="openImportReport()">View import report</button>`;
+  banner.classList.add('show');
+}
+function openImportReport() {
+  let rep = null;
+  try { rep = JSON.parse(localStorage.getItem(IMPORT_REPORT_LS)); } catch {}
+  const ov = document.getElementById('import-report-overlay');
+  const body = document.getElementById('import-report-body');
+  if (!ov || !body) return;
+  if (!rep) { body.innerHTML = '<p>No import report yet. Load a character file to create one.</p>'; ov.classList.add('open'); return; }
+  const c = rep.counts || {};
+  const carried = [
+    [c.levels, 'level'], [c.picks, 'Level Log pick'], [c.talents, 'talent'], [c.skills, 'skill'], [c.spells, 'crafted spell'],
+    [c.weapons, 'weapon'], [c.items, 'pack item'], [c.equipped, 'equipped slot'], [c.attacks, 'saved attack'], [c.actionRows, 'custom action row'], [c.notes, 'note section']
+  ].filter(([n]) => n).map(([n, w]) => `${n} ${w}${n > 1 ? 's' : ''}`).join(' · ');
+  const ICON = {fixed: '<span class="ir-ico ir-fixed" title="Converted automatically">✓</span>', kept: '<span class="ir-ico ir-kept" title="Kept — needs a look">⚠</span>',
+    lost: '<span class="ir-ico ir-lost" title="Not converted">✕</span>', info: '<span class="ir-ico ir-info" title="For your information">•</span>'};
+  const order = ['Character', 'Level Log', 'Talents', 'Skills', 'Inventory', 'Attack Builder', 'Features', 'Trackers', 'Other'];
+  const bySec = {};
+  rep.items.forEach(i => (bySec[i.section] = bySec[i.section] || []).push(i));
+  const rank = {lost: 0, kept: 1, fixed: 2, info: 3};
+  let html = `<div class="ir-sub">${esc(rep.character)}${rep.file ? ' · ' + esc(rep.file) : ''} · save format ${esc(rep.fromVersion || '?')} → ${esc(SAVE_VERSION)}</div>`;
+  html += `<div class="ir-carried"><strong>Carried over:</strong> ${carried || 'nothing detected'}.</div>`;
+  if (!rep.items.length) html += '<p class="ir-ok">Nothing needed converting — every section loaded as saved.</p>';
+  Object.keys(bySec).sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99)).forEach(sec => {
+    html += `<div class="ir-sec">${esc(sec)}</div><ul class="ir-list">` +
+      bySec[sec].sort((a, b) => rank[a.kind] - rank[b.kind]).map(i => `<li>${ICON[i.kind] || ''}<span>${esc(i.text)}</span></li>`).join('') + '</ul>';
+  });
+  html += `<div class="ir-legend">✓ converted automatically · ⚠ kept, needs a look · ✕ not converted · • information</div>`;
+  body.innerHTML = html;
+  ov.classList.add('open');
+}
+function closeImportReport() { document.getElementById('import-report-overlay')?.classList.remove('open'); }
+
+// Typing in a derived-stat box locks it; clearing the box hands it back to the formula.
+function onDerivedOverrideInput(el, key) {
+  if ((el.value || '').trim() === '') {
+    delete el.dataset.manualOverride; localStorage.removeItem(key);
+    updateDerivedStats(); refreshResourceDisplays?.();
+  } else { el.dataset.manualOverride = '1'; localStorage.setItem(key, '1'); }
+}
+
+// The full save as an object (Save writes it to a file; the autosave check re-reads it).
+function collectSavePayload() {
+  const data = buildSaveData();
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  // Always pull the freshest saved attacks from localStorage — the in-memory
+  // savedAttacks variable is only current if the Attack Builder tab has been rendered.
+  let attackBuilderData = [];
+  try { attackBuilderData = JSON.parse(localStorage.getItem(AB_LS_KEY) || '[]'); } catch { attackBuilderData = []; }
+  let customOrder = [];
+  try { customOrder = JSON.parse(localStorage.getItem('aethel-custom-order')) || []; } catch { customOrder = []; }
+  return {
+    version: SAVE_VERSION,
+    fields: data,
+    levelLog: levelEntries,
+    skillInvestments,
+    spells: spellData,
+    talents: talentSelections,
+    inventory: inventoryData,
+    actionTables: actionTableData,
+    attackBuilder: attackBuilderData,
+    dailyUsed: dailyUsed?'1':'0',
+    shortRestUsed: shortRestUsed?'1':'0',
+    deathSaves: deathSaves,
+    inspiration: inspiration,
+    conditions: activeConditions,
+    leveledStatuses: leveledStatuses,
+    hpMaxOverride: localStorage.getItem('aethel-hpmax-override')==='1',
+    initOverride: localStorage.getItem('aethel-init-override')==='1',
+    rpMaxOverride: localStorage.getItem('aethel-rpmax-override')==='1',
+    customOrder,
+    ...(legacyExtras ? {legacy: legacyExtras} : {})
+  };
+}
+
+// A character autosaved in this browser by an older sheet never goes through Load,
+// so check it once per sheet/rules version with the same converter.
+function migrateAutosaveIfNeeded() {
+  const stamp = [SAVE_VERSION, GD?.meta?.version || '', (GD?.expansions || []).join('+')].join('|');
+  if (localStorage.getItem('aethel-autosave-checked') === stamp) return;
+  localStorage.setItem('aethel-autosave-checked', stamp);
+  if (!localStorage.getItem(LS_KEY)) return;
+  const wasDirty = localStorage.getItem('aethel-dirty') === '1';
+  const result = normalizeSave(collectSavePayload());
+  if (!result.report.some(i => i.kind !== 'info')) return;
+  _suppressDirty = true;
+  const rep = applyImportedSave(result, '');
+  rep.autosave = true;
+  localStorage.setItem(IMPORT_REPORT_LS, JSON.stringify(rep));
+  localStorage.setItem('aethel-import-banner', '1');
+  _suppressDirty = false;
+  if (wasDirty || result.report.some(i => i.kind === 'fixed')) { _isDirty = true; localStorage.setItem('aethel-dirty', '1'); }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────
 async function init() {
   // Try external file first, fall back to embedded data
+  // aethel-data.json must hold the BASE game. If it is missing, or holds something else
+  // (e.g. the Bond expansion file saved under the wrong name), the embedded base data is
+  // used and any expansion found there is still merged, so the sheet never breaks.
+  let ext = null;
   try {
     const resp = await fetch('aethel-data.json');
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    GD = await resp.json();
-  } catch(e) {
-    console.warn('External aethel-data.json not found — using embedded data.');
-    GD = window.AETHEL_DATA_FALLBACK || null;
+    if (resp.ok) ext = await resp.json();
+  } catch(e) { /* offline / file:// — embedded data is used */ }
+  const embedded = window.AETHEL_DATA_FALLBACK || null;
+  if (isBaseGameData(ext)) {
+    GD = ext;
+    // An older aethel-data.json may lack newer sections — borrow them from the embedded copy.
+    if (embedded) Object.keys(embedded).forEach(k => { if (GD[k] === undefined) GD[k] = embedded[k]; });
+  } else {
+    GD = embedded;
+    if (ext) {
+      const what = ext.meta?.expansion ? `${ext.meta.expansion} expansion data` : 'no base game data';
+      console.warn(`aethel-data.json contains ${what} — using the embedded base game data instead.`);
+      if (ext.meta?.expansion && ext.classes) window.__misplacedExpansion = ext;
+      _dataNotice = `Site setup: aethel-data.json here contains ${what}, so the sheet is using its built-in base rules. `
+        + `Put the base game file in aethel-data.json${ext.meta?.expansion ? ' and the expansion file in aethel-bond.json' : ''}.`;
+    } else {
+      console.warn('External aethel-data.json not found — using embedded data.');
+    }
   }
   await loadExpansions();
   if (!GD || !GD.classes) {
@@ -1869,6 +2560,13 @@ async function init() {
   _suppressDirty = false;
   _isDirty = localStorage.getItem('aethel-dirty') === '1';
   updateSaveIndicator();
+  try { migrateAutosaveIfNeeded(); } catch (e) { console.error('[autosave check] failed', e); }
+  if (localStorage.getItem('aethel-import-banner') === '1') {
+    try { showImportBanner(JSON.parse(localStorage.getItem(IMPORT_REPORT_LS))); } catch {}
+  } else if (_dataNotice) {
+    const t = document.getElementById('migration-banner-text');
+    if (t) { t.textContent = _dataNotice; document.getElementById('migration-banner')?.classList.add('show'); }
+  }
 }
 window.addEventListener('DOMContentLoaded', init);
 
@@ -2527,6 +3225,11 @@ function renderSelectionSlotHTML(level, slotKey, selType, current, opts, cls, ar
   const isASI = current.startsWith('__asi__');
   const asiStat = isASI ? (current.split(':')[1] || '') : '';
   const isConverted = current.startsWith('__converted__');
+  // A saved pick that isn't in this slot's current options is kept and flagged, never blanked.
+  if (current && !isASI && !isConverted && !opts.some(o => o.value === current)) {
+    const why = !archetype ? 'choose an archetype to match it' : ruleExists(current) ? `not available to ${archetype} at this level` : 'not in the current rules';
+    opts = [{value: current, label: `⚠ ${current} — ${why}`, disabled: false}, ...opts];
+  }
   const convName = isConverted ? current.split(':').slice(1).join(':') : '';
   let descText = '';
   if (isASI) {
@@ -2760,6 +3463,8 @@ function renderLevelLog() {
             }
           });
         });
+        if (currentTal && !talOpts.some(o => o.value === currentTal))
+          talOpts.unshift({value: currentTal, label: `⚠ ${currentTal.replace('|', ' — Tier ')} (not in the current rules)`, disabled: false});
         // Parse current
         const [curTalName, curTalTier] = currentTal ? currentTal.split('|') : ['',''];
         const curTalent = currentTal ? findTalent(curTalName) : null;
@@ -3974,32 +4679,7 @@ function buildSaveData() {
 }
 
 async function saveAll() {
-  const data = buildSaveData();
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
-  // Always pull the freshest saved attacks from localStorage — the in-memory
-  // savedAttacks variable is only current if the Attack Builder tab has been rendered.
-  let attackBuilderData = [];
-  try { attackBuilderData = JSON.parse(localStorage.getItem(AB_LS_KEY) || '[]'); } catch { attackBuilderData = []; }
-  const payload = JSON.stringify({
-    version: SAVE_VERSION,
-    fields: data,
-    levelLog: levelEntries,
-    skillInvestments,
-    spells: spellData,
-    talents: talentSelections,
-    inventory: inventoryData,
-    actionTables: actionTableData,
-    attackBuilder: attackBuilderData,
-    dailyUsed: dailyUsed?'1':'0',
-    shortRestUsed: shortRestUsed?'1':'0',
-    deathSaves: deathSaves,
-    inspiration: inspiration,
-    conditions: activeConditions,
-    leveledStatuses: leveledStatuses,
-    hpMaxOverride: localStorage.getItem('aethel-hpmax-override')==='1',
-    initOverride: localStorage.getItem('aethel-init-override')==='1',
-    rpMaxOverride: localStorage.getItem('aethel-rpmax-override')==='1'
-  }, null, 2);
+  const payload = JSON.stringify(collectSavePayload(), null, 2);
   const charName = document.getElementById('char-name')?.value||'character';
   const defaultName = `${charName.replace(/\s+/g,'-').toLowerCase()||'aethel-sheet'}.json`;
   if (window.showSaveFilePicker) {
@@ -4034,56 +4714,44 @@ function loadFromFile(input) {
   const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
+    input.value = '';
+    let parsed;
+    try { parsed = JSON.parse(e.target.result); }
+    catch (err) { alert(`"${file.name}" could not be read — it isn't valid JSON.\n\n(${err.message})`); return; }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      alert(`"${file.name}" doesn't look like an Aethel character file.`); return;
+    }
+    if (parsed.classes && (parsed.meta || parsed.pactBonds || parsed.archetypeFeatures)) {
+      alert(`"${file.name}" is game data (aethel-data / aethel-bond), not a character. Load a character file saved from this sheet.`); return;
+    }
+    if (!GD) { alert('Game data has not loaded, so characters cannot be loaded yet.'); return; }
+    // Snapshot the current character so a failed import changes nothing.
+    const snap = {};
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('aethel')) snap[k] = localStorage.getItem(k); }
+    _suppressDirty = true;
     try {
-      const parsed = JSON.parse(e.target.result);
-      const fields = parsed.fields||parsed;
-      localStorage.setItem(LS_KEY, JSON.stringify(fields));
-      if (parsed.levelLog) { levelEntries = parsed.levelLog; localStorage.setItem('aethel-level-log', JSON.stringify(levelEntries)); }
-      if (parsed.skillInvestments) { skillInvestments = parsed.skillInvestments; localStorage.setItem('aethel-skill-investments', JSON.stringify(skillInvestments)); }
-      if (parsed.spells) { spellData = parsed.spells; localStorage.setItem('aethel-spells', JSON.stringify(spellData)); }
-      if (parsed.talents) { talentSelections = parsed.talents; localStorage.setItem('aethel-talents', JSON.stringify(talentSelections)); }
-      if (parsed.inventory) {
-        const SLOT_DEFAULTS = {head:'',neck:'',shouldersBack:'',chest:'',hands:'',waist:'',legs:'',feet:'',ring1:'',ring2:'',trinket1:'',trinket2:'',mainHand:'',offHand:''};
-        inventoryData = {weapons:[],packItems:[],equippedArmor:'',equippedShield:'',
-          equippedSlots:{...SLOT_DEFAULTS}, containers:[], ...parsed.inventory};
-        inventoryData.equippedSlots = {...SLOT_DEFAULTS, ...(inventoryData.equippedSlots||{})};
-        if (!Array.isArray(inventoryData.containers)) inventoryData.containers = [];
-        if (inventoryData.equippedArmor && !inventoryData.equippedSlots.chest) inventoryData.equippedSlots.chest = inventoryData.equippedArmor;
-        if (inventoryData.equippedShield && !inventoryData.equippedSlots.offHand) inventoryData.equippedSlots.offHand = inventoryData.equippedShield;
-        localStorage.setItem('aethel-inventory', JSON.stringify(inventoryData));
-      }
-      if (parsed.actionTables) {
-        Object.entries(parsed.actionTables).forEach(([t,rows]) => { if (actionTableData[t]!==undefined) actionTableData[t]=rows; });
-      }
-      if (parsed.attackBuilder) {
-        savedAttacks = Array.isArray(parsed.attackBuilder) ? parsed.attackBuilder : [];
-        localStorage.setItem(AB_LS_KEY, JSON.stringify(savedAttacks));
-      }
-      if (parsed.dailyUsed) { dailyUsed = parsed.dailyUsed==='1'; localStorage.setItem('aethel-daily-used',parsed.dailyUsed); }
-      if (parsed.shortRestUsed) { shortRestUsed = parsed.shortRestUsed==='1'; localStorage.setItem('aethel-short-rest-used',parsed.shortRestUsed); }
-      if (parsed.deathSaves) { deathSaves = {successes:0,failures:0,...parsed.deathSaves}; localStorage.setItem('aethel-death-saves', JSON.stringify(deathSaves)); }
-      if (parsed.inspiration !== undefined) { inspiration = !!parsed.inspiration; localStorage.setItem('aethel-inspiration', inspiration?'1':'0'); }
-      if (parsed.conditions && typeof parsed.conditions==='object') { activeConditions = parsed.conditions; localStorage.setItem('aethel-conditions', JSON.stringify(activeConditions)); }
-      if (Array.isArray(parsed.leveledStatuses)) {
-        leveledStatuses = parsed.leveledStatuses;
-        if (!leveledStatuses.some(s => s.id === 'exhaustion'))
-          leveledStatuses.unshift({ id:'exhaustion', name:'Exhaustion', max:10, level:0, builtin:true });
-        localStorage.setItem('aethel-leveled-statuses', JSON.stringify(leveledStatuses));
-      }
-      if (parsed.hpMaxOverride) localStorage.setItem('aethel-hpmax-override','1'); else localStorage.removeItem('aethel-hpmax-override');
-      if (parsed.initOverride) localStorage.setItem('aethel-init-override','1'); else localStorage.removeItem('aethel-init-override');
-      if (parsed.rpMaxOverride) localStorage.setItem('aethel-rpmax-override','1'); else localStorage.removeItem('aethel-rpmax-override');
-      _suppressDirty = true;
-      loadAll();
+      const result = normalizeSave(parsed);
+      const rep = applyImportedSave(result, file.name);
       _suppressDirty = false;
-      markClean();
-    } catch { alert('Failed to load: invalid JSON file.'); }
-    input.value='';
+      localStorage.setItem('aethel-import-banner', '1');
+      showImportBanner(rep);
+      const converted = rep.items.some(i => i.kind !== 'info') || result.fromVersion !== SAVE_VERSION;
+      if (converted) markDirty(true, 'This character was converted from an older save. Save it to keep the converted version.');
+      else markClean();
+    } catch (err) {
+      console.error('[import] failed', err);
+      Object.keys(localStorage).filter(k => k.startsWith('aethel')).forEach(k => localStorage.removeItem(k));
+      Object.entries(snap).forEach(([k, v]) => localStorage.setItem(k, v));
+      try { loadAll(); } catch {}
+      _suppressDirty = false;
+      alert(`Could not finish loading "${file.name}": ${err.message}\n\nYour current character was left unchanged. Please send the file to the sheet maintainer so the converter can be fixed.`);
+    }
   };
   reader.readAsText(file);
 }
 
 function loadAll() {
+  try { legacyExtras = JSON.parse(localStorage.getItem(LEGACY_LS)) || null; } catch { legacyExtras = null; }
   const raw = localStorage.getItem(LS_KEY);
   if (raw) {
     try {
@@ -4202,6 +4870,7 @@ function loadAll() {
 
 function dismissMigrationBanner() {
   document.getElementById('migration-banner')?.classList.remove('show');
+  localStorage.removeItem('aethel-import-banner');
 }
 
 // ── TALENTS ───────────────────────────────────────────────────────
@@ -4214,10 +4883,10 @@ function renderTalents() {
   }
   list.innerHTML = '';
   talentSelections.forEach((sel, idx) => {
-    const talent = findTalent(sel.name);
-    if (!talent) return;
-    const tierData = talent.tiers[(sel.tier||1)-1];
-    const maxTier = talent.tiers.length;
+    const talent = findTalent(sel.name) ||
+      {name: sel.name, category: sel.category, legacy: true, tiers: [{desc: '⚠ Not in the current rules — kept from an older save.'}]};
+    const tierData = talent.legacy ? talent.tiers[0] : talent.tiers[(sel.tier||1)-1];
+    const maxTier = talent.legacy ? (sel.tier||1) : talent.tiers.length;
     const row = document.createElement('div');
     row.className = 'talent-row';
     row.innerHTML = `
@@ -4339,8 +5008,11 @@ function newCharacter() {
     'aethel-talents', 'aethel-inventory', 'aethel-am-actions', 'aethel-am-bonus', 'aethel-am-reactions', 'aethel-am-passives',
     'aethel-daily-used', 'aethel-short-rest-used', 'aethel-death-saves', 'aethel-inspiration',
     'aethel-hpmax-override', 'aethel-custom-order', 'aethel-init-override', 'aethel-rpmax-override',
-    'aethel-dirty', 'aethel-last-saved', 'aethel-conditions', 'aethel-leveled-statuses', AB_LS_KEY];
+    'aethel-dirty', 'aethel-last-saved', 'aethel-conditions', 'aethel-leveled-statuses', AB_LS_KEY,
+    LEGACY_LS, 'aethel-import-banner'];
   keys.forEach(k => localStorage.removeItem(k));
+  legacyExtras = null;
+  dismissMigrationBanner();
 
   // Suppress dirty-marking while we tear down and rebuild.
   _suppressDirty = true;
@@ -5007,15 +5679,22 @@ function syncSlotsToInputs() {
   // Chest select — equippedSlots.chest is the authoritative value (always defined,
   // possibly ''). Do not fall back to equippedArmor here, or a cleared slot can
   // get re-filled with a stale value.
+  // Values that aren't standard armor/shields (custom or from an older sheet) are kept as a flagged option.
+  const setSel = (sel, v, why) => {
+    if (!sel) return;
+    sel.querySelectorAll('option[data-legacy]').forEach(o => { if (o.value !== v) o.remove(); });
+    sel.value = v || '';
+    if (v && sel.value !== v) ensureSelectValue(sel, v, why);
+  };
   const chestSel = document.getElementById('slot-chest');
-  if (chestSel) { chestSel.value = slots.chest || ''; chestSel.classList.toggle('filled', !!chestSel.value); }
-  const armorSel = document.getElementById('inv-armor-select');
-  if (armorSel) armorSel.value = slots.chest || '';
+  setSel(chestSel, slots.chest, 'not a standard armor');
+  if (chestSel) chestSel.classList.toggle('filled', !!chestSel.value);
+  setSel(document.getElementById('inv-armor-select'), slots.chest, 'not a standard armor');
   // Off-hand select
   const offSel = document.getElementById('slot-offHand');
-  if (offSel) { offSel.value = slots.offHand || ''; offSel.classList.toggle('filled', !!offSel.value); }
-  const shieldSel = document.getElementById('inv-shield-select');
-  if (shieldSel) shieldSel.value = slots.offHand || '';
+  setSel(offSel, slots.offHand, 'not a standard shield');
+  if (offSel) offSel.classList.toggle('filled', !!offSel.value);
+  setSel(document.getElementById('inv-shield-select'), slots.offHand, 'not a standard shield');
 }
 
 // ── CONTAINER FUNCTIONS ──────────────────────────────────────────────
