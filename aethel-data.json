@@ -2,7 +2,7 @@
  "meta": {
   "version": "0.9.5",
   "game": "Aethel",
-  "edition": "Base Game"
+  "edition": "Base Game + Bond Expansion"
  },
  "abilityScores": {
   "FORT": {
@@ -748,6 +748,132 @@
      }
     }
    ]
+  },
+  "The Bond": {
+   "hitDie": 8,
+   "resourceName": "Pact Points",
+   "resourceAbbr": "PP",
+   "governingStat": "PRES",
+   "archetypes": [
+    "Daemon Hunter",
+    "Death Knight",
+    "Necromancer",
+    "Planewalker"
+   ],
+   "selectionName": "Pact Bonds",
+   "selectionAbbr": "pactBonds",
+   "progressionTable": [
+    {
+     "level": 1,
+     "features": [
+      "Choose Archetype",
+      "Pact Tax: Bonus Action, no PP cost — take 1d6 True Damage (ignores Resistance/Immunity, cannot be prevented/redirected/reduced), gain 3 PP. Once per round.",
+      "Basic Pact Bonds available"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 3,
+      "pool": "basic"
+     }
+    },
+    {
+     "level": 2,
+     "features": [],
+     "selections": {
+      "type": "pactBond",
+      "count": 1,
+      "pool": "basic"
+     }
+    },
+    {
+     "level": 3,
+     "features": [
+      "Bound Deeper: Advanced Pact Bonds unlocked (Level 3+)"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 2,
+      "pool": "basic+advanced"
+     }
+    },
+    {
+     "level": 4,
+     "features": [
+      "Archetype Feature 1"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 1,
+      "pool": "basic+advanced"
+     }
+    },
+    {
+     "level": 5,
+     "features": [
+      "Severed Reckoning: Expert Pact Bonds unlocked (Level 5+)",
+      "Roll 1 extra effect die"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 2,
+      "pool": "all"
+     }
+    },
+    {
+     "level": 6,
+     "features": [
+      "Pact-Hardened: +2 Will Saves, +2 Defense Score"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 1,
+      "pool": "all"
+     }
+    },
+    {
+     "level": 7,
+     "features": [
+      "Archetype Feature 2"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 2,
+      "pool": "all"
+     }
+    },
+    {
+     "level": 8,
+     "features": [],
+     "selections": {
+      "type": "pactBond",
+      "count": 1,
+      "pool": "all"
+     }
+    },
+    {
+     "level": 9,
+     "features": [
+      "What Was Promised: Pact Tax now deals 1d4 damage instead of 1d6, and generates 5 PP instead of 3. Still once per round; Bleed-Through permits one additional Tax as a Reaction.",
+      "Roll 2 extra effect dice total"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 2,
+      "pool": "all"
+     }
+    },
+    {
+     "level": 10,
+     "features": [
+      "Archetype Feature 3 (Capstone)"
+     ],
+     "selections": {
+      "type": "pactBond",
+      "count": 1,
+      "pool": "all"
+     }
+    }
+   ]
   }
  },
  "archetypeFeatures": {
@@ -1292,6 +1418,274 @@
     "universal",
     "zealot"
    ]
+  },
+  "Daemon Hunter": {
+   "class": "The Bond",
+   "passives": [
+    "Bound Vessel: Both Pact Forms (Spite and Wrath) available at Level 1. Entering a form costs a Bonus Action (0 PP); switching Pact Forms in combat costs 2 PP.",
+    "Daemonsight: Always sense the nearest Void or Daemonic-type creature within 60 ft. Attacks against those types ignore 2 DEF.",
+    "Spite Form: +2 DEF. Generate 3 PP once per round when damaged by an enemy. Reaction: force attack targeting nearby ally to target you instead.",
+    "Wrath Form: Weapon attacks deal +1d6 bonus damage. Spending 6+ PP in one turn makes your next attack this turn an automatic Full Hit. +10 ft. movement speed.",
+    "Light Armor proficiency only — no Shield proficiency."
+   ],
+   "abilities": [
+    {
+     "name": "Hellfire Blade",
+     "type": "On-Hit Rider",
+     "cost": "Variable PP",
+     "desc": "Add to a melee attack. Spend up to 15 PP; deal +2d4 Fire damage per 3 PP spent. Not reduced on a Glancing Blow."
+    },
+    {
+     "name": "Devour",
+     "type": "On-Hit Rider",
+     "cost": "3 PP",
+     "desc": "Add to a melee attack. Full Hit only: recover HP equal to half the damage dealt."
+    },
+    {
+     "name": "Daemonic Leap",
+     "type": "Move (Free)",
+     "cost": "2 PP",
+     "desc": "Move 30 ft. in a straight line, ignoring difficult terrain and opportunity attacks. Free Action during your Move Phase."
+    },
+    {
+     "name": "Daemon Chains",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "One enemy within 30 ft. makes a Fort Save or is Grappled until the start of their next turn."
+    },
+    {
+     "name": "The Leash Slips (Signature)",
+     "type": "Bonus Action",
+     "cost": "Once per Long Rest",
+     "desc": "Roll 1d6 — result applies whether you like it or not. (1) Slaughter's Joy: three extra melee attacks, each deals 1d6 backlash to you. (2) Pit-Born Dread: 20 ft. burst — all creatures Will Save or Frightened. (3) Famine's End: all damage you deal heals you equally until next turn start. (4) Borrowed Face: Advantage vs. one enemy; all others have Advantage vs. you. (5) Overextended: one melee attack at 30 ft. range; Full Hit deals triple damage; you cannot act next turn. (6) It Speaks: GM reveals one true, useful piece of information about a present threat."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Daemonic Resilience",
+     "desc": "While in Spite Form, you have Resistance to Physical damage."
+    },
+    "7": {
+     "name": "Twin Forms",
+     "desc": "Once per Short Rest, when switching Pact Forms, both forms' passive benefits are active simultaneously for 1 round."
+    },
+    "10": {
+     "name": "Metamorphosis (Capstone)",
+     "desc": "Once per Long Rest, for 3 rounds: both Pact Forms' benefits active simultaneously, +10 ft. reach on all melee attacks, and Pact Tax costs no HP (still generates PP normally)."
+    }
+   }
+  },
+  "Death Knight": {
+   "class": "The Bond",
+   "passives": [
+    "Heavy Vessel: Proficient with Heavy Armor, Shields, and all martial weapons.",
+    "Cold to the Touch: Resistant to Necrotic damage. Spell Forms imposing Frightened on you are made at Disadvantage.",
+    "Grave Toll: Track 0–10 (12 at Level 4+). Gain 1 when damaged by any source. Gain 1 additional when using Pact Tax. At 5+ Grave Toll: melee attacks deal +1d4 bonus damage. At 10+ (12+): +1d8 instead. (Increases to 1d6/1d10 at Level 7+.)"
+   ],
+   "abilities": [
+    {
+     "name": "Soulrend Strike",
+     "type": "On-Hit Rider",
+     "cost": "Variable PP",
+     "desc": "Add to a melee attack. Spend up to 16 PP. Per 4 PP spent: +1d6 Necrotic damage and recover 1 HP per die rolled."
+    },
+    {
+     "name": "Grave Strike",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "Add to a melee attack. Full Hit only: recover HP equal to half the damage dealt, plus 1 HP per Grave Toll you currently have."
+    },
+    {
+     "name": "Grave Pull",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "One enemy within 30 ft. makes a Fort Save or is pulled to an unoccupied space adjacent to you. Boss-tier creatures automatically succeed."
+    },
+    {
+     "name": "Spell Ward",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "Until the start of your next turn, you have Resistance to all damage from Spell Forms and Augments, and auto-succeed saves against conditions they impose. Each time this prevents an effect, gain 1 Grave Toll."
+    },
+    {
+     "name": "Debt Made Flesh (Signature)",
+     "type": "Action",
+     "cost": "Once per Long Rest",
+     "desc": "For this round, all melee attacks deal maximum damage and ignore DEF entirely. If you use Grave Strike this round, it heals for the full damage dealt instead of half. At the start of your next turn: reduce your maximum HP by 25% (lasts until next Long Rest, stacks) and set Grave Toll to 0."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Unholy Resolve",
+     "desc": "Grave Toll cap increases to 12. While you have 8 or more Grave Toll, you have Resistance to Physical damage."
+    },
+    "7": {
+     "name": "Plague Bearer",
+     "desc": "Rime Blight and Sanguine Rot no longer expire from lack of reapplication while the target is within 30 ft. Grave Toll damage bonus increases to 1d6/1d10."
+    },
+    "10": {
+     "name": "Master of Death (Capstone)",
+     "desc": "Once per Long Rest, when reduced to 0 HP: drop to ½ Max HP instead, set Grave Toll to its maximum, and your next Grave Strike costs no PP."
+    }
+   }
+  },
+  "Necromancer": {
+   "class": "The Bond",
+   "passives": [
+    "The Bone Legion: Track Legion Count as a single number. Each point = one Skeleton. Skeletons are destroyed instantly by any damage. Legion Cap starts at 3.",
+    "Bone Shield: While adjacent to 2+ Skeletons in your Legion, weapon attacks against you must destroy one Skeleton instead of hitting you.",
+    "Grave Caller: Legion Cap increases to 4 at Level 5, 5 at Level 8.",
+    "Death's Accountant: Reaction. When a creature dies within 30 ft. (by any means), use Raise Fallen Foe at no PP cost. Once per combat.",
+    "Light Armor proficiency only — no Shield proficiency."
+   ],
+   "abilities": [
+    {
+     "name": "Raise Bone Servant",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "Animate one Skeleton from a corpse within 30 ft. +1 Legion Count (up to cap). May also be used as an Action."
+    },
+    {
+     "name": "Raise Fallen Foe",
+     "type": "Action",
+     "cost": "3 PP",
+     "desc": "Animate from a creature that died this encounter within 30 ft. +1 Legion Count (up to cap)."
+    },
+    {
+     "name": "Command Legion",
+     "type": "Action",
+     "cost": "0 PP",
+     "desc": "Make one attack roll using PRES modifier. Full Hit: 1d4 damage per Skeleton to one target, or split across up to 3 targets within 10 ft. of each other. Glancing Blow: half total damage. Legion Riders apply to this action."
+    },
+    {
+     "name": "Mass Grave",
+     "type": "Action",
+     "cost": "Once per Long Rest",
+     "desc": "Instantly raise to full Legion Cap from any corpses within 60 ft., regardless of normal PP cost."
+    },
+    {
+     "name": "Withering Surge",
+     "type": "Action",
+     "cost": "Variable PP",
+     "desc": "Target within 30 ft. takes 1d8 damage per 3 PP spent (max 15 PP = 5d8). +1d8 if that target currently has any of your DoT effects active."
+    },
+    {
+     "name": "Withering Curse",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Target within 30 ft. takes 2d4 damage at the start of each of their turns for 3 rounds. If the target is below 50% HP, deal 2d6 instead."
+    },
+    {
+     "name": "Siphon",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Add to Command Legion. Full Hit: recover HP equal to the damage dealt."
+    },
+    {
+     "name": "Corpse Explosion",
+     "type": "Reaction",
+     "cost": "1 Skeleton + 2 PP",
+     "desc": "When an enemy ends their turn adjacent to one of your Skeletons, OR when a Skeleton is destroyed: detonate it. All creatures within 10 ft. take 2d8 damage (Ref Save for half)."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Endless Ranks",
+     "desc": "Raise Bone Servant and Raise Fallen Foe each cost 1 less PP (minimum 1 PP)."
+    },
+    "7": {
+     "name": "Miasma of Decay",
+     "desc": "All damage-over-time effects you inflict deal +1 damage per tick per 2 Necromancer levels (e.g., +3 at Level 7, +5 at Level 10). Enemies afflicted by 2+ of your DoT effects simultaneously have −10 ft. speed."
+    },
+    "10": {
+     "name": "Necropolis (Capstone)",
+     "desc": "Legion Cap increases by 3. Mass Grave may be used a second time per Long Rest."
+    }
+   }
+  },
+  "Planewalker": {
+   "class": "The Bond",
+   "passives": [
+    "Planar Echo: Passively sense the presence of active planar rifts, portals, or significant otherplanar influence within 60 ft.",
+    "Marked: Choose your plane at character creation — Fey, Void, or Celestial. This grants that plane's unique Plane Passive, Signature Ability, and exclusive Planar Bond pool.",
+    "Spell Forms: You have access to all Spell Forms, the Destructive Augment, and the Impose Condition table as free selections. These do not cost PP to learn.",
+    "Light Armor proficiency only — no Shield proficiency."
+   ],
+   "abilities": [
+    {
+     "name": "Channel the Beyond",
+     "type": "Action",
+     "cost": "Variable PP",
+     "desc": "Deal 1d8 damage of your plane's signature damage type to one target within 30 ft. per 2 PP spent (max 16 PP = 8d8)."
+    },
+    {
+     "name": "Glimpse Beyond",
+     "type": "Action",
+     "cost": "3 PP",
+     "desc": "Target within 30 ft. makes a Will Save or is Dazed until end of their next turn. Either way, your next Planar Bond used against them this combat treats their save as Disadvantage."
+    },
+    {
+     "name": "Step Between",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Teleport up to 20 ft. to a space you can see."
+    },
+    {
+     "name": "Bleed-Through",
+     "type": "Reaction",
+     "cost": "—",
+     "desc": "When you take damage from any source, you may immediately use Pact Tax as a Reaction, generating PP from the same wound rather than a separate cost."
+    },
+    {
+     "name": "Echo of Elsewhere",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Cast any Spell Form using your plane's signature damage/effect type instead of its default, at will."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Deepening Mark",
+     "desc": "Your Scaling Threat DC increases by 1."
+    },
+    "7": {
+     "name": "Echo Made Permanent",
+     "desc": "Once per Short Rest, cast any Planar Bond at no PP cost."
+    },
+    "10": {
+     "name": "Fully Marked (Capstone)",
+     "desc": "Choose one Bond from a second plane, even without GM-granted narrative access. You may change it once per Long Rest."
+    }
+   },
+   "planes": {
+    "Fey": {
+     "passive": "Bound by Riddle: Once per Short Rest, when you answer a direct question, you may answer in a way that is technically true but deliberately misleading. The listener cannot detect this as deception through any mundane or magical means for the remainder of the scene.",
+     "signatureAbility": {
+      "name": "Court of Thorns and Laughter",
+      "type": "Reaction",
+      "cost": "Once per Long Rest",
+      "desc": "When you fail any roll, declare that it never happened. Reroll immediately and use the new result — no matter what it is, even if it's worse. The Fey are entertained either way."
+     }
+    },
+    "Void": {
+     "passive": "Where Shadows Forget: While you are in dim light or darkness, the first attack made against you each combat is made at Disadvantage.",
+     "signatureAbility": {
+      "name": "Open the Seam",
+      "type": "Bonus Action",
+      "cost": "Once per Long Rest",
+      "desc": "Tear a small, unstable rift into being at your feet. Roll 1d6: (1) Hungry Maw: all within 15 ft. Ref Save or pulled 10 ft. + 2d6 damage. (2) Whispers Take Hold: every creature within 20 ft. Will Save or compelled to move toward the rift next turn. (3) Feeding Frenzy: Pact Tax is a Free Action any number of times this round; each use also deals same damage to one random ally within 15 ft. (4) Reality Bleeds: until next turn, all damage rolls within 20 ft. that would deal less than half maximum instead deal maximum. (5) It Notices You: rift collapses; GM privately notes something now knows your name. (6) Perfect Convergence: until next turn, all Void Bonds cost 0 PP and ignore DEF entirely."
+     }
+    },
+    "Celestial": {
+     "passive": "Unblinking Witness: You always know, without rolling, when a creature within 30 ft. is directly lying to your face. You gain no special ability to act on this without revealing that you know.",
+     "signatureAbility": {
+      "name": "Choir of the Unseen",
+      "type": "Action",
+      "cost": "Once per Long Rest",
+      "desc": "Choose one enemy within 30 ft. They make a Will Save or come under your absolute command for 1 round — you control their action, bonus action, and movement as if they were your own creature. At the end of that round, they are Staggered, and they remember exactly what you made them do."
+     }
+    }
+   }
   }
  },
  "stances": {
@@ -3450,5 +3844,995 @@
     "equipped": true
    }
   }
- ]
+ ],
+ "pactBonds": {
+  "Daemon Hunter": {
+   "basic": [
+    {
+     "name": "Soul Rend",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "Add to a melee attack. +2d6 damage. Full Hit: recover 2 PP."
+    },
+    {
+     "name": "Lingering Flames",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "3 PP",
+     "desc": "Add to a melee attack. Full Hit: target burns — 1d4 Fire damage at the start of each of their turns for 3 rounds. Stacks up to 2 times."
+    },
+    {
+     "name": "Daemon's Grasp",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "2 PP",
+     "desc": "Add to a melee attack. Full Hit: pull the target 5 ft. toward you and they lose their Reaction until the start of your next turn."
+    },
+    {
+     "name": "Brand of Torment",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Mark one enemy within 30 ft. Your attacks against them deal +1d4 bonus damage until the end of combat."
+    },
+    {
+     "name": "Daemon Rush",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "Dash up to 20 ft. through enemy spaces; each enemy you pass within 5 ft. takes 2d4 damage."
+    },
+    {
+     "name": "Daemon's Bargain",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "Gain 5 temporary HP. At the start of your next turn, take 1d6 damage for each point of this temporary HP that still remains."
+    },
+    {
+     "name": "Daemon Lash",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "10 ft. melee attack. Full Hit: deal 1d6 damage and pull the target 5 ft. toward you."
+    },
+    {
+     "name": "Searing Brand",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "3 PP",
+     "desc": "When an enemy within 30 ft. casts a Spell Form or uses a special ability: they take 1d8 damage, and your next attack against them has Advantage."
+    },
+    {
+     "name": "Spite",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "3 PP",
+     "desc": "When you take damage from an enemy: that attacker takes damage equal to half what you took, up to a maximum of 10."
+    },
+    {
+     "name": "Unending Chase",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "+5 ft. movement speed permanently. When you reduce an enemy to 0 HP, you may spend 2 PP to move up to 15 ft. as a Free Action."
+    }
+   ],
+   "advanced": [
+    {
+     "name": "Annihilation",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "6 PP",
+     "desc": "Add to a melee attack. Full Hit: deal double weapon damage. If this brings the target below 25% HP, they are instantly destroyed (Minions and Henchmen only)."
+    },
+    {
+     "name": "Carnage",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "After landing a melee attack (any result), make one additional melee attack against one enemy within 5 ft. of your original target."
+    },
+    {
+     "name": "Rending Strike",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "Add to a melee attack. Full Hit: reduce the target's DEF by 2 until the end of their next turn. If Lingering Flames is active on the target: also deal +1d6 Fire damage."
+    },
+    {
+     "name": "The Hunt",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "5 PP",
+     "desc": "Until your next turn, your movement speed is doubled and you have Advantage on all attacks against one chosen enemy."
+    },
+    {
+     "name": "Infernal Blast",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "5 PP",
+     "desc": "All enemies within 15 ft. of you must make a Fort Save or be Staggered and take 2d6 damage."
+    },
+    {
+     "name": "Daemon's Gaze",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "30 ft. line, 5 ft. wide. Targets in the area make a Ref Save or take 2d6 damage and are Dazed until end of their next turn."
+    },
+    {
+     "name": "Daemon's Agility",
+     "tier": "advanced",
+     "type": "Reaction",
+     "cost": "4 PP",
+     "desc": "When you are targeted by an attack, impose Disadvantage on the attack roll. If the attack misses (or Glancing Blow becomes miss for this purpose), move 10 ft. without provoking Opportunity Attacks. Once per round."
+    },
+    {
+     "name": "Infernal Engine",
+     "tier": "advanced",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Wrath Form: at the start of each of your turns, if you dealt damage to at least one enemy on your previous turn, recover 2 PP."
+    }
+   ],
+   "expert": [
+    {
+     "name": "Devour Essence",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "6 PP",
+     "desc": "Add to a melee attack. Full Hit: target makes a Fort Save or is Stunned until the end of their next turn."
+    },
+    {
+     "name": "Soul Harvest",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "5 PP",
+     "desc": "Add to a melee attack. Full Hit: recover HP equal to the damage dealt, and gain temporary HP equal to half that amount."
+    },
+    {
+     "name": "Executioner's Mark",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "7 PP",
+     "desc": "Add to a melee attack against a target below 50% HP. Full Hit: deal +3d6 bonus damage. If this kills the target, recover 4 PP."
+    },
+    {
+     "name": "Daemonic Trample",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "5 PP",
+     "desc": "Move up to 20 ft. in a straight line. Every enemy in your path makes a Ref Save or takes 2d8 damage and is knocked Prone."
+    },
+    {
+     "name": "Daemonfire Detonation",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "7 PP",
+     "desc": "Choose one enemy within 30 ft. All creatures within 10 ft. of them — allies included — take 3d8 damage (Ref Save for half)."
+    },
+    {
+     "name": "Abyssal Counter",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "5 PP",
+     "desc": "When hit by a melee attack: attack back immediately. On a Full Hit, the attacker is also Staggered until the end of their next turn."
+    },
+    {
+     "name": "Unending Hatred",
+     "tier": "expert",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Whenever an enemy within 30 ft. is reduced to 0 HP by any source, immediately recover 4 PP. If you have not yet acted this round, your next attack has Advantage."
+    },
+    {
+     "name": "Momentum of the Hunt",
+     "tier": "expert",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Wrath Form: each consecutive turn you deal damage to at least one enemy grants a cumulative +1 to all damage rolls (max +5). Resets if you take no offensive action on a turn or switch to Spite Form."
+    },
+    {
+     "name": "Abyssal Frenzy",
+     "tier": "expert",
+     "type": "Full Action",
+     "cost": "6 PP",
+     "desc": "Make three melee attacks against any targets within reach. For each Full Hit, recover 1 PP."
+    }
+   ]
+  },
+  "Death Knight": {
+   "basic": [
+    {
+     "name": "Rime Blight",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "2 PP",
+     "desc": "Add to a melee attack. Full Hit: target's speed −10 ft. and they take 1d4 Cold damage at the start of each of their turns for 3 rounds. Reapplying before it ends: extend to 3 rounds and add +1d4 damage (max 3 stacks)."
+    },
+    {
+     "name": "Sanguine Rot",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "2 PP",
+     "desc": "Add to a melee attack. Full Hit: target takes 1d6 Necrotic damage at the start of each of their turns for 3 rounds. Each time this deals damage, you recover 1 HP."
+    },
+    {
+     "name": "Necrotic Wound",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "2 PP",
+     "desc": "Add to a melee attack. Full Hit: any healing the target receives is halved until the end of their next turn."
+    },
+    {
+     "name": "Hungering Cold",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "2 PP",
+     "desc": "Add to a melee attack. Full Hit: deal +1d6 Cold damage. If the target currently has Rime Blight: deal +2d6 Cold instead."
+    },
+    {
+     "name": "Death's Tithe",
+     "tier": "basic",
+     "type": "On-Hit Rider",
+     "cost": "0 PP",
+     "desc": "Add to any melee attack at no cost. Deal +1d6 bonus damage per 5 Grave Toll you currently have (max +2d6). Does not consume Grave Toll."
+    },
+    {
+     "name": "Marked for the Grave",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Mark one enemy within 30 ft. The next attack against them (by you or an ally) deals +1d6 bonus damage. Consumed when triggered."
+    },
+    {
+     "name": "Chains of Ice",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "One enemy within 20 ft. makes a Fort Save or is Restrained until the end of their next turn."
+    },
+    {
+     "name": "Icy Touch",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "30 ft. ranged attack: deal 2d6 Cold damage and the target cannot use their Reaction until the start of your next turn."
+    },
+    {
+     "name": "Grave's Endurance",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "3 PP",
+     "desc": "When you take damage: reduce that damage by an amount equal to your current Grave Toll, then set Grave Toll to 0."
+    },
+    {
+     "name": "Bonebreaker",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Your melee attacks deal +1d6 bonus damage against targets that are Slowed, Staggered, or Restrained."
+    },
+    {
+     "name": "Runic Empowerment",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Whenever you spend Grave Toll on any ability, your next melee attack this turn deals +1d4 bonus damage."
+    }
+   ],
+   "advanced": [
+    {
+     "name": "Virulent Plague",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "Add to a melee attack. Full Hit: apply both Rime Blight and Sanguine Rot simultaneously. If the target already has either, existing stacks increase by 1."
+    },
+    {
+     "name": "Empowered Death's Tithe",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "5 Grave Toll",
+     "desc": "Add to a melee attack. Full Hit: deal double weapon damage and recover HP equal to the damage dealt."
+    },
+    {
+     "name": "Rending Chill",
+     "tier": "advanced",
+     "type": "On-Hit Rider",
+     "cost": "3 PP",
+     "desc": "Add to a melee attack against a target that has Rime Blight. Full Hit: reduce the target's DEF by 2 until the end of their next turn."
+    },
+    {
+     "name": "Ghost Stride",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Until the start of your next turn: +10 ft. speed, ignore difficult terrain, and you cannot be forcibly moved or Grappled."
+    },
+    {
+     "name": "Pestilence",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "5 PP",
+     "desc": "Choose one enemy afflicted with Rime Blight or Sanguine Rot within 30 ft. Spread both afflictions at their current stack count to all enemies within 10 ft. of them."
+    },
+    {
+     "name": "Deathchill",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "All enemies within 10 ft. of you that currently have Rime Blight take 1d8 additional Cold damage immediately, and their Rime Blight stack count is set to its maximum."
+    },
+    {
+     "name": "Relentless Decay",
+     "tier": "advanced",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Your DoT effects deal +1 damage per tick for every 3 Grave Toll you currently have."
+    }
+   ],
+   "expert": [
+    {
+     "name": "Asphyxiate",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "5 PP",
+     "desc": "Add to a melee attack. Full Hit: target makes a Fort Save or is Stunned until the end of their next turn."
+    },
+    {
+     "name": "Soul Reaper",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "7 PP",
+     "desc": "Add to a melee attack against a target below 35% HP. Full Hit: mark the target. At the start of your next turn, if the mark is still active, they take 4d6 Necrotic damage and you recover that much HP."
+    },
+    {
+     "name": "Obliterate",
+     "tier": "expert",
+     "type": "On-Hit Rider",
+     "cost": "6 PP",
+     "desc": "Add to a melee attack. Deal +2d8 bonus damage. For each DoT effect currently active on the target, deal an additional +1d6 damage. This does not remove the DoT effects."
+    },
+    {
+     "name": "Grave Leeches",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "3 Grave Toll",
+     "desc": "Release Grave Leeches. At the start of each of your next 3 turns, recover 1d6 HP."
+    },
+    {
+     "name": "Remorseless Winter",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "6 PP",
+     "desc": "All enemies within 15 ft. must make a Fort Save or be Slowed and take 2d6 Cold damage."
+    },
+    {
+     "name": "Death's Counter",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "4 PP",
+     "desc": "When hit by a melee attack: attack back immediately. On a Full Hit, the attacker is also Staggered until the end of their next turn."
+    },
+    {
+     "name": "Winter's Grasp",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "3 PP",
+     "desc": "When an enemy moves away from you: they must make a Fort Save or their speed is reduced to 0 until the end of their turn."
+    },
+    {
+     "name": "Harvester's Presence",
+     "tier": "expert",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Enemies within 10 ft. of you cannot regain HP by any means."
+    },
+    {
+     "name": "Inevitable",
+     "tier": "expert",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "While you have 5 or more Grave Toll, you cannot be moved against your will by any forced movement effect."
+    },
+    {
+     "name": "Army of the Damned",
+     "tier": "expert",
+     "type": "Full Action",
+     "cost": "8 PP",
+     "desc": "Once per Long Rest. Summon 3 Ghouls (6–8 HP, deal 1d6+2 damage). You may command them as a Free Action each turn."
+    }
+   ]
+  },
+  "Necromancer": {
+   "basic": [
+    {
+     "name": "Grasping Dead",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Add to Command Legion. Full Hit: target is Grappled until the start of their next turn (Fort Save negates)."
+    },
+    {
+     "name": "Festering Wound",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Add to Command Legion. Full Hit: target takes 1d6 Necrotic damage now and at the start of each of their turns for 3 rounds. Damage increases by +1 each tick (cumulative)."
+    },
+    {
+     "name": "Bone Shrapnel",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "2 PP",
+     "desc": "Add to Command Legion. On any hit: all enemies within 5 ft. of the target take 1d4 Piercing damage."
+    },
+    {
+     "name": "Draining Strike",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Add to Command Legion. Full Hit: recover HP equal to half the damage dealt."
+    },
+    {
+     "name": "Bone Armor",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Gain temporary HP equal to 1d6 + PRES modifier."
+    },
+    {
+     "name": "Rattling Charge",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "One Skeleton in your Legion may move up to 30 ft. before you use Command Legion this turn, without using your Command Legion action."
+    },
+    {
+     "name": "Ghoul's Grasp",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "One Skeleton in your Legion attempts to Grapple an adjacent enemy using your PRES modifier for the contested check."
+    },
+    {
+     "name": "Creeping Decay",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "Target within 30 ft. takes 1d4 Necrotic damage now and at the start of each of their turns. Each turn the die increases one step: 1d4→1d6→1d8→1d10 (max). Lasts 5 rounds or until cleansed."
+    },
+    {
+     "name": "Echoing Wail",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "All enemies within 15 ft. of you must make a Will Save or be Frightened until the end of their next turn."
+    },
+    {
+     "name": "Bone Ward",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "1 Skeleton",
+     "desc": "When you or an ally within 10 ft. would take damage: destroy 1 Skeleton, reduce that damage by 1d8."
+    },
+    {
+     "name": "Last Rites",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "1 Skeleton",
+     "desc": "When an ally within 10 ft. takes damage: destroy 1 Skeleton, that ally immediately recovers 1d8 HP."
+    },
+    {
+     "name": "Marrow Feast",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Whenever any Skeleton in your Legion is destroyed (by any means), you recover 1 PP."
+    },
+    {
+     "name": "Necrotic Presence",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Enemies within 10 ft. of any of your active Skeletons have Disadvantage on Saving Throws against your Bonds."
+    }
+   ],
+   "advanced": [
+    {
+     "name": "Plague Spread",
+     "tier": "advanced",
+     "type": "Legion Rider",
+     "cost": "4 PP",
+     "desc": "Add to Command Legion. On any hit against a target with Festering Wound or Creeping Decay: spread that DoT to all enemies within 10 ft. of the target at its current damage value."
+    },
+    {
+     "name": "Reaping Command",
+     "tier": "advanced",
+     "type": "Legion Rider",
+     "cost": "4 PP",
+     "desc": "Add to Command Legion. If Command Legion kills any creature this turn: recover 3 PP and immediately raise that creature as a Skeleton (Free Action, no PP)."
+    },
+    {
+     "name": "Withering Touch",
+     "tier": "advanced",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Add to Command Legion. Full Hit: any healing the target receives is halved until the end of their next turn."
+    },
+    {
+     "name": "Unfailing Command",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Command Legion this turn is an automatic Full Hit — no attack roll required."
+    },
+    {
+     "name": "Necrotic Aura",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Until the start of your next turn: any enemy that enters or starts within 15 ft. of you takes 1d6 Necrotic damage (once per creature per round)."
+    },
+    {
+     "name": "Death Coil",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "30 ft. ranged attack: deal 2d8 Necrotic damage (half on Glancing Blow). Alternatively, target an ally: they recover 2d8 HP instead."
+    },
+    {
+     "name": "Ossuary Span",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "Up to 3 Skeletons",
+     "desc": "Consume up to 3 Skeletons. Per Skeleton consumed: create a 5 ft. section of solid bone terrain (wall, bridge, or platform) in an unoccupied space within 30 ft. Each section has 15 HP and persists until destroyed."
+    },
+    {
+     "name": "Bone Colossus",
+     "tier": "advanced",
+     "type": "Full Action",
+     "cost": "6 PP + All Skeletons",
+     "desc": "Consume your entire Legion (set Count to 0). Raise a single Bone Colossus: HP = 10 × Skeletons consumed, deals 2d8 per attack. Command using a Bonus Action each turn. Lasts until destroyed or end of combat."
+    },
+    {
+     "name": "Plague of the Grave",
+     "tier": "advanced",
+     "type": "Full Action",
+     "cost": "6 PP",
+     "desc": "All enemies within 15 ft. of any active Skeleton must make a Fort Save or be Poisoned for 3 rounds."
+    }
+   ],
+   "expert": [
+    {
+     "name": "Paralytic Rot",
+     "tier": "expert",
+     "type": "Legion Rider",
+     "cost": "5 PP",
+     "desc": "Add to Command Legion. Full Hit: target makes a Fort Save or is Paralyzed until the end of their next turn."
+    },
+    {
+     "name": "Legion's Wrath",
+     "tier": "expert",
+     "type": "Legion Rider",
+     "cost": "5 PP",
+     "desc": "Command Legion this turn deals 2d4 damage per Skeleton instead of 1d4."
+    },
+    {
+     "name": "Grave Rend",
+     "tier": "expert",
+     "type": "Legion Rider",
+     "cost": "6 PP",
+     "desc": "Add to Command Legion. Full Hit: reduce the target's maximum HP by 1d8 until their next Long Rest, and you recover that much HP."
+    },
+    {
+     "name": "Epidemic",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "5 PP",
+     "desc": "Choose one enemy within 30 ft. afflicted by any of your DoT effects. That DoT immediately spreads to all enemies within 15 ft. of them at its current damage value."
+    },
+    {
+     "name": "Plague Lord's Decree",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "7 PP",
+     "desc": "All enemies within 20 ft. must make a Fort Save or be Poisoned and have their DEF reduced by 2 until the end of combat."
+    },
+    {
+     "name": "Death's Embrace",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "4 PP",
+     "desc": "When an enemy within 30 ft. is reduced to 0 HP: all enemies within 10 ft. of that creature must make a Fort Save or be Frightened until the end of their next turn."
+    },
+    {
+     "name": "Grave Shield",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "3 Skeletons",
+     "desc": "When damage would reduce you to 0 HP: consume 3 Skeletons to reduce to 0 HP instead. Once per Long Rest. (You survive at 0 HP, stabilized; same as being reduced normally without death saves if your system uses them.)"
+    },
+    {
+     "name": "Harvest of Souls",
+     "tier": "expert",
+     "type": "Full Action",
+     "cost": "All Skeletons",
+     "desc": "Consume your entire Legion. Per Skeleton consumed: recover 2 PP and 1d4 HP."
+    },
+    {
+     "name": "Soul Barrage",
+     "tier": "expert",
+     "type": "Full Action",
+     "cost": "6 PP",
+     "desc": "Deal 2d6 Necrotic damage to all enemies within 20 ft. Recover 2 HP per enemy affected. If 3 or more enemies are affected, also recover 2 PP."
+    }
+   ]
+  },
+  "Planewalker": {
+   "Fey": {
+    "basic": [
+     {
+      "name": "Wild Bargain",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Roll 1d4: (1) Frightened, (2) Slowed, (3) you gain +10 ft. speed, (4) roll again and apply to original target + one additional target within 30 ft. Stacks on repeated 4s."
+     },
+     {
+      "name": "Thorned Glamour",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "4 PP",
+      "desc": "Enemy 30 ft. will Save or attacks the nearest creature (ally or enemy) on their next turn instead of acting normally."
+     },
+     {
+      "name": "Stolen Step",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Swap positions instantly with any creature within 30 ft. (willing or not). Will Save negates for unwilling targets."
+     },
+     {
+      "name": "Faerie Fire",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Target within 30 ft. is outlined in glowing light until end of your next turn. Attacks against them have Advantage; they cannot benefit from Invisible or Hidden condition."
+     },
+     {
+      "name": "Fool's Luck",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "2 PP",
+      "desc": "Impose Disadvantage on one enemy's next Saving Throw. Flip a coin: on a loss, the Disadvantage applies to your own next roll instead."
+     },
+     {
+      "name": "Glamoured Disguise",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "2 PP",
+      "desc": "For 1 minute, you appear as a different humanoid of your approximate size. Purely cosmetic."
+     },
+     {
+      "name": "Capricious Step",
+      "tier": "basic",
+      "type": "Reaction",
+      "cost": "2 PP",
+      "desc": "When you would be hit by an attack, teleport up to 10 ft. to an unoccupied space. If no longer in the attack's reach or area, it deals no damage."
+     },
+     {
+      "name": "Mischief's Blade",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "2 PP",
+      "desc": "Your next attack this turn deals +2d4 Psychic damage. Full Hit: the target's next attack has Disadvantage."
+     }
+    ],
+    "advanced": [
+     {
+      "name": "Revel's Edge",
+      "tier": "advanced",
+      "type": "Free Action",
+      "cost": "0 PP",
+      "desc": "Once per round, when any Critical Hit occurs within 30 ft. (yours, an ally's, or an enemy's), you may spend this Bond as a Free Action to immediately recover 4 PP."
+     },
+     {
+      "name": "Wicked Trade",
+      "tier": "advanced",
+      "type": "Bonus Action",
+      "cost": "4 PP",
+      "desc": "Swap your current HP total with one enemy within 30 ft. (Will Save negates). Minions and Henchmen only."
+     },
+     {
+      "name": "Tithe to the Hollow Hill",
+      "tier": "advanced",
+      "type": "Bonus Action",
+      "cost": "4 PP",
+      "desc": "One ally within 30 ft. gains 10 temporary HP. If any remains at the start of their next turn, they are Slowed until the end of their following turn."
+     },
+     {
+      "name": "Changeling's Mercy",
+      "tier": "advanced",
+      "type": "Action",
+      "cost": "5 PP",
+      "desc": "Remove all Basic and Advanced conditions from one ally within 30 ft. Roll 1d4: on a 1, you gain one random Basic condition instead."
+     }
+    ],
+    "expert": [
+     {
+      "name": "The Hunt Answers",
+      "tier": "expert",
+      "type": "Passive",
+      "cost": "6 PP",
+      "desc": "Until the end of combat (activated once). Once per round, when an enemy within 30 ft. takes a Critical Hit from any source, they are also Frightened until the end of their next turn."
+     },
+     {
+      "name": "Unmaking Jest",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "5 PP",
+      "desc": "Target within 30 ft. must make a Will Save or be Stunned until the end of their next turn (laughing uncontrollably at a joke only they can hear)."
+     },
+     {
+      "name": "Court's Judgment",
+      "tier": "expert",
+      "type": "Bonus Action",
+      "cost": "7 PP",
+      "desc": "Target within 30 ft. makes a Will Save. Failure: roll 1d4: (1) Paralyzed until end of next turn, (2) teleported 30 ft. in a random direction, (3) swaps all conditions with you, (4) their next turn is skipped entirely."
+     },
+     {
+      "name": "Cruel Laughter",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "5 PP",
+      "desc": "All enemies within 20 ft. make a Will Save or take 3d6 Psychic damage and are Dazed until end of their next turn. Success: half damage, no condition."
+     }
+    ]
+   },
+   "Void": {
+    "basic": [
+     {
+      "name": "Hollow Touch",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Make a melee attack that deals +2d6 bonus damage. Full Hit: drain 1d4 RP from the target (they lose it; you do not gain it)."
+     },
+     {
+      "name": "Devouring Dark",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Target within 30 ft. takes 2d6 damage. You recover HP equal to half the damage dealt."
+     },
+     {
+      "name": "Whispers from Beyond",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "5 PP",
+      "desc": "Choose a point within 60 ft. All enemies within 15 ft. of that point must make a Will Save or be Frightened until the end of their next turn."
+     },
+     {
+      "name": "Creeping Void",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Target within 30 ft. and all enemies within 5 ft. of them take 1d6 damage and have their Speed reduced by 5 ft. until the end of their next turn."
+     },
+     {
+      "name": "Entropic Strike",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "30 ft. ranged attack: deal 2d6 + PRES modifier Necrotic damage. Full Hit: reduce the target's maximum HP by 1d4 until their next Long Rest."
+     },
+     {
+      "name": "Siphon the Seam",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "3 PP",
+      "desc": "One enemy within 30 ft. makes a Will Save or loses 1d4 RP (you gain that amount as PP instead)."
+     },
+     {
+      "name": "Null Touch",
+      "tier": "basic",
+      "type": "Reaction",
+      "cost": "2 PP",
+      "desc": "When an enemy within 30 ft. would regain HP or RP from any source: halve the amount regained (Will Save negates)."
+     }
+    ],
+    "advanced": [
+     {
+      "name": "Unraveling",
+      "tier": "advanced",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Target within 30 ft. loses 1 DEF at the start of each of their turns (stacks up to 3) until the end of combat."
+     },
+     {
+      "name": "Maddening Whisper",
+      "tier": "advanced",
+      "type": "Action",
+      "cost": "4 PP",
+      "desc": "Target within 30 ft. makes a Will Save or is Dazed and Frightened until the end of their next turn."
+     },
+     {
+      "name": "Hungering Void",
+      "tier": "advanced",
+      "type": "Bonus Action",
+      "cost": "4 PP",
+      "desc": "Your next attack this turn that deals damage also drains 1d4 RP from the target on any hit."
+     },
+     {
+      "name": "Devourer's Patience",
+      "tier": "advanced",
+      "type": "Reaction",
+      "cost": "5 PP",
+      "desc": "When an enemy within 30 ft. drops below 25% HP: they take 1d8 Necrotic damage and you recover HP equal to half that amount."
+     }
+    ],
+    "expert": [
+     {
+      "name": "Devour Essence",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "6 PP",
+      "desc": "30 ft. ranged attack: deal 3d6 damage (half on Glancing Blow). Full Hit: target is Weakened until end of their next turn; you recover HP equal to half the damage dealt."
+     },
+     {
+      "name": "Collapse the Self",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "7 PP",
+      "desc": "Target within 30 ft. makes a Will Save or is Paralyzed until the end of their next turn as the Void unmakes their sense of self."
+     },
+     {
+      "name": "Starving Rift",
+      "tier": "expert",
+      "type": "Bonus Action",
+      "cost": "5 PP",
+      "desc": "For 1 round, your Void Bonds deal an additional 1d6 damage and drain 1 additional RP from the target on a Full Hit."
+     },
+     {
+      "name": "Annihilate",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "7 PP",
+      "desc": "30 ft. ranged attack: deal 4d6 Necrotic damage (half on Glancing Blow). Full Hit: you may immediately use Pact Tax as a Free Action."
+     },
+     {
+      "name": "Consuming Darkness",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "6 PP",
+      "desc": "15 ft. cone. All creatures in the area take 4d6 Necrotic damage (Ref Save for half). You recover HP equal to half the total damage dealt."
+     }
+    ]
+   },
+   "Celestial": {
+    "basic": [
+     {
+      "name": "Verdict",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "Declare a compulsion on one enemy within 30 ft. (e.g., 'you will not attack my ally'). If they break it before your next turn, they immediately take 2d8 Radiant damage."
+     },
+     {
+      "name": "Compelling Gaze",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "4 PP",
+      "desc": "One enemy within 30 ft. makes a Will Save or redirects their next attack this round to a target of your choice (ally or enemy)."
+     },
+     {
+      "name": "Judging Light",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "2 PP",
+      "desc": "Illuminate a 20 ft. radius with harsh celestial light for 1 round. Enemies within cannot benefit from the Hidden or Invisible condition."
+     },
+     {
+      "name": "Censure",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "30 ft. ranged attack: deal 2d6 Radiant damage (half on Glancing Blow). Full Hit: the target cannot benefit from Resistance or Immunity to Radiant damage until the end of your next turn."
+     },
+     {
+      "name": "Divine Condemnation",
+      "tier": "basic",
+      "type": "Action",
+      "cost": "3 PP",
+      "desc": "30 ft. ranged attack: deal 2d6 + PRES modifier Radiant damage. Full Hit: the target has Disadvantage on their next Saving Throw."
+     },
+     {
+      "name": "Weight of Conscience",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "3 PP",
+      "desc": "One enemy within 30 ft. makes a Will Save or has Disadvantage on their next Attack Roll."
+     },
+     {
+      "name": "Searing Verdict",
+      "tier": "basic",
+      "type": "Bonus Action",
+      "cost": "3 PP",
+      "desc": "One enemy within 30 ft. that is currently affected by any of your Celestial Bonds takes 1d6 Radiant damage immediately."
+     }
+    ],
+    "advanced": [
+     {
+      "name": "Binding Oath",
+      "tier": "advanced",
+      "type": "Bonus Action",
+      "cost": "4 PP",
+      "desc": "Target within 30 ft. makes a Fort Save or is Grappled by radiant chains until the end of their next turn."
+     },
+     {
+      "name": "Reckoning",
+      "tier": "advanced",
+      "type": "Action",
+      "cost": "4 PP",
+      "desc": "Mark one enemy. The next time they take any action that harms one of your allies, they immediately take 3d4 Radiant damage as delayed judgment. Lasts until triggered or end of combat."
+     },
+     {
+      "name": "Trial by Fire",
+      "tier": "advanced",
+      "type": "Action",
+      "cost": "4 PP",
+      "desc": "Target within 30 ft. makes a Will Save or is Restrained until the end of their next turn and takes 1d8 Radiant damage immediately."
+     },
+     {
+      "name": "Wings of Judgment",
+      "tier": "advanced",
+      "type": "Bonus Action",
+      "cost": "5 PP",
+      "desc": "Gain a fly speed of 20 ft. until the end of your next turn. The first attack you make against an enemy below you this turn has Advantage."
+     }
+    ],
+    "expert": [
+     {
+      "name": "Final Sentence",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "6 PP",
+      "desc": "30 ft. ranged attack: deal 3d8 Radiant damage (half on Glancing Blow). Full Hit: target makes a Will Save or is Stunned until end of next turn."
+     },
+     {
+      "name": "Absolute Decree",
+      "tier": "expert",
+      "type": "Bonus Action",
+      "cost": "7 PP",
+      "desc": "Up to 2 enemies within 30 ft. each make a Will Save or are Restrained by radiant chains until the end of their next turn (resolve each independently)."
+     },
+     {
+      "name": "Echo of Judgment",
+      "tier": "expert",
+      "type": "Passive",
+      "cost": "5 PP",
+      "desc": "Active until end of combat (activated once). Whenever Verdict, Reckoning, or Final Sentence triggers its bonus damage, all allies within 15 ft. of the target gain +1d4 to their next attack roll against that target."
+     },
+     {
+      "name": "The Court Convenes",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "6 PP",
+      "desc": "Up to 3 enemies within 30 ft. each make a Will Save or are Restrained by radiant chains until the end of their next turn (resolve each independently)."
+     },
+     {
+      "name": "Pillar of Judgment",
+      "tier": "expert",
+      "type": "Action",
+      "cost": "6 PP",
+      "desc": "Choose a point within 60 ft. A 10 ft. radius column of radiant light strikes. Enemies in the area take 4d8 Radiant damage (Ref Save for half). Allies in the area recover 1d8 HP."
+     }
+    ]
+   }
+  }
+ }
 }
