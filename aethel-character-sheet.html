@@ -1564,6 +1564,7 @@ select.field-input{cursor:pointer;}
           <li>Clear error messages replace "invalid JSON file". A failed load leaves the current character untouched.</li>
           <li>If aethel-data.json is missing or holds the wrong file (such as the Bond expansion), the sheet falls back to its built-in base rules, still loads the expansion, and shows a setup notice.</li>
           <li>Max HP, resource points and Initiative: clearing a hand-typed value switches the box back to the calculated value.</li>
+          <li>Talent Points: the Level Log again offers a Talent only at Levels 1, 4, 7 and 10, and lists the Talent Point among that level's gains. Talents an older sheet saved at other levels are kept, marked ⚠, and listed in the Import Report so they can be moved.</li>
         </ul>
       </div>
       <div class="cl-entry">
@@ -1722,6 +1723,7 @@ window.AETHEL_DATA_FALLBACK = {"meta":{"version":"0.9.5","game":"Aethel","editio
 let GD = null; // Game Data (loaded from JSON)
 let _dataNotice = ''; // set when aethel-data.json is missing base data (shown in the banner)
 const LS_KEY = 'aethel-sheet-v2';
+const TALENT_LEVELS = [1, 4, 7, 10]; // Talent Points are gained at these levels
 const SAVE_VERSION = '2.0.0';
 
 // ── DIRTY TRACKING / AUTOSAVE HARDENING ───────────────────────────
@@ -2103,6 +2105,8 @@ function normalizeSave(parsed) {
         const hit = findRule(tn, ['talent'])[0];
         if (hit) tn = hit.name; else note('Level Log', 'kept', `${where}: talent "${tn}" is not in the current rules — kept, marked ⚠.`);
         e.selections[slot] = tn + '|' + (_int(tier, 1) || 1);
+        if (!TALENT_LEVELS.includes(e.level))
+          note('Level Log', 'kept', `${where}: talent "${tn}" was taken at a level that no longer grants one (Talent Points come at Levels 1, 4, 7 and 10). Kept and marked ⚠ — move it to one of those levels or clear it.`);
         return;
       }
       if (!selKinds) { e.selections[slot] = v; return; }
@@ -3437,11 +3441,16 @@ function renderLevelLog() {
         body.appendChild(bonusDiv);
       }
 
-      // ── Talent selection (every level)
-      if (cls && GD?.talents) {
+      // ── Talent selection — a Talent Point at Levels 1, 4, 7 and 10 only. A pick saved at
+      // any other level (older sheets offered one every level) is kept and flagged, not dropped.
+      const _talOnCadence = TALENT_LEVELS.includes(entry.level);
+      if (cls && GD?.talents && (_talOnCadence || entry.selections.talent)) {
         const talDiv = document.createElement('div');
         talDiv.className = 'level-selections';
-        talDiv.innerHTML = '<div class="level-grants-label">Talent (Optional)</div>';
+        talDiv.innerHTML = _talOnCadence
+          ? '<div class="level-grants-label">Talent Point</div>'
+          : '<div class="level-grants-label" style="color:var(--crimson-soft)">⚠ Talent from an older sheet</div>'
+            + '<div style="font-size:.78rem;color:var(--crimson-soft);margin-bottom:.35rem">Talents are only gained at Levels 1, 4, 7 and 10. This pick is kept so nothing is lost — move it to one of those levels with your GM, or set this box to “No Talent”.</div>';
         const talKey = 'talent';
         const currentTal = entry.selections[talKey] || '';
         // Build talent options grouped by category; allow Tier 2 re-picks
@@ -3472,7 +3481,7 @@ function renderLevelLog() {
         const talSlot = document.createElement('div');
         talSlot.className = 'selection-slot';
         talSlot.innerHTML = `
-          <div class="selection-label">Choose a talent or leave empty</div>
+          <div class="selection-label">${_talOnCadence ? 'Choose a new Talent, or raise one you have to Tier 2' : 'Off-schedule talent'}</div>
           <select class="selection-select" onchange="onSelectionChange(${entry.level},'${talKey}',this.value,this)">
             <option value="">— No Talent —</option>
             ${talOpts.map(o => `<option value="${esc(o.value)}" ${o.value===currentTal?'selected':''} ${o.disabled?'disabled':''}>
@@ -3578,6 +3587,7 @@ function buildLevelGrants(level, cls, archetype, progRow) {
     }
   });
 
+  if (TALENT_LEVELS.includes(level)) grants.push(`<strong>Talent Point:</strong> choose a new Talent or raise one you have to Tier 2`);
   // Universal level features (level 2+)
   if (level > 1) {
     const classData = GD.classes?.[cls];
