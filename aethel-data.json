@@ -767,7 +767,7 @@
      "name": "Challenge",
      "type": "Bonus Action",
      "cost": "2 FP",
-     "desc": "Select one enemy within 30 ft. Their next attack against a target other than you is made at Disadvantage."
+     "desc": "Spend 2 FP. As a Bonus Action, you select one enemy within 30 ft. The next attack made by that enemy against a target other than you before the start of your next turn is made with Disadvantage. Shaken: when you land Goading Strike on your Challenged enemy, it is also Off-Guard against Will (its next Will Save before the start of your next turn is at Disadvantage)."
     },
     {
      "name": "Guardian's Intercept",
@@ -847,7 +847,7 @@
    "levelFeatures": {
     "4": {
      "name": "Brutal Momentum",
-     "desc": "After Relentless Pursuit, one enemy you hit has Disadvantage on their next Fort Save before your next turn."
+     "desc": "After you use Relentless Pursuit or land Crushing Blow, choose one enemy you hit. That enemy is Off-Guard against Fort: it has Disadvantage on its next Fort Save before the start of your next turn."
     },
     "7": {
      "name": "Tireless Fury",
@@ -889,7 +889,7 @@
      "name": "Focus Shot",
      "type": "On-Hit Rider",
      "cost": "3 FP",
-     "desc": "On a Full Hit with a ranged attack, the target is Staggered until the start of its next turn. No save."
+     "desc": "Spend 3 FP. On a Full Hit with a ranged attack that originates from you, the target is Staggered until the start of its next turn and Off-Guard against Ref (pinned: its next Ref Save before the start of your next turn is at Disadvantage)."
     },
     {
      "name": "Mark Quarry",
@@ -945,7 +945,7 @@
      "name": "Feinting Strike",
      "type": "Action",
      "cost": "5 FP",
-     "desc": "Contested Subterfuge vs target's Awareness. If successful, next attack against them within 1 minute is an automatic Critical Hit. Once per encounter, success or failure."
+     "desc": "Spend 5 FP. Make a contested Subterfuge check vs. the target’s Awareness. If successful, your next attack against them within 1 minute is an automatic Critical Hit, and the target is Off-Guard against Int until the start of your next turn (outwitted: its next Int Save is at Disadvantage). This may be attempted just before combat begins. Once per encounter, whether the contested check succeeds or fails."
     },
     {
      "name": "Hidden Movement",
@@ -981,7 +981,7 @@
     },
     "10": {
      "name": "Death’s Shadow (Ultimate)",
-     "desc": "Upgrades Master Assassin. Bonus Action: mark up to three enemies within 60 ft. For two turns your damage against them ignores DEF, Exploit Vulnerability deals maximum, and your first attack against each is a Critical Hit. Dropping a marked enemy lets you Hide as a Free Action without cover."
+     "desc": "Upgrades Master Assassin. Bonus Action. Mark up to three enemies within 60 ft. For your next two turns, your damage against them ignores DEF, Exploit Vulnerability deals its maximum on every hit against them, your first attack against each is a Critical Hit, and they make every save at Disadvantage (cancelling a Boss’s Advantage). When you drop a marked enemy to 0 HP, you may Hide as a Free Action without cover."
     }
    },
    "customManeuvers": [
@@ -1455,6 +1455,12 @@
     "desc": "On a Full Hit, the target is Dazed until the start of its next turn. No save."
    },
    {
+    "name": "Exposing Strike",
+    "cost": "3 FP",
+    "type": "On-Hit Rider",
+    "desc": "On a Full Hit, choose Fort, Ref, Will or Int: the target is Off-Guard against that save — its next save of that type before the start of your next turn is made at Disadvantage. A body blow, a trip, a snarl, a feint: describe the opening you make for your caster."
+   },
+   {
     "name": "Momentum",
     "cost": "3 FP",
     "type": "Reaction",
@@ -1485,14 +1491,14 @@
     "cost": "4 FP",
     "type": "On-Hit Rider",
     "level": 3,
-    "desc": "Declare a body part when you see a Full Hit. Until the end of the target’s next turn: Head → Dazed; Arm → drops a held item; Leg → Slowed; Throat → Silenced."
+    "desc": "Declare a body part when you see a Full Hit. The target suffers the matching effect until the end of its next turn: Head → Dazed; Arm → drops one held item (as Disarming Strike); Leg → Slowed (Disadvantage on Ref Saves); Gut → winded, Disadvantage on every Fort Save; Throat → Silenced."
    },
    {
     "name": "The Sundering Execution",
     "cost": "7 FP",
     "type": "Action (Attack)",
     "level": 3,
-    "desc": "Melee attack. On a Full Hit: double weapon base dice, and you shatter its armor (−2 DEF), destroy its weapon, or maim a limb (Weakened and Dazed until magically healed or the encounter ends). Lethal Momentum: a Minion or Henchman reduced below a quarter of its max HP is executed."
+    "desc": "Make a melee attack. On a Full Hit, the target takes double your weapon’s base damage dice and you break something: shatter its armor (−2 DEF), destroy its weapon, maim a limb (Weakened and Dazed until magically healed or the end of the encounter), or break its nerve (Disadvantage on every save until the end of your next turn). Lethal Momentum: if this attack reduces a Minion or Henchman below a quarter of its maximum HP, it is executed."
    },
    {
     "name": "Shatter Guard",
