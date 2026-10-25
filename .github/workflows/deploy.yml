@@ -30,7 +30,7 @@ jobs:
           cp index.html _site/
           cp aethel-character-sheet.html _site/
           cp aethel-character-sheet-mobile.html _site/
-          cp pasqually-spell-slinger.html _site/
+          cp aethel-spell-slinger.html _site/
           
           # Copy accompanying asset files if they exist
           cp *.json _site/ 2>/dev/null || true
