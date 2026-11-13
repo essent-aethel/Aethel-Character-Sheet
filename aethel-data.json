@@ -1,6 +1,6 @@
 {
  "meta": {
-  "version": "0.9.6",
+  "version": "0.9.7",
   "game": "Aethel",
   "edition": "Base Game"
  },
@@ -291,7 +291,7 @@
   },
   "Heretic Scholar": {
    "skills": {
-    "Lore": 1,
+    "Strands": 1,
     "Faith": 1
    },
    "feature": "Forbidden Dogma",
@@ -317,7 +317,11 @@
   },
   "Lore": {
    "stat": "INT",
-   "desc": "Magic theory, identifying spells/artifacts, ancient history, planar lore."
+   "desc": "Ancient civilizations, political history, heraldry, legends, records of the past."
+  },
+  "Strands": {
+   "stat": "INT or PRES",
+   "desc": "Sensing and identifying magic: spells, enchantments, magical traps, artifacts; arcane rituals; planar lore, Seams, Void influence."
   },
   "Investigation": {
    "stat": "INT",
@@ -871,7 +875,7 @@
   "Nomad": {
    "class": "The Body",
    "passives": [
-    "Beast Kinship: Gain an Animal Companion. HP = Nomad's total HP. Uses your DEF and saves. Dismissed if you hit 0 HP.",
+    "Beast Kinship: Gain an Animal Companion. HP = half your maximum HP (round down), tracked separately; damage to it never reduces yours. Uses your DEF and saves. At 0 HP it is driven off until your next rest; if you drop to 0 HP, it flees until the encounter ends.",
     "Pack Maneuvers: Companion moves up to 30 ft. Attacks can originate from companion's space.",
     "Hunter's Stance: +1d6 damage on ranged attack if not moved this turn. +2d6 if forgoing both move and action (Long Shot Setup).",
     "Beast's Instinct: +1 bonus to Awareness and Survival.",
@@ -1068,7 +1072,7 @@
    "levelFeatures": {
     "4": {
      "name": "Symbiotic Flow",
-     "desc": "Select a Symbiotic Focus that remains active even outside Aspect Shift. Predator: +10 ft speed (+20 ft in Aspect Shift). Sentinel: +2 DEF (+3 in Aspect Shift; does not stack with Aspect of the Sentinel — use the higher). Bloom: Restorative Augments cost 2 AP less (4 AP less in Aspect Shift); an Augment never costs less than 1 AP."
+     "desc": "Select a Symbiotic Focus that remains active even outside Aspect Shift. Predator: +10 ft speed (+20 ft in Aspect Shift). Sentinel: +4 DEF (+8 in Aspect Shift; does not stack with Aspect of the Sentinel — use the higher). Bloom: Restorative Augments cost 2 AP less (4 AP less in Aspect Shift); an Augment never costs less than 1 AP."
     },
     "7": {
      "name": "Overgrowth",
@@ -1311,7 +1315,7 @@
      "name": "Absolute Fulfillment",
      "type": "Bonus Action",
      "cost": "Once per Long Rest",
-     "desc": "For the next 3 turns, Advantage on all Attack Rolls and targets have Disadvantage on saves vs your Inscriptions. Afterward, make a DC 15 Will Save. Failure: roll 1d6 on the Divine Reckoning table."
+     "desc": "For the next 3 turns, Advantage on all Attack Rolls and enemies you hit with an Inscription are Off-Guard against every save type until the start of your next turn (sets up your allies’ saves). Afterward, make a DC 15 Will Save. Failure: roll 1d6 on the Divine Reckoning table."
     }
    ],
    "levelFeatures": {
@@ -1329,7 +1333,7 @@
     },
     "10": {
      "name": "Apotheosis (Ultimate)",
-     "desc": "Upgrades Absolute Fulfillment. Bonus Action, three turns: Advantage on attacks; enemies have Disadvantage on saves vs your effects; Chaotic Blast costs 0 SP and always deals its Bloodied damage. The DC 15 Will Save and Divine Reckoning still apply."
+     "desc": "Upgrades Absolute Fulfillment. Bonus Action, three turns: Advantage on attacks; every enemy you damage (Chaotic Blast included) is Off-Guard against every save type until the start of your next turn; Chaotic Blast costs 0 SP and always deals its Bloodied damage. The DC 15 Will Save and Divine Reckoning still apply."
     }
    },
    "accessibleInscriptions": [
@@ -2510,7 +2514,7 @@
     ]
    },
    {
-    "name": "Inspiring Leader",
+    "name": "Rallying Voice",
     "tiers": [
      {
       "level": 1,
@@ -2605,7 +2609,7 @@
     ]
    },
    {
-    "name": "Arcane Dabbler",
+    "name": "Strand-Touched",
     "tiers": [
      {
       "level": 1,
@@ -2626,7 +2630,7 @@
      },
      {
       "level": 2,
-      "desc": "Once per encounter as a Reaction: grant yourself or an adjacent ally resistance to the next damage type dealt to them — halving incoming damage before DEF. Decided after the attack roll, before damage is calculated."
+      "desc": "Once per encounter as a Reaction: grant yourself or an adjacent ally resistance to the next damage type dealt to them — halving incoming damage after DEF. Decided after the attack roll, before damage is calculated."
      }
     ]
    },
@@ -2648,7 +2652,7 @@
     "tiers": [
      {
       "level": 1,
-      "desc": "You have read things you were not meant to read. Gain Advantage on Lore checks related to forbidden knowledge, dark entities, or cursed objects. Once per Long Rest, commune with a bound or residual spirit for one question — the GM answers truthfully, though the spirit's knowledge may be limited or fragmented. Undead and Void-adjacent creatures are aware of your attunement and may react differently to you."
+      "desc": "You have read things you were not meant to read. Gain Advantage on Strands checks related to forbidden knowledge, dark entities, or cursed objects. Once per Long Rest, commune with a bound or residual spirit for one question — the GM answers truthfully, though the spirit's knowledge may be limited or fragmented. Undead and Void-adjacent creatures are aware of your attunement and may react differently to you."
      },
      {
       "level": 2,
@@ -2672,7 +2676,7 @@
     ]
    },
    {
-    "name": "Dungeon Delver",
+    "name": "Ruin-Delver",
     "tiers": [
      {
       "level": 1,
@@ -2726,7 +2730,7 @@
     ]
    },
    {
-    "name": "Battle Hardened",
+    "name": "Unbowed",
     "tiers": [
      {
       "level": 1,
@@ -2739,7 +2743,7 @@
     ]
    },
    {
-    "name": "Heavy Armor Master",
+    "name": "Ironclad",
     "tiers": [
      {
       "level": 1,
@@ -2767,7 +2771,7 @@
   ],
   "Combat": [
    {
-    "name": "Sentinel",
+    "name": "Sentry",
     "tiers": [
      {
       "level": 1,
@@ -2780,7 +2784,7 @@
     ]
    },
    {
-    "name": "Savage Attacker",
+    "name": "Heavy Hand",
     "tiers": [
      {
       "level": 1,
@@ -2793,7 +2797,7 @@
     ]
    },
    {
-    "name": "Duelist",
+    "name": "Parrying Hand",
     "tiers": [
      {
       "level": 1,
@@ -2819,7 +2823,7 @@
     ]
    },
    {
-    "name": "Grappler",
+    "name": "Iron Grip",
     "tiers": [
      {
       "level": 1,
@@ -2832,7 +2836,7 @@
     ]
    },
    {
-    "name": "Sharpshooter",
+    "name": "Deadeye",
     "tiers": [
      {
       "level": 1,
@@ -2845,7 +2849,7 @@
     ]
    },
    {
-    "name": "Mobile",
+    "name": "Fleetfoot",
     "tiers": [
      {
       "level": 1,
@@ -2871,7 +2875,7 @@
     ]
    },
    {
-    "name": "Unarmed Combatant",
+    "name": "Bare-Knuckle",
     "tiers": [
      {
       "level": 1,
