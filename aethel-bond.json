@@ -1,6 +1,6 @@
 {
  "meta": {
-  "version": "0.9.6",
+  "version": "0.9.7",
   "game": "Aethel",
   "expansion": "The Bond"
  },
@@ -23,7 +23,7 @@
      "level": 1,
      "features": [
       "Choose Archetype",
-      "Pact Tax: Free Action, no PP cost — take 1d6 True Damage (ignores Resistance/Immunity, cannot be prevented/redirected/reduced), gain 3 PP. Once per round.",
+      "Pact Tax: Free Action, no PP cost — roll 1d6 + half your level (rounded down); take that much True Damage (ignores Resistance/Immunity, cannot be prevented/redirected/reduced unless an effect says so) and gain that many PP. Can drop you to 0 HP; you still gain the PP. Once per round.",
       "Basic Pact Bonds available"
      ],
      "selections": {
@@ -111,7 +111,7 @@
     {
      "level": 9,
      "features": [
-      "What Was Promised: Pact Tax now deals 1d4 damage instead of 1d6, and generates 5 PP instead of 3. Still once per round; Bleed-Through permits one additional Tax as a Reaction.",
+      "What Was Promised: your first Pact Tax each combat costs no HP; you still gain the PP. Still once per round; Bleed-Through permits one additional Tax as a Reaction.",
       "Roll 2 extra effect dice total"
      ],
      "selections": {
