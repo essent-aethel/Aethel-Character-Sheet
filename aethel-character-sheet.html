@@ -155,6 +155,25 @@ select.field-input{cursor:pointer;}
 .death-pip--fail{border-color:var(--crimson-soft);}
 .death-pip--fail.filled{background:var(--crimson-soft);}
 .death-pip:hover{transform:scale(1.12);}
+.gt-band{display:none;margin:.5rem 0 0;padding:.5rem .75rem;border:1px solid var(--vellum-dark);
+  border-left:3px solid #4a6a8a;border-radius:3px;background:rgba(74,106,138,.05);}
+.gt-band.show{display:block;}
+.gt-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.gt-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--copper-dark);min-width:5.5rem;}
+.gt-count{font-family:'Cinzel',serif;font-weight:700;font-size:1rem;min-width:3.2rem;text-align:center;}
+.gt-pips{display:flex;gap:.22rem;align-items:center;}
+.gt-pip{position:relative;width:20px;height:20px;border-radius:50%;border:2px solid #4a6a8a;background:transparent;
+  cursor:pointer;padding:0;font-size:.5rem;line-height:1;color:var(--text-label);transition:all .15s;}
+.gt-pip.filled{background:#4a6a8a;color:#fff;}
+.gt-pip.thresh{box-shadow:0 0 0 2px rgba(184,115,51,.55);}
+.gt-pip.gap{margin-left:.35rem;}
+.gt-pip:hover:not(:disabled){transform:scale(1.12);}
+.gt-pip.locked{cursor:not-allowed;border-color:var(--vellum-dark);opacity:.6;}
+.gt-pip.locked::before,.gt-pip.locked::after{content:'';position:absolute;left:50%;top:50%;width:150%;height:2px;
+  background:var(--crimson-soft);transform:translate(-50%,-50%) rotate(45deg);}
+.gt-pip.locked::after{transform:translate(-50%,-50%) rotate(-45deg);}
+.gt-effect{font-size:.78rem;color:var(--text-soft);margin-top:.35rem;}
+.gt-effect strong{color:var(--text-main);}
 .daily-label{font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.08em;text-align:center;
   color:var(--text-label);text-transform:uppercase;}
 
@@ -822,7 +841,7 @@ select.field-input{cursor:pointer;}
 
 <!-- NAV -->
 <nav class="tab-nav">
-  <div class="nav-brand">Aethel ✦ Dossier <span class="nav-ver" title="Rules version — see the changelog on the Cheat Sheet tab">Rules 0.9.7</span></div>
+  <div class="nav-brand">Aethel ✦ Dossier <span class="nav-ver" title="Rules version — see the changelog on the Cheat Sheet tab">Rules 0.9.8</span></div>
   <button class="tab-btn active" onclick="switchTab('sheet',this)">Character Sheet</button>
   <button class="tab-btn" onclick="switchTab('features',this)">Features</button>
   <button class="tab-btn" onclick="switchTab('attacks',this)">⚔ Attacks</button>
@@ -1047,6 +1066,24 @@ select.field-input{cursor:pointer;}
         <div class="cstat-rest-note" id="death-save-note" style="text-align:center"></div>
       </div>
     </div>
+  </div>
+  <!-- GRAVE TOLL (Death Knight only) -->
+  <div class="gt-band" id="grave-toll-band" aria-label="Grave Toll tracker">
+    <input type="hidden" id="grave-toll" data-save="grave-toll">
+    <div class="gt-row">
+      <div class="gt-title">Grave Toll</div>
+      <div class="gt-pips" id="grave-toll-pips"></div>
+      <div class="gt-count" id="grave-toll-count">0 / 6</div>
+      <div style="display:flex;gap:.3rem;flex-wrap:wrap">
+        <button class="cstat-delta-btn" onclick="adjustGraveToll(-2)" title="Spend 2 (one Soulrend step)">−2</button>
+        <button class="cstat-delta-btn" onclick="adjustGraveToll(-1)" title="Spend 1">−1</button>
+        <button class="cstat-delta-btn" onclick="adjustGraveToll(1)" title="Took damage">+1</button>
+        <button class="cstat-delta-btn" onclick="adjustGraveToll(2)" title="Pact Tax: damaged (+1) and the Tax bonus (+1)">+2 Tax</button>
+        <button class="cstat-delta-btn" onclick="startCombatGraveToll()" id="grave-toll-start" title="Set to your starting value">Start</button>
+        <button class="cstat-delta-btn" onclick="setGraveToll(0)" title="End of combat or debt collected">Clear</button>
+      </div>
+    </div>
+    <div class="gt-effect" id="grave-toll-effect"></div>
   </div>
   <!-- CONDITIONS TRACKER -->
   <div class="sheet-section">
@@ -1538,7 +1575,17 @@ select.field-input{cursor:pointer;}
     <div class="changelog-header">Changelog</div>
     <div class="changelog-body">
       <div class="cl-entry">
-        <div class="cl-ver">Rules 0.9.7 <span class="cl-tag">current</span></div>
+        <div class="cl-ver">Rules 0.9.8 <span class="cl-tag">current</span></div>
+        <ul>
+          <li>The Bond rebalanced (full list in the 0.9.8 changelog). Renamed Bonds on saved characters update on load; cut Bonds are kept and marked ⚠ in the Import Report so you can repick.</li>
+          <li>Death Knight: new Grave Toll tracker under the combat band — 6 pips, thresholds at 3 (+1d6) and 6 (+2d6, Debt Made Flesh), physical Resistance at 4 from Level 4. Start sets 3 from Level 8; rests clear it.</li>
+          <li>Death Knight: Heavy Vessel adds +2 maximum HP per level to the calculated HP.</li>
+          <li>Planewalker: level-up picks now list allowed Strand Augments (marked ✦) alongside your plane's Planar Bonds.</li>
+          <li>Templar: the Sacred Aegis current value no longer resets when the Features tab redraws or the page reloads.</li>
+        </ul>
+      </div>
+      <div class="cl-entry">
+        <div class="cl-ver">Rules 0.9.7</div>
         <ul>
           <li>New skill: Strands (INT or PRES) for sensing and identifying magic, arcane rituals and planar lore. Lore now covers history, politics and legends. Heretic Scholar gives Strands +1 instead of Lore.</li>
           <li>Talent renames: Sentinel → Sentry, Savage Attacker → Heavy Hand, Duelist → Parrying Hand, Grappler → Iron Grip, Sharpshooter → Deadeye, Mobile → Fleetfoot, Unarmed Combatant → Bare-Knuckle, Battle Hardened → Unbowed, Heavy Armor Master → Ironclad, Inspiring Leader → Rallying Voice, Dungeon Delver → Ruin-Delver, Arcane Dabbler → Strand-Touched. Saved characters are migrated on load.</li>
@@ -1859,8 +1906,18 @@ const NAME_MIGRATIONS = {
   'Sentinel':'Sentry', 'Savage Attacker':'Heavy Hand', 'Duelist':'Parrying Hand', 'Grappler':'Iron Grip', 'Sharpshooter':'Deadeye', 'Mobile':'Fleetfoot', 'Unarmed Combatant':'Bare-Knuckle', 'Battle Hardened':'Unbowed', 'Heavy Armor Master':'Ironclad', 'Inspiring Leader':'Rallying Voice', 'Dungeon Delver':'Ruin-Delver', 'Arcane Dabbler':'Strand-Touched'
 };
 const BOND_NAME_MIGRATIONS = {
-  'Daemon Hunter': {'Relentless Pursuit':'Unending Chase', 'Devour Essence':'Swallow the Will'},
-  'Necromancer':   {'Soul Rend':'Grave Rend', 'Soul Harvest':'Reaping Command'}
+  'Daemon Hunter': {'Relentless Pursuit':'Unending Chase', 'Devour Essence':'Swallow the Will',
+                    // Rules 0.9.8
+                    'Soul Rend':'Leash-Cut', 'Lingering Flames':'Smoldering Wound', 'Spite':'Barbed Retort',
+                    'Annihilation':'Ruinous Blow', 'The Hunt':"Quarry's Scent"},
+  'Death Knight':  {'Hungering Cold':'Frostbite Edge', 'Chains of Ice':'Fetters of Rime', "Grave's Endurance":"Ledger's Guard",
+                    'Virulent Plague':'Deep Rot', "Empowered Death's Tithe":'Settle the Account', 'Ghost Stride':'Deathless March',
+                    'Pestilence':'Spreading Rime', 'Deathchill':'Hoarfrost Burst', 'Grave Leeches':'Ledger Leeches',
+                    'Asphyxiate':'Frozen Solid', 'Soul Reaper':'Reaping Toll', 'Obliterate':'Shatter the Rot',
+                    'Remorseless Winter':'Killing Frost'},
+  'Necromancer':   {'Soul Rend':'Grave Rend', 'Soul Harvest':'Reaping Command',
+                    'Grave Shield':'Last Rites', 'Death Coil':'Soul Lance'},
+  'Planewalker':   {'Faerie Fire':"Will-o'-Light", 'Wicked Trade':'Fair Exchange', 'Reckoning':'Deferred Judgment'}
 };
 function migrateLegacyNames() {
   // Runs on every load (including autosaved characters from older sheets). A rename is
@@ -2698,6 +2755,8 @@ function updateDerivedStats() {
     }
     // Scourge: +3 per level bonus
     if (getSelectedArchetype()==='Scourge') hp += (level-1)*3;
+    // Death Knight: Heavy Vessel, +2 max HP per level (Rules 0.9.8)
+    if (getSelectedArchetype()==='Death Knight') hp += level*2;
     hpEl.value = hp;
   }
 
@@ -3708,9 +3767,26 @@ function getBondPactPool(archetype) {
   if (!GD?.pactBonds || !archetype) return null;
   if (archetype === 'Planewalker') {
     const plane = getSelectedBondPlane();
-    return plane ? GD.pactBonds.Planewalker?.[plane] || null : null;
+    const base = plane ? GD.pactBonds.Planewalker?.[plane] || null : null;
+    return base ? withBorrowedStrands(base) : null;
   }
   return GD.pactBonds[archetype] || null;
+}
+// Planewalker (Rules 0.9.8): each Selection may be a Planar Bond or an allowed Strand Augment.
+// The allowed pools and exclusions ship in aethel-bond.json (archetypeFeatures.Planewalker.borrowedAugments).
+function withBorrowedStrands(base) {
+  const rule = GD.archetypeFeatures?.Planewalker?.borrowedAugments;
+  if (!rule || !GD.augments) return base;
+  const out = {basic:[...(base.basic||[])], advanced:[...(base.advanced||[])], expert:[...(base.expert||[])]};
+  const have = new Set([...out.basic, ...out.advanced, ...out.expert].map(b => b.name));
+  (rule.pools||[]).forEach(pool => (GD.augments[pool]||[]).forEach(a => {
+    if ((rule.exclude||[]).includes(a.name) || have.has(a.name)) return;
+    if (a.access && a.access !== 'all') return;
+    const tier = a.level >= 5 ? 'expert' : a.level >= 3 ? 'advanced' : 'basic';
+    out[tier].push({name: a.name, tier, type: 'Strand Augment', cost: String(a.cost||'').replace(/AP|RP/g,'PP'),
+                    desc: 'Strand Augment (add to a Spell Form): ' + (a.desc||''), borrowed: true});
+  }));
+  return out;
 }
 
 function buildSelectionOptions(level, cls, archetype, progRow, previousSelections) {
@@ -3831,19 +3907,21 @@ function buildSelectionOptions(level, cls, archetype, progRow, previousSelection
       }
       return opts;
     }
-    (pool.basic||[]).forEach(b => {
-      opts.push({value:b.name, label:`${b.name} (${b.cost})`, disabled:previousSelections.has(b.name)});
+    const lbl = b => b.borrowed ? `✦ ${b.name} (${b.cost}) — Strand Augment` : `${b.name} (${b.cost})`;
+    const ordered = list => [...list.filter(b => !b.borrowed), ...list.filter(b => b.borrowed)];
+    ordered(pool.basic||[]).forEach(b => {
+      opts.push({value:b.name, label:lbl(b), disabled:previousSelections.has(b.name)});
     });
     if (unlockAdv && (pool.advanced||[]).length) {
       opts.push({value:'__sep_advanced', label:'─── Advanced (Level 3+) ───', disabled:true});
-      pool.advanced.forEach(b => {
-        opts.push({value:b.name, label:`${b.name} (${b.cost})`, disabled:previousSelections.has(b.name)});
+      ordered(pool.advanced).forEach(b => {
+        opts.push({value:b.name, label:lbl(b), disabled:previousSelections.has(b.name)});
       });
     }
     if (unlockExp && (pool.expert||[]).length) {
       opts.push({value:'__sep_expert', label:'─── Expert (Level 5+) ───', disabled:true});
-      pool.expert.forEach(b => {
-        opts.push({value:b.name, label:`${b.name} (${b.cost})`, disabled:previousSelections.has(b.name)});
+      ordered(pool.expert).forEach(b => {
+        opts.push({value:b.name, label:lbl(b), disabled:previousSelections.has(b.name)});
       });
     }
   }
@@ -4022,7 +4100,7 @@ function renderArchetypeAbilities() {
       <div class="archetype-feature-block" style="margin-bottom:.4rem;background:rgba(184,115,51,.05);border-left:3px solid var(--copper)">
         <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
           <div class="cstat-curmax" style="margin:0">
-            <input class="cstat-curmax-cur" id="aegis-current" data-save="aegis-current" placeholder="${aegisMax}"
+            <input class="cstat-curmax-cur" id="aegis-current" data-save="aegis-current" placeholder="${aegisMax}" value="${esc(savedCur ?? (()=>{ try { return JSON.parse(localStorage.getItem(LS_KEY)||'{}')['aegis-current']; } catch(e) { return ''; } })() ?? '')}"
               style="width:3.2rem" oninput="saveAll()">
             <span class="cstat-curmax-sep">/</span>
             <span class="cstat-curmax-max" id="aegis-max" style="min-width:2.4rem;display:inline-flex;align-items:center;justify-content:center">${aegisMax}</span>
@@ -4041,6 +4119,68 @@ function renderArchetypeAbilities() {
   // Keep action tables in sync with archetype changes
   renderActionTables();
 }
+
+// ── Death Knight: Grave Toll tracker (Rules 0.9.8) ───────────────────
+// 0–6. Thresholds: 3 (+1d6), 6 (+2d6, Debt Made Flesh); 4 = physical Resistance from
+// Level 4. Value persists through the static hidden data-save field.
+const GRAVE_TOLL_PIPS = 6;
+function isDeathKnight() { return getSelectedArchetype() === 'Death Knight'; }
+function getGraveTollCap() { return GRAVE_TOLL_PIPS; }
+function getGraveToll() {
+  const v = parseInt(document.getElementById('grave-toll')?.value);
+  return isNaN(v) ? 0 : Math.max(0, Math.min(getGraveTollCap(), v));
+}
+function setGraveToll(n) {
+  const el = document.getElementById('grave-toll');
+  if (!el) return;
+  el.value = String(Math.max(0, Math.min(getGraveTollCap(), n)));
+  // Route through the sheet's autosave listener (localStorage + dirty flag).
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+  renderGraveToll();
+}
+function adjustGraveToll(d) { setGraveToll(getGraveToll() + d); }
+function toggleGraveTollPip(n) { setGraveToll(getGraveToll() === n ? n - 1 : n); }
+function startCombatGraveToll() { setGraveToll(getCharLevel() >= 8 ? 3 : 0); }  // Death's Patience (L8)
+function renderGraveToll() {
+  const band = document.getElementById('grave-toll-band');
+  if (!band) return;
+  if (!isDeathKnight()) { band.classList.remove('show'); return; }
+  band.classList.add('show');
+  const lvl = getCharLevel(), cap = getGraveTollCap(), cur = getGraveToll();
+  const pips = document.getElementById('grave-toll-pips');
+  let h = '';
+  for (let i = 1; i <= GRAVE_TOLL_PIPS; i++) {
+    const locked = i > cap;
+    const thresh = (i === 3 || i === 6 || (i === 4 && lvl >= 4));
+    const cls = ['gt-pip', i <= cur ? 'filled' : '', locked ? 'locked' : '', thresh ? 'thresh' : ''].filter(Boolean).join(' ');
+    const tip = `Set Grave Toll to ${i}` + (i === 3 ? ' (+1d6)' : i === 6 ? ' (+2d6, Debt Made Flesh)' : (i === 4 && lvl >= 4) ? ' (Resistance)' : '');
+    h += `<button class="${cls}" ${locked ? 'disabled' : ''} title="${tip}" onclick="toggleGraveTollPip(${i})">${i}</button>`;
+  }
+  pips.innerHTML = h;
+  document.getElementById('grave-toll-count').textContent = `${cur} / ${cap}`;
+  const parts = [];
+  if (cur >= 6) parts.push('melee hits <strong>+2d6 Necrotic</strong> · <strong>Debt Made Flesh ready</strong>');
+  else if (cur >= 3) parts.push('melee hits <strong>+1d6 Necrotic</strong> (+2d6 at 6)');
+  else parts.push('no bonus yet (+1d6 at 3, +2d6 at 6)');
+  if (lvl >= 4) parts.push(cur >= 4 ? '<strong>Resistance to physical</strong>' : 'physical Resistance at 4');
+  document.getElementById('grave-toll-effect').innerHTML =
+    'Now: ' + parts.join(' · ') + '. Gain 1 when damaged, +1 more on Pact Tax; spend on Soulrend (2 per step) and Toll Bonds. Resets to 0 after combat'
+    + (lvl >= 8 ? '; Start sets 3 (Death’s Patience).' : '.');
+  const st = document.getElementById('grave-toll-start');
+  if (st) st.title = lvl >= 8 ? 'Start of combat: 3 (Death’s Patience)' : 'Start of combat: 0';
+}
+// Keep the tracker in step with archetype, level and rest changes.
+(function hookGraveToll() {
+  const wrap = (name, after) => {
+    const orig = window[name];
+    if (typeof orig !== 'function') return;
+    window[name] = function() { const r = orig.apply(this, arguments); try { after(); } catch (e) {} return r; };
+  };
+  wrap('renderArchetypeAbilities', renderGraveToll);
+  wrap('renderLevelLog', renderGraveToll);
+  wrap('doShortRest', () => { if (isDeathKnight()) setGraveToll(0); });
+  wrap('doLongRest', () => { if (isDeathKnight()) setGraveToll(0); });
+})();
 
 // Sacred Aegis pool controls (Templar). Value persists via the data-save field.
 function getAegisMax() { return 5 * getCharLevel(); }
