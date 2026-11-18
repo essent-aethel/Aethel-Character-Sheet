@@ -1583,6 +1583,7 @@ select.field-input{cursor:pointer;}
           <li>Bond archetypes renamed: Daemon Hunter → Fiendstalker, Death Knight → Graveknight, Planewalker → Strandwalker. Saved characters switch to the new name automatically.</li>
           <li>The Bond rebalanced (full list in the 0.9.8 changelog). Renamed Bonds on saved characters update on load; cut Bonds are kept and marked ⚠ in the Import Report so you can repick.</li>
           <li>Graveknight: new Grave Toll tracker under the combat band — 6 pips, thresholds at 3 (+1d6) and 6 (+2d6, Debt Made Flesh), physical Resistance at 4 from Level 4. Start sets 3 from Level 8; rests clear it.</li>
+          <li>The base-game build no longer shows the Grave Toll tracker when it opens a Graveknight saved from the Bond build (the archetype is kept in the file and flagged in the Import Report).</li>
           <li>Grave Toll tracker restyled on a parchment card so its pips, count, buttons and effect text are readable against the dark page.</li>
           <li>Calculated HP: Graveknight Heavy Vessel adds +2 per level, and Scourge Bloodhardened now adds +3 from Level 1 (it was skipping Level 1).</li>
           <li>Strandwalker: level-up picks now list allowed Strand Augments (marked ✦) alongside your plane's Planar Bonds.</li>
@@ -4137,7 +4138,7 @@ function renderArchetypeAbilities() {
 // 0–6. Thresholds: 3 (+1d6), 6 (+2d6, Debt Made Flesh); 4 = physical Resistance from
 // Level 4. Value persists through the static hidden data-save field.
 const GRAVE_TOLL_PIPS = 6;
-function isGraveknight() { return getSelectedArchetype() === 'Graveknight'; }
+function isGraveknight() { return getSelectedArchetype() === 'Graveknight' && !!(GD && GD.classes && GD.classes['The Bond']); }  // hidden in the base-game build
 function getGraveTollCap() { return GRAVE_TOLL_PIPS; }
 function getGraveToll() {
   const v = parseInt(document.getElementById('grave-toll')?.value);
