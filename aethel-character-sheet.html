@@ -661,7 +661,7 @@ select.field-input{cursor:pointer;}
 .inv-section-label:first-child { margin-top: .1rem; }
 .inv-section-sub { font-size:.58rem; color:var(--ink-soft); font-weight:400; text-transform:none; }
 .worn-container > .inv-container-header { background: rgba(184,115,51,.16); border-left: 3px solid var(--copper); }
-
+.atk-builder-panel {
   background: var(--vellum);
   border: 1px solid var(--vellum-dark);
   border-radius: 4px;
@@ -1087,6 +1087,31 @@ select.field-input{cursor:pointer;}
       </div>
     </div>
     <div class="gt-effect" id="grave-toll-effect"></div>
+  </div>
+  <!-- LEGION (Necromancer only) -->
+  <div class="gt-band" id="legion-band" aria-label="Legion tracker">
+    <input type="hidden" id="legion-count" data-save="legion-count">
+    <div class="gt-row">
+      <div class="gt-title">Legion</div>
+      <div class="gt-pips" id="legion-pips"></div>
+      <div class="gt-count" id="legion-count-label">0 / 3</div>
+      <div style="display:flex;gap:.3rem;flex-wrap:wrap">
+        <button class="cstat-delta-btn" onclick="adjustLegion(-1)" title="A Skeleton is destroyed or spent">−1</button>
+        <button class="cstat-delta-btn" onclick="adjustLegion(1)" title="Raise a Skeleton">+1</button>
+        <button class="cstat-delta-btn" onclick="fillLegion()" id="legion-fill" title="Bone Satchel when initiative is rolled: raise up to your Legion Cap">Fill</button>
+        <button class="cstat-delta-btn" onclick="setLegion(0)" title="No Skeletons">Clear</button>
+      </div>
+    </div>
+    <div class="gt-effect" id="legion-effect"></div>
+  </div>
+  <!-- PACT FORM (Fiendstalker only) -->
+  <div class="gt-band" id="pact-form-band" aria-label="Pact Form">
+    <input type="hidden" id="pact-form" data-save="pact-form">
+    <div class="gt-row">
+      <div class="gt-title">Pact Form</div>
+      <div style="display:flex;gap:.3rem;flex-wrap:wrap" id="pact-form-btns"></div>
+    </div>
+    <div class="gt-effect" id="pact-form-effect"></div>
   </div>
   <!-- CONDITIONS TRACKER -->
   <div class="sheet-section">
@@ -1595,6 +1620,16 @@ select.field-input{cursor:pointer;}
           <li>Boons (new): Grant Minor / Major / Greater Boon (+1 / +3 / +5) are the mirror of the condition Augments: one buff on an ally, no roll. Every Mind archetype can take them as Strand Augments; the Oracle and the Zealot as Inscriptions. "Grant Buff" is gone from Unwavering Devotion and Aspect of the Bloom; they now say Grant Boon.</li>
           <li>Spells on willing allies need no roll. Standalone Inscriptions take a Bonus Action (Reactions excepted) with no limit on uses. Restorative gains Triage: one extra die on a Bloodied ally.</li>
           <li>Oracle: new Ill Omen, Chastise, Anathema and Foretold Doom. Ward of Faith is cut (the Guarded Boon replaces it); a saved pick is marked ⚠ so you can repick. Purifying Light uses Presence for its melee attack. Unwavering Devotion never refunds more than half a spell's cost.</li>
+          <li><strong>Sheet consolidation (0.9.8):</strong> Standalone Inscriptions now appear under Bonus Actions (Standalone Reactions under Reactions) on the Features tab.</li>
+          <li>Class features you use in play (Strand Ward, Strand Draw, Pact Tax, Unbreakable Focus, Channel Divinity) are listed in the Features tables under "From Class".</li>
+          <li>Necromancer: new Legion tracker under the combat band — pips to your Legion Cap (3 / 4 at Level 5 / 6 at Level 8, +3 Ossuary Tide pips at Level 10), Fill for the Bone Satchel, and your Command Legion dice.</li>
+          <li>Fiendstalker: new Pact Form switch (None / Spite / Wrath) showing the Form's effects and switching cost; Spite Form's +2 DEF is added to Defense.</li>
+          <li>Attack Builder: Legion Riders are offered for the Necromancer with Command Legion (and Colossus Slam) as the base attack; Grave Toll and Skeleton costs are totalled (e.g. "6 PP + 4 Toll").</li>
+          <li>Strands skill now adds the higher of your INT or PRES modifier (it was adding nothing).</li>
+          <li>Iron Constitution adds +2 maximum HP per level to the calculated HP.</li>
+          <li>Loading older characters: a Strandwalker's borrowed Strand Augments are no longer reported as missing; Bonds that moved to a higher tier are flagged at the level they were taken; cut Bonds, Slippery Target and Ward of Faith say why they were removed; a Grave Toll above 6 from the old 12-pip track is clamped; saved attacks pick up the current rider text and cost.</li>
+          <li>Level Log headers show feature names instead of full rules text.</li>
+          <li>Level 6 save focus: older sheets saved "Fortitude" for every character before Level 6, so a Spirit, Mind or Bond character could reach Level 6 with +2 Fort instead of +2 Will. Only a save you pick is kept now, and those early "Fortitude" values are cleared on load.</li>
         </ul>
       </div>
       <div class="cl-entry">
@@ -1740,7 +1775,7 @@ select.field-input{cursor:pointer;}
       <div class="cheat-header">Spell Forms</div>
       <table class="cheat-table" id="spellforms-table">
         <tr><td class="cheat-key">Channel Cantrip</td><td class="cheat-val">0 RP · 1 target, 60ft · Recover RP on hit</td></tr>
-        <tr><td class="cheat-key">Simple Projection</td><td class="cheat-val">1 RP · 1 target, 60ft · Attack roll</td></tr>
+        <tr><td class="cheat-key">Simple Projection</td><td class="cheat-val">1 RP · 1 target, 60ft · Attack roll vs an enemy; no roll on a willing ally</td></tr>
         <tr><td class="cheat-key">Close Burst</td><td class="cheat-val">5 RP · 15ft radius from you (32 sq) · Save</td></tr>
         <tr><td class="cheat-key">Ranged Burst</td><td class="cheat-val">6 RP · 15ft radius at 60ft (32 sq) · Save</td></tr>
         <tr><td class="cheat-key">Broad Wave</td><td class="cheat-val">4 RP · 30ft cone (21 sq) / 3 RP · 60ft line (12 sq) · Save</td></tr>
@@ -1976,6 +2011,42 @@ const SLOT_ALIASES = {back:'shouldersBack',shoulders:'shouldersBack',cloak:'shou
   gloves:'hands',belt:'waist',boots:'feet',ring:'ring1',trinket:'trinket1',weapon:'mainHand',mainhand:'mainHand',
   shield:'offHand',offhand:'offHand'};
 const SKILL_RENAMES = {'Stealth':'Subterfuge'};
+// Picks removed from the rules, with the reason shown in the Import Report.
+const RETIRED_PICKS = {
+  'Slippery Target': 'Every Marauder now knows Slippery Target automatically (Rules 0.9.8), so this pick is free — choose a new maneuver in its place.',
+  'Ward of Faith': 'Ward of Faith was cut in Rules 0.9.8; the Guarded Boon (Grant Minor Boon) does the same job — choose a new Inscription in its place.'
+};
+const TIER_GATE = {basic: 1, advanced: 3, expert: 5};
+// Everything a Bond archetype can pick at level-up: its Pact Bonds and, for the Strandwalker, the
+// plane's Planar Bonds plus the allowed borrowed Strand Augments. Built from the rules, not the page.
+function bondPickPool(arch, plane) {
+  if (!GD?.pactBonds || !arch) return null;
+  if (arch === 'Strandwalker') {
+    const base = plane ? GD.pactBonds.Strandwalker?.[plane] : null;
+    return base ? withBorrowedStrands(base) : null;
+  }
+  return GD.pactBonds[arch] || null;
+}
+function findInBondPool(pool, name) {
+  if (!pool || typeof name !== 'string') return null;
+  const lv = name.trim().toLowerCase();
+  for (const t of ['basic','advanced','expert']) {
+    const hit = (pool[t] || []).find(b => b.name.toLowerCase() === lv);
+    if (hit) return {...hit, tier: hit.tier || t};
+  }
+  return null;
+}
+// Current rules text for a saved Attack Builder rider (archetype ability, Bond, maneuver, inscription or augment).
+function currentRiderRule(name, arch, plane) {
+  if (!GD || !name) return null;
+  const ab = (GD.archetypeFeatures?.[arch]?.abilities || []).find(a => a.name === name);
+  if (ab) return ab;
+  const b = findInBondPool(bondPickPool(arch, plane), name);
+  if (b) return b;
+  const lists = [...(GD.maneuvers?.standard||[]), ...(GD.maneuvers?.advanced||[]), ...Object.values(GD.maneuvers?.custom||{}).flat(),
+    ...Object.values(GD.inscriptions||{}).flat()];
+  return lists.find(x => x.name === name) || null;
+}
 const RETIRED_CONDITIONS = {'Distracted':'Distracted was retired in Rules 0.9.5'};
 const KNOWN_TOP_KEYS = ['version','fields','levelLog','skillInvestments','spells','talents','inventory','actionTables',
   'attackBuilder','dailyUsed','shortRestUsed','deathSaves','inspiration','conditions','leveledStatuses',
@@ -2105,6 +2176,14 @@ function normalizeSave(parsed) {
     fields['char-archetype'] = ARCHETYPE_MIGRATIONS[was];
     note('Character', 'fixed', `Archetype "${was}" is now called "${fields['char-archetype']}" (Rules 0.9.8).`);
   }
+  // Grave Toll ran 0–10/12 before Rules 0.9.8; it is now 0–6 and resets after every combat.
+  if (fields['grave-toll'] !== undefined && String(fields['grave-toll']).trim() !== '') {
+    const gt = _int(fields['grave-toll'], 0);
+    if (gt > 6 || gt < 0) {
+      fields['grave-toll'] = String(Math.max(0, Math.min(6, gt)));
+      note('Trackers', 'fixed', `Grave Toll ${gt} is past the Rules 0.9.8 cap of 6 (the old track ran to 12) — set to ${fields['grave-toll']}. Toll resets to 0 after each combat.`);
+    }
+  }
   if (Object.keys(orphanFields).length) {
     extras.fields = orphanFields;
     const block = Object.entries(orphanFields).map(([k, v]) => `${k}: ${v}`).join('\n');
@@ -2148,6 +2227,7 @@ function normalizeSave(parsed) {
     ? `Missing level entries were added so the character stays Level ${targetLevel} (${padded} empty level${padded>1?'s':''} — fill in their picks in the Level Log).`
     : `This save has no Level Log. Created ${targetLevel} empty level${targetLevel>1?'s':''} so the character stays Level ${targetLevel} — fill in each level's picks in the Level Log.`);
   levelLog = filled;
+  if (targetLevel < 6 && fields['l6-save-choice']) delete fields['l6-save-choice'];  // older sheets saved "FORT" before Level 6
 
   // Archetype (validate, then infer if blank)
   let arch = fields['char-archetype'];
@@ -2217,10 +2297,30 @@ function normalizeSave(parsed) {
         return;
       }
       if (!selKinds) { e.selections[slot] = v; return; }
-      const renamed = legacyRename(v, arch, selKinds);
+      const renamed = legacyRename(v, arch, cls === 'The Bond' ? undefined : selKinds);
       if (renamed !== v) { note('Level Log', 'fixed', `${where}: "${v}" renamed to "${renamed}".`); v = renamed; }
+      if (cls === 'The Bond' && arch) {
+        // Bonds are checked against the archetype's own pool (the Strandwalker's includes borrowed Strand Augments).
+        const pool = bondPickPool(arch, fields['char-bond-plane']);
+        const hit = findInBondPool(pool, v);
+        if (hit) {
+          if (hit.name !== v) { note('Level Log', 'fixed', `${where}: "${v}" matched to "${hit.name}".`); v = hit.name; }
+          const gate = TIER_GATE[hit.tier] || 1;
+          if (slot.startsWith('slot') && e.level < gate)
+            note('Level Log', 'kept', `${where}: "${v}" is now ${hit.tier === 'expert' ? 'an Expert' : 'an Advanced'} option (Level ${gate}+). Kept and marked ⚠ — move it to Level ${gate} or later, or repick.`);
+        } else if (!pool && arch === 'Strandwalker') {
+          note('Level Log', 'kept', `${where}: "${v}" kept — choose the Strandwalker's plane on the Character Sheet so its Planar Bonds can be matched.`);
+        } else {
+          const elsewhere = findRule(v, ['pactBond']).map(h => h.plane ? `${h.arch[0]} (${h.plane})` : h.arch[0]);
+          note('Level Log', 'kept', elsewhere.length
+            ? `${where}: "${v}" belongs to ${[...new Set(elsewhere)].join(', ')}, not ${arch}${arch === 'Strandwalker' && fields['char-bond-plane'] ? ' (' + fields['char-bond-plane'] + ')' : ''} — kept, marked ⚠.`
+            : `${where}: "${v}" was cut or replaced in the Rules 0.9.8 Bond rebalance — kept, marked ⚠ in the Level Log so you can choose a new Bond.`);
+        }
+        e.selections[slot] = v;
+        return;
+      }
       const hits = findRule(v, selKinds);
-      if (!hits.length) note('Level Log', 'kept', `${where}: "${v}" is not in the current rules — kept, marked ⚠ in the Level Log.`);
+      if (!hits.length) note('Level Log', 'kept', RETIRED_PICKS[v] ? `${where}: ${RETIRED_PICKS[v]} (The old pick is kept and marked ⚠.)` : `${where}: "${v}" is not in the current rules — kept, marked ⚠ in the Level Log.`);
       else {
         if (hits[0].name !== v) { note('Level Log', 'fixed', `${where}: "${v}" matched to "${hits[0].name}".`); v = hits[0].name; }
         if (arch && !hits.some(h => !h.arch || h.arch.includes(arch)))
@@ -2339,15 +2439,25 @@ function normalizeSave(parsed) {
 
   // ── ATTACK BUILDER ──
   const attackBuilder = (Array.isArray(parsed.attackBuilder) ? parsed.attackBuilder : []).filter(a => a && typeof a === 'object').map((a, i) => {
+    let refreshed = 0;
     const riders = (Array.isArray(a.riders) ? a.riders : []).filter(r => r && r.name).map(r => {
       const nm = legacyRename(r.name, arch);
       if (nm !== r.name) note('Attack Builder', 'fixed', `"${a.name || 'Attack'}": rider "${r.name}" renamed to "${nm}".`);
-      else if (GD && classInstalled && !ruleExists(nm)) note('Attack Builder', 'kept', `"${a.name || 'Attack'}": rider "${nm}" is not in the current rules — kept with its saved text.`);
+      const cur = classInstalled ? currentRiderRule(nm, arch, fields['char-bond-plane']) : null;
+      if (cur) {
+        const upd = {name: nm, cost: cur.cost || r.cost || '—', type: cur.type || r.type || '', desc: cur.desc || r.desc || ''};
+        if (upd.cost !== r.cost || upd.desc !== r.desc || upd.type !== r.type) refreshed++;
+        return {...r, ...upd};
+      }
+      if (GD && classInstalled && !ruleExists(nm)) note('Attack Builder', 'kept', `"${a.name || 'Attack'}": rider "${nm}" is not in the current rules — kept with its saved text.`);
       return {...r, name: nm};
     });
-    return {...a, id: a.id || ('atk_legacy_' + Date.now() + '_' + i), name: _str(a.name || 'Attack'), riders,
-      weaponData: (a.weaponData && typeof a.weaponData === 'object') ? a.weaponData : (WEAPONS.find(w => w.name === a.baseWeapon) || {}),
-      totalCost: _str(a.totalCost || '0'), expanded: false};
+    if (refreshed) note('Attack Builder', 'fixed', `"${a.name || 'Attack'}": ${refreshed} rider${refreshed > 1 ? 's' : ''} updated to the current rules text and cost.`);
+    const wNow = WEAPONS.find(w => w.name === a.baseWeapon);
+    const weaponData = wNow ? {dmg: wNow.dmg, type: wNow.type, role: wNow.role, range: wNow.range || '', twoHand: !!wNow.twoHand, feature: wNow.feature || ''}
+      : ((a.weaponData && typeof a.weaponData === 'object') ? a.weaponData : null);
+    return {...a, id: a.id || ('atk_legacy_' + Date.now() + '_' + i), name: _str(a.name || 'Attack'), riders, weaponData,
+      totalCost: riders.length ? sumCosts(riders.map(r => r.cost)) : _str(a.totalCost || '0'), expanded: false};
   });
 
   // ── TRACKERS ──
@@ -2778,6 +2888,8 @@ function updateDerivedStats() {
     if (getSelectedArchetype()==='Scourge') hp += level*3;
     // Graveknight: Heavy Vessel, +2 max HP per level, from Level 1 (Rules 0.9.8)
     if (getSelectedArchetype()==='Graveknight') hp += level*2;
+    // Talent: Iron Constitution (Tier 1), +2 max HP per character level
+    if ((talentSelections||[]).some(t => t && t.name === 'Iron Constitution')) hp += level*2;
     hpEl.value = hp;
   }
 
@@ -2930,6 +3042,7 @@ function getGoverningStat(skillName) {
     'Mobility': Math.max(getAbilityMod('FORT'),getAbilityMod('REF')),
     'Subterfuge': getAbilityMod('REF'),
     'Lore': getAbilityMod('INT'),
+    'Strands': Math.max(getAbilityMod('INT'),getAbilityMod('PRES')),
     'Investigation': getAbilityMod('INT'),
     'Crafting': Math.max(getAbilityMod('INT'),getAbilityMod('REF'),getAbilityMod('FORT')),
     'Alchemy': Math.max(getAbilityMod('INT'),getAbilityMod('PRES')),
@@ -3676,7 +3789,8 @@ function renderLevelLog() {
 
 function buildLevelTitle(entry, cls, archetype, progRow) {
   if (!cls) return 'Choose a class to see level features';
-  const features = progRow?.features||[];
+  // Titles use each feature's name (the text before ":" or " — "), not its full rules text.
+  const features = (progRow?.features||[]).map(f => String(f).split(/:| — /)[0].trim()).filter(Boolean);
   const short = features.slice(0,2).join(' · ');
   const arcFeature = getArchetypeFeatureAtLevel(entry.level, archetype);
   if (arcFeature) return (short?short+' · ':'')+arcFeature.name;
@@ -4190,15 +4304,94 @@ function renderGraveToll() {
   const st = document.getElementById('grave-toll-start');
   if (st) st.title = lvl >= 8 ? 'Start of combat: 3 (Death’s Patience)' : 'Start of combat: 0';
 }
-// Keep the tracker in step with archetype, level and rest changes.
+// ── Necromancer: Legion tracker (Rules 0.9.8) ───────────────────────
+// The Legion Count is one number. Cap 3 (4 from Level 5, 6 from Level 8); Ossuary Tide (Level 10)
+// lets Mass Grave raise 3 past the cap. Value persists through the hidden data-save field.
+function isNecromancer() { return getSelectedArchetype() === 'Necromancer' && !!(GD && GD.classes && GD.classes['The Bond']); }
+function getLegionCap() { const l = getCharLevel(); return l >= 8 ? 6 : l >= 5 ? 4 : 3; }
+function getLegionMax() { return getLegionCap() + (getCharLevel() >= 10 ? 3 : 0); }
+function getLegion() {
+  const v = parseInt(document.getElementById('legion-count')?.value);
+  return isNaN(v) ? 0 : Math.max(0, Math.min(getLegionMax(), v));
+}
+function setLegion(n) {
+  const el = document.getElementById('legion-count');
+  if (!el) return;
+  el.value = String(Math.max(0, Math.min(getLegionMax(), n)));
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+  renderLegion();
+}
+function adjustLegion(d) { setLegion(getLegion() + d); }
+function fillLegion() { setLegion(Math.max(getLegion(), getLegionCap())); }
+function toggleLegionPip(n) { setLegion(getLegion() === n ? n - 1 : n); }
+function renderLegion() {
+  const band = document.getElementById('legion-band');
+  if (!band) return;
+  if (!isNecromancer()) { band.classList.remove('show'); return; }
+  band.classList.add('show');
+  const lvl = getCharLevel(), cap = getLegionCap(), max = getLegionMax(), cur = getLegion();
+  let h = '';
+  for (let i = 1; i <= max; i++) {
+    const tide = i > cap;
+    const cls = ['gt-pip', i <= cur ? 'filled' : '', i === cap + 1 ? 'gap' : '', tide ? 'thresh' : ''].filter(Boolean).join(' ');
+    h += `<button class="${cls}" title="${tide ? 'Ossuary Tide: past the cap until combat ends' : 'Set the Legion to ' + i}" onclick="toggleLegionPip(${i})">${i}</button>`;
+  }
+  document.getElementById('legion-pips').innerHTML = h;
+  document.getElementById('legion-count-label').textContent = `${cur} / ${cap}`;
+  const die = lvl >= 5 ? 'd8' : 'd6';
+  const raise = lvl >= 4 ? 2 : 3, fill = lvl >= 4 ? 0 : 1;
+  document.getElementById('legion-effect').innerHTML =
+    `Command Legion: <strong>${cur}${die}</strong> (split among up to 3 creatures in the Legion Zone). `
+    + `Raise Bone Servant ${raise} PP${lvl >= 8 ? ' (2 Skeletons)' : ''}; Fill at initiative ${fill} PP per Skeleton. `
+    + `Bone Colossus needs 3+. Cap ${cap}${lvl >= 10 ? ' (+3 with Ossuary Tide)' : ''}.`;
+  const fb = document.getElementById('legion-fill');
+  if (fb) fb.title = `Bone Satchel when initiative is rolled: raise up to ${cap} for ${fill} PP each`;
+}
+
+// ── Fiendstalker: Pact Form (Rules 0.9.8) ───────────────────────────
+// Effects come from the archetype's "Spite Form:" / "Wrath Form:" passives in aethel-bond.json.
+function isFiendstalker() { return getSelectedArchetype() === 'Fiendstalker' && !!(GD && GD.classes && GD.classes['The Bond']); }
+function getPactForm() { const v = document.getElementById('pact-form')?.value || ''; return ['Spite', 'Wrath'].includes(v) ? v : ''; }
+function setPactForm(f) {
+  const el = document.getElementById('pact-form');
+  if (!el) return;
+  el.value = f || '';
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+  renderPactForm();
+  if (typeof calcSuggestedDef === 'function') calcSuggestedDef();
+}
+function pactFormText(form) {
+  const p = (GD?.archetypeFeatures?.Fiendstalker?.passives || []).find(x => x.startsWith(form + ' Form:'));
+  return p ? p.substring(p.indexOf(':') + 1).trim() : '';
+}
+function renderPactForm() {
+  const band = document.getElementById('pact-form-band');
+  if (!band) return;
+  if (!isFiendstalker()) { band.classList.remove('show'); return; }
+  band.classList.add('show');
+  const cur = getPactForm(), lvl = getCharLevel();
+  document.getElementById('pact-form-btns').innerHTML = ['', 'Spite', 'Wrath'].map(f =>
+    `<button class="cstat-delta-btn" style="${cur === f ? 'background:#4a6a8a;color:#fff' : ''}" onclick="setPactForm('${f}')">${f || 'None'}</button>`).join('');
+  const parts = [];
+  if (cur) parts.push(`<strong>${cur} Form:</strong> ${esc(pactFormText(cur))}`);
+  if (cur === 'Spite' && lvl >= 4) parts.push('<strong>Daemonic Resilience:</strong> Resistance to physical damage.');
+  if (cur === 'Spite') parts.push('Spite Form’s +2 DEF is included in your Defense.');
+  parts.push(lvl >= 8 ? 'Entering a Form: Bonus Action, 0 PP. Switching: once per round a Free Action for 0 PP (Hungering Binding), otherwise a Bonus Action for 2 PP.'
+                      : 'Entering a Form: Bonus Action, 0 PP. Switching: Bonus Action, 2 PP.');
+  if (lvl >= 7) parts.push('Twin Forms: after switching, keep the previous Form until the start of your next turn.');
+  document.getElementById('pact-form-effect').innerHTML = parts.join(' ');
+}
+
+// Keep the trackers in step with archetype, level and rest changes.
 (function hookGraveToll() {
   const wrap = (name, after) => {
     const orig = window[name];
     if (typeof orig !== 'function') return;
     window[name] = function() { const r = orig.apply(this, arguments); try { after(); } catch (e) {} return r; };
   };
-  wrap('renderArchetypeAbilities', renderGraveToll);
-  wrap('renderLevelLog', renderGraveToll);
+  const renderBondTrackers = () => { renderGraveToll(); renderLegion(); renderPactForm(); };
+  wrap('renderArchetypeAbilities', renderBondTrackers);
+  wrap('renderLevelLog', renderBondTrackers);
   wrap('doShortRest', () => { if (isGraveknight()) setGraveToll(0); });
   wrap('doLongRest', () => { if (isGraveknight()) setGraveToll(0); });
 })();
@@ -4280,6 +4473,27 @@ function getArchetypeActionsByCategory() {
   return result;
 }
 
+// Class progression features that are used in play (Strand Ward, Pact Tax, Unbreakable Focus, ...).
+// A feature counts when its text names its action type at the start of a clause, e.g. "Reaction, 3 AP"
+// or "once per round, Bonus Action to ..."; "2 attacks per Action" does not.
+function getClassActionsByCategory() {
+  const result = {actions:[], bonus:[], reactions:[], passives:[]};
+  const cd = GD?.classes?.[getSelectedClass()];
+  if (!cd) return result;
+  const level = getCharLevel();
+  (cd.progressionTable || []).filter(r => r.level <= level).forEach(r => (r.features || []).forEach(f => {
+    const m = String(f).match(/^([^:]+):\s*(.*)$/);
+    if (!m) return;
+    const name = m[1].trim(), desc = m[2].trim();
+    const am = desc.match(/(?:^|[,.;]\s*)(Reaction|Bonus Action|Free Action|Action)\b/);
+    if (!am) return;
+    const kind = am[1] === 'Reaction' ? 'reactions' : am[1] === 'Bonus Action' ? 'bonus' : 'actions';
+    const cm = desc.match(/^(?:Reaction|Bonus Action|Free Action|Action),\s*(\d+\s*(?:AP|FP|SP|PP))\b/);
+    result[kind].push({name, cost: cm ? cm[1] : am[1], type: 'Class Feature', desc, source: `L${r.level}`});
+  }));
+  return result;
+}
+
 function getLevelSelectionsByCategory() {
   const result = {actions:[], bonus:[], reactions:[], passives:[], customizations:[]};
   if (!GD) return result;
@@ -4341,7 +4555,14 @@ function getLevelSelectionsByCategory() {
         const all = [...(GD.inscriptions?.universal||[]), ...(GD.inscriptions?.oracle||[]),
           ...(GD.inscriptions?.templar||[]), ...(GD.inscriptions?.zealot||[])];
         const ins = all.find(x => x.name === value);
-        if (ins) result.customizations.push({name: ins.name, cost: ins.cost, type: ins.type || 'Inscription', desc: ins.desc, source: `L${entry.level}`});
+        if (ins) {
+          // Rules 0.9.8: Standalone Inscriptions take your Bonus Action unless tagged Reaction.
+          const card = {name: ins.name, cost: ins.cost, type: ins.type || 'Inscription', desc: ins.desc, source: `L${entry.level}`};
+          const t = (ins.type || '').toLowerCase();
+          if (t.includes('reaction')) result.reactions.push(card);
+          else if (t.startsWith('standalone') && !t.includes('out of combat')) result.bonus.push(card);
+          else result.customizations.push(card);
+        }
       }
       if (effectiveType === 'pactBond') {
         const pool = getBondPactPool(archetype);
@@ -4382,6 +4603,7 @@ function renderActionTables() {
   const archActions = getArchetypeActionsByCategory();
   const levelActions = getLevelSelectionsByCategory();
   const invActions = getInventoryActionsByCategory();
+  const classActions = getClassActionsByCategory();
 
   ['actions','bonus','reactions','passives'].forEach(t => {
     const autoDiv = document.getElementById('am-'+t+'-auto');
@@ -4389,7 +4611,19 @@ function renderActionTables() {
       const archItems = archActions[t] || [];
       const levelItems = levelActions[t] || [];
       const invItems = invActions[t] || [];
+      const classItems = classActions[t] || [];
       let html = '';
+      if (classItems.length > 0) {
+        html += '<div class="am-auto-label">From Class</div>' +
+          classItems.map(row =>
+            `<div class="am-auto-card" style="border-left-color:var(--copper-dark)">
+              <div><span class="am-auto-card-name">${esc(row.name)}</span>
+              <span class="am-auto-card-tag">${esc(row.cost)}</span>
+              <span class="am-auto-card-tag" style="color:var(--text-label)">${esc(row.source)}</span></div>
+              <div class="am-auto-card-desc">${esc(row.desc)}</div>
+            </div>`
+          ).join('');
+      }
       if (invItems.length > 0) {
         html += '<div class="am-auto-label">From Equipment</div>' +
           invItems.map(row =>
@@ -4875,6 +5109,10 @@ function buildSaveData() {
   ['fort','ref','int','pres'].forEach(a => {
     data['ability-'+a] = document.getElementById('ability-'+a)?.value||'';
   });
+  // The Level 6 save focus <select> always shows a value; save it only when the player actually chose one,
+  // so the class default (Fort for the Body, Will otherwise) applies until then.
+  const l6 = document.getElementById('l6-save-choice');
+  if (l6 && l6.dataset.userSet !== '1') data['l6-save-choice'] = '';
   return data;
 }
 
@@ -4965,7 +5203,7 @@ function loadAll() {
           el.value = d[el.dataset.save];
           // A persisted L6 save focus is an explicit choice — don't let the class
           // default overwrite it on the next recompute.
-          if (el.id === 'l6-save-choice') el.dataset.userSet = '1';
+          if (el.id === 'l6-save-choice') { if (el.value) el.dataset.userSet = '1'; else delete el.dataset.userSet; }
           // A persisted manual HP max must keep its override flag so the derived
           // formula never clobbers the player's entered value (fixes cur/max drift).
           if (el.id === 'stat-hp-max' && localStorage.getItem('aethel-hpmax-override')==='1' && el.value) el.dataset.manualOverride = '1';
@@ -5042,6 +5280,7 @@ function loadAll() {
     try {
       const _d = JSON.parse(raw);
       savedArc  = _d['char-archetype']  || '';
+      savedArc  = ARCHETYPE_MIGRATIONS[savedArc] || savedArc;   // renamed in Rules 0.9.8
       savedPlane = _d['char-bond-plane'] || '';
     } catch {}
   }
@@ -5201,6 +5440,7 @@ function removeTalent(idx) {
 function saveTalents() {
   localStorage.setItem('aethel-talents', JSON.stringify(talentSelections));
   markDirty(false);
+  if (typeof updateDerivedStats === 'function' && GD) updateDerivedStats();  // Iron Constitution changes max HP
 }
 
 // ── NEW CHARACTER ─────────────────────────────────────────────────
@@ -5252,6 +5492,8 @@ function newCharacter() {
   if (initEl2) delete initEl2.dataset.manualOverride;
   const rpMaxEl = document.getElementById('stat-rp-max');
   if (rpMaxEl) delete rpMaxEl.dataset.manualOverride;
+  const l6New = document.getElementById('l6-save-choice');
+  if (l6New) delete l6New.dataset.userSet;
 
   // Re-render everything
   onClassChange();
@@ -5824,10 +6066,14 @@ function calcSuggestedDef() {
   // Level 6 grants +2 Defense Score to Body, Spirit and Bond (not the Mind, from 0.9.6). Auto-applied at Level 6+.
   const l6Def = (getCharLevel() >= 6 && getSelectedClass() !== 'The Mind') ? 2 : 0; // 0.9.6: Warded Mind no longer grants DEF
   def += l6Def;
+  // Fiendstalker Spite Form: +2 DEF while the Form is active (Rules 0.9.8)
+  const formDef = (typeof isFiendstalker === 'function' && isFiendstalker() && getPactForm() === 'Spite') ? 2 : 0;
+  def += formDef;
   const el = document.getElementById('inv-suggested-def');
   if (el) {
-    if (l6Def) {
-      el.innerHTML = `${def} <span style="font-size:.72rem;color:var(--text-label);font-weight:400">(${armorSubtotal} + Lv6 ${l6Def})</span>`;
+    if (l6Def || formDef) {
+      const extra = [l6Def ? `Lv6 ${l6Def}` : '', formDef ? `Spite ${formDef}` : ''].filter(Boolean).join(' + ');
+      el.innerHTML = `${def} <span style="font-size:.72rem;color:var(--text-label);font-weight:400">(${armorSubtotal} + ${extra})</span>`;
     } else {
       el.textContent = def;
     }
@@ -6316,8 +6562,9 @@ function buildPrintSheet() {
   ];
   // Collect archetype-derived actions for PDF
   const archActions = getArchetypeActionsByCategory();
+  const classActs = getClassActionsByCategory();
   actionSections.forEach(({key, label}) => {
-    const archRows = archActions[key] || [];
+    const archRows = [...(classActs[key] || []), ...(archActions[key] || [])];
     const customRows = actionTableData[key] || [];
     if (archRows.length + customRows.length > 0) {
       html += `<div class="ps-section">${esc(label)}</div>
@@ -6410,7 +6657,7 @@ const AB_LS_KEY = 'aethel-attack-builder';
 // Called Shot, The Sundering Execution) — these ride on a single weapon attack
 // for an FP cost rather than consuming a separate action.
 const RIDER_TYPES = [
-  'on hit', 'on-hit', 'on-hit rider', 'bonus on hit',
+  'on hit', 'on-hit', 'on-hit rider', 'bonus on hit', 'legion rider',
   'on hit (attack)', 'action (attack)', 'augment only', 'augment'
 ];
 
@@ -6426,32 +6673,29 @@ function isRiderType(typeStr) {
  */
 function parseCost(costStr) {
   if (!costStr) return {resources:{}, notes:[]};
-  const s = costStr.replace(/^\+/,'').trim();
   const resources = {};
   const notes = [];
-  // match "<number> <RES>" or "Variable <RES>"
-  const resMatch = s.match(/^(\d+)\s*(FP|SP|AP|PP)$/i);
-  const varMatch = s.match(/Variable\s*(FP|SP|AP|PP)/i);
-  if (resMatch) {
-    const res = resMatch[2].toUpperCase();
-    resources[res] = (resources[res]||0) + parseInt(resMatch[1]);
-  } else if (varMatch) {
-    notes.push('Variable ' + varMatch[1].toUpperCase());
-  } else if (s && s !== '—' && s !== '0 PP' && s !== '0') {
-    notes.push(s);
-  }
+  // Each "+"-separated part: "<n> FP|SP|AP|PP", "<n> Toll" (Grave Toll), "<n> Skeleton(s)", or "Variable <RES>".
+  String(costStr).split('+').map(x => x.trim()).filter(Boolean).forEach(s => {
+    let m;
+    if ((m = s.match(/^(\d+)\s*(FP|SP|AP|PP)$/i))) { const k = m[2].toUpperCase(); resources[k] = (resources[k]||0) + parseInt(m[1]); }
+    else if ((m = s.match(/^(\d+)\s*(?:Grave\s+)?Toll$/i))) resources.Toll = (resources.Toll||0) + parseInt(m[1]);
+    else if ((m = s.match(/^(\d+)\s*Skeletons?$/i))) resources.Skeleton = (resources.Skeleton||0) + parseInt(m[1]);
+    else if ((m = s.match(/^Variable\s*(FP|SP|AP|PP)$/i))) notes.push('Variable ' + m[1].toUpperCase());
+    else if (s !== '—' && !/^0(\s*(FP|SP|AP|PP))?$/i.test(s)) notes.push(s);
+  });
   return {resources, notes};
 }
 
 function sumCosts(costStrings) {
-  const total = {FP:0, SP:0, AP:0, PP:0};
+  const total = {FP:0, SP:0, AP:0, PP:0, Toll:0, Skeleton:0};
   const notes = [];
   costStrings.forEach(c => {
     const parsed = parseCost(c);
     Object.entries(parsed.resources).forEach(([k,v]) => { total[k] = (total[k]||0)+v; });
     notes.push(...parsed.notes);
   });
-  const parts = Object.entries(total).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k}`);
+  const parts = Object.entries(total).filter(([,v])=>v>0).map(([k,v])=>`${v} ${k === 'Skeleton' && v > 1 ? 'Skeletons' : k}`);
   if (notes.length) parts.push(...notes.map(n=>`[${n}]`));
   return parts.length ? parts.join(' + ') : '0';
 }
@@ -6580,6 +6824,14 @@ function renderAttackBuilder() {
       baseOpts += `<option value="${esc(w.name)}"${abState.baseWeapon===w.name?' selected':''}>${esc(w.name)} (${esc(w.dmg||'?')}, ${esc(w.type||'?')})</option>`;
     });
     baseOpts += `</optgroup>`;
+  }
+  // Necromancer: Legion Riders ride on Command Legion (or Colossus Slam once Bone Colossus is learned).
+  if (archetype === 'Necromancer') {
+    const hasColossus = levelEntries.some(e => Object.values(e.selections || {}).includes('Bone Colossus'));
+    baseOpts += `<optgroup label="Legion">
+      <option value="__Command Legion"${abState.baseWeapon==='__Command Legion'?' selected':''}>Command Legion (1 Legion die per Skeleton)</option>
+      ${hasColossus ? `<option value="__Colossus Slam"${abState.baseWeapon==='__Colossus Slam'?' selected':''}>Colossus Slam (Bone Colossus)</option>` : ''}
+    </optgroup>`;
   }
   baseOpts += `<optgroup label="Generic">
     <option value="__Melee Attack"${abState.baseWeapon==='__Melee Attack'?' selected':''}>Melee Attack (weapon damage)</option>
@@ -6844,8 +7096,7 @@ function renderSavedAttacks() {
 // Auto-save to localStorage on any input change
 document.addEventListener('input', function(e) {
   if (e.target.dataset.save) {
-    const data = {};
-    document.querySelectorAll('[data-save]').forEach(el => { data[el.dataset.save] = el.value; });
+    const data = buildSaveData();
     localStorage.setItem(LS_KEY, JSON.stringify(data));
     // Identity/build fields are "major"; everything else marks dirty quietly.
     const majorFields = ['char-class','char-archetype','char-bond-plane','char-ancestry','char-background'];
