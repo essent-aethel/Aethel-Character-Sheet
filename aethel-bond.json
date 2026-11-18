@@ -11,10 +11,10 @@
    "resourceAbbr": "PP",
    "governingStat": "PRES",
    "archetypes": [
-    "Daemon Hunter",
-    "Death Knight",
+    "Fiendstalker",
+    "Graveknight",
     "Necromancer",
-    "Planewalker"
+    "Strandwalker"
    ],
    "selectionName": "Pact Bonds",
    "selectionAbbr": "pactBonds",
@@ -67,7 +67,7 @@
      "level": 5,
      "features": [
       "Severed Reckoning: Expert Pact Bonds unlocked (Level 5+)",
-      "Effect dice: Bonds that deal dice of damage roll 1 extra die, once per use (weapon dice, Blight ticks and Grave Toll's bonus excluded; the Planewalker uses Channel the Beyond)."
+      "Effect dice: Bonds that deal dice of damage roll 1 extra die, once per use (weapon dice, Blight ticks and Grave Toll's bonus excluded; the Strandwalker uses Channel the Beyond)."
      ],
      "selections": {
       "type": "pactBond",
@@ -111,7 +111,7 @@
     {
      "level": 9,
      "features": [
-      "What Was Promised: your first Pact Tax each combat costs no HP; you still gain the PP. Pact Tax remains once per round; the Planewalker's Bleed-Through still permits one additional Tax as a Reaction.",
+      "What Was Promised: your first Pact Tax each combat costs no HP; you still gain the PP. Pact Tax remains once per round; the Strandwalker's Bleed-Through still permits one additional Tax as a Reaction.",
       "Effect dice: 2 extra dice total"
      ],
      "selections": {
@@ -131,127 +131,15 @@
       "pool": "all"
      }
     }
-   ]
+   ],
+   "archetypeMigrations": {
+    "Death Knight": "Graveknight",
+    "Daemon Hunter": "Fiendstalker",
+    "Planewalker": "Strandwalker"
+   }
   }
  },
  "archetypeFeatures": {
-  "Daemon Hunter": {
-   "class": "The Bond",
-   "passives": [
-    "Bound Vessel: Both Pact Forms are available at Level 1. Entering a Form is a Bonus Action (0 PP); switching Forms is a Bonus Action and costs 2 PP.",
-    "Daemonsight: Sense the nearest Void, Daemonic or otherplanar creature within 60 ft. Your attacks against Void and Daemonic creatures ignore 2 DEF. Out of combat, you have Advantage on Strands checks to identify planar influence.",
-    "Spite Form: +2 DEF. Once per round, when you take damage, gain 3 PP. Reaction: when an enemy within 5 ft. of you attacks an ally, you become the target instead.",
-    "Wrath Form: +1d6 weapon damage. +10 ft. speed. Your Critical Hits happen on a natural 17–20."
-   ],
-   "abilities": [
-    {
-     "name": "Hellfire Blade",
-     "type": "On-Hit Rider",
-     "cost": "Variable PP",
-     "desc": "Spend up to 15 PP: +1d8 Fire per 3 PP spent. Not reduced on a Glancing Blow."
-    },
-    {
-     "name": "Gorge",
-     "type": "On-Hit Rider",
-     "cost": "3 PP",
-     "desc": "Full Hit: recover HP equal to half the damage dealt."
-    },
-    {
-     "name": "Daemonic Leap",
-     "type": "Move (Free)",
-     "cost": "2 PP",
-     "desc": "Move up to 30 ft. in a straight line, ignoring difficult terrain and Opportunity Attacks."
-    },
-    {
-     "name": "Daemon Chains",
-     "type": "Bonus Action",
-     "cost": "2 PP",
-     "desc": "One enemy within 30 ft. makes a Fort Save or is Grappled until the start of its next turn."
-    },
-    {
-     "name": "The Leash Slips (Signature)",
-     "type": "Bonus Action",
-     "cost": "Once per Long Rest",
-     "desc": "Roll 1d6 — the result applies whether you like it or not. Every result costs you, never your allies. (1) Slaughter's Joy — Make three extra melee attacks this turn against enemies in reach. If none are in reach, first move up to 15 ft. toward the nearest. Each attack deals 1d6 backlash to you. (2) Pit-Born Dread — Every enemy within 20 ft. makes a Will Save or is Frightened of you until the end of its next turn. (3) Famine's End — Until the start of your next turn, damage you deal also heals you by the same amount. At the start of your next turn, lose half the HP you gained this way. (4) Borrowed Face — Choose an enemy within 30 ft. Until the end of your next turn, you have Advantage on attacks against it, and every other enemy has Advantage on attacks against you. (5) Overextended — Make one melee attack with 30 ft. reach. On a Full Hit, roll your weapon damage dice three times and add them. You are Staggered until the end of your next turn. (6) It Speaks — The GM tells you one true, useful thing about an enemy present, in the Daemon's voice. Then choose any other result on this table."
-    }
-   ],
-   "levelFeatures": {
-    "4": {
-     "name": "Daemonic Resilience",
-     "desc": "Resistance to physical damage while in Spite Form."
-    },
-    "7": {
-     "name": "Twin Forms",
-     "desc": "When you switch Pact Forms, you keep the previous Form's benefits until the start of your next turn."
-    },
-    "8": {
-     "name": "Hungering Binding",
-     "desc": "Once per round, switching Pact Forms is a Free Action and costs 0 PP. When you switch, your next hit this turn deals +1d8."
-    },
-    "10": {
-     "name": "The Leash Breaks (Ultimate)",
-     "desc": "Choose a result from 1–5 instead of rolling, and the Daemon also speaks as in It Speaks. You enter Unbound Form for 3 rounds: both Pact Forms are active, your melee reach is +10 ft., and Pact Tax costs no HP."
-    }
-   }
-  },
-  "Death Knight": {
-   "class": "The Bond",
-   "passives": [
-    "Heavy Vessel: Proficient with Heavy Armor, Shields, and all martial weapons. Your maximum HP increases by 2 per level.",
-    "Cold to the Touch: Resistance to Necrotic damage, and Advantage on saves against Frightened. Blight you apply is Cold and reduces the creature's speed by 10 ft.",
-    "Grave Toll: Track 0–6. Gain 1 Toll whenever you take damage, and 1 more when that damage is your own Pact Tax (2 per Tax). Toll resets to 0 when combat ends. At 3+ Toll your melee hits deal +1d6 Necrotic; at 6 they deal +2d6. Bonds with a Toll cost spend it, which can drop you below a threshold."
-   ],
-   "abilities": [
-    {
-     "name": "Soulrend Strike",
-     "type": "On-Hit Rider",
-     "cost": "Variable (PP or Toll)",
-     "desc": "Add damage in steps. Each step costs 3 PP or 2 Grave Toll and adds +1d6 Necrotic. Maximum 5 steps (7 from Level 7). Full Hit: recover HP equal to half the Necrotic dealt by the steps."
-    },
-    {
-     "name": "Grave Strike",
-     "type": "On-Hit Rider",
-     "cost": "4 PP",
-     "desc": "Full Hit: recover HP equal to 1d8 + your level + your current Grave Toll."
-    },
-    {
-     "name": "Grave Pull",
-     "type": "Bonus Action",
-     "cost": "3 PP",
-     "desc": "One creature within 30 ft. makes a Fort Save or is pulled to a space adjacent to you. A Boss can't be pulled: instead, you move up to 30 ft. to a space adjacent to it without provoking (no save)."
-    },
-    {
-     "name": "Spell Ward",
-     "type": "Bonus Action",
-     "cost": "4 PP",
-     "desc": "Until the start of your next turn: Resistance to damage from spells and magical effects, and Advantage on saves against them. Each time you succeed on such a save, gain 1 Grave Toll."
-    },
-    {
-     "name": "Debt Made Flesh (Signature)",
-     "type": "Bonus Action",
-     "cost": "Once per Long Rest",
-     "desc": "Requires 6 Grave Toll. Death does not gamble — it collects. Spend all your Grave Toll. Until the end of your turn, your melee attacks deal maximum damage and ignore DEF, your next Soulrend Strike gains 3 free steps (they count toward its maximum), and Grave Strike heals for the full damage dealt instead of its normal amount."
-    }
-   ],
-   "levelFeatures": {
-    "4": {
-     "name": "Unholy Resolve",
-     "desc": "While you have 4+ Grave Toll, you have Resistance to physical damage."
-    },
-    "7": {
-     "name": "Rime Eternal",
-     "desc": "Blight you apply doesn't expire while the creature is within 30 ft. of you. Soulrend Strike's maximum rises to 7 steps."
-    },
-    "8": {
-     "name": "Death's Patience",
-     "desc": "Begin each combat with 3 Grave Toll. Once per round, when an ally within 10 ft. takes damage, gain 1 Grave Toll. While you have 3+ Toll, you can't be moved against your will."
-    },
-    "10": {
-     "name": "Debt Comes Due (Ultimate)",
-     "desc": "You may also use Debt Made Flesh as a Reaction when you drop to 0 HP, ignoring its Toll requirement: you drop to half your maximum HP instead, your Grave Toll is set to 6, and the maximum-damage turn happens on your next turn. When that turn starts, every Blight you have applied ticks at maximum."
-    }
-   }
-  },
   "Necromancer": {
    "class": "The Bond",
    "passives": [
@@ -260,7 +148,7 @@
     "Bone Satchel: You carry enough bone for a full Legion. Raise Bone Servant can draw on it instead of a corpse. When initiative is rolled and you aren't surprised, you may raise Skeletons up to your Legion Cap for 1 PP each (no action). The satchel refills on a Long Rest.",
     "Bone Screen: While you are in the Legion Zone, the first weapon attack against you each round destroys a Skeleton instead of hitting you (twice per round from Level 8).",
     "Death's Accountant: Once per round, when a creature dies in the Legion Zone, raise it as a Skeleton at no cost (up to your cap).",
-    "Bone Colossus (if learned): Hit Points: 10 × Skeletons consumed. DEF: 2 + half your level (rounded down). Speed: 30 ft. Reach 10 ft. Uses your saves.. Colossus Slam: Replaces Command Legion. Attack roll (PRES) against one creature within reach. Damage: 1 Legion die per Skeleton consumed + your PRES modifier. Legion Riders apply.. Bonus Action: Move it 30 ft., or it Shoves or Grapples a creature within reach (contested by your PRES).. Bodyguard (its Reaction): When an enemy within its reach attacks one of your allies, the Colossus becomes the target.. Duration: Until combat ends or it drops to 0 HP. Either way it collapses into bones: raise up to 2 Skeletons for free.."
+    "Bone Colossus (if learned): Hit Points: 10 × Skeletons consumed. DEF: 2 + half your level (rounded down). Speed: 30 ft. Reach 10 ft. Uses your saves. Colossus Slam: Replaces Command Legion. Attack roll (PRES) against one creature within reach. Damage: 1 Legion die per Skeleton consumed + your PRES modifier. Legion Riders apply. Bonus Action: Move it 30 ft., or it Shoves or Grapples a creature within reach (contested by your PRES). Bodyguard (its Reaction): When an enemy within its reach attacks one of your allies, the Colossus becomes the target. Duration: Until combat ends or it drops to 0 HP. Either way it collapses into bones: raise up to 2 Skeletons for free."
    ],
    "abilities": [
     {
@@ -319,7 +207,124 @@
     }
    }
   },
-  "Planewalker": {
+  "Fiendstalker": {
+   "class": "The Bond",
+   "passives": [
+    "Bound Vessel: Both Pact Forms are available at Level 1. Entering a Form is a Bonus Action (0 PP); switching Forms is a Bonus Action and costs 2 PP.",
+    "Daemonsight: Sense the nearest Void, Daemonic or otherplanar creature within 60 ft. Your attacks against Void and Daemonic creatures ignore 2 DEF. Out of combat, you have Advantage on Strands checks to identify planar influence.",
+    "Spite Form: +2 DEF. Once per round, when you take damage, gain 3 PP. Reaction: when an enemy within 5 ft. of you attacks an ally, you become the target instead.",
+    "Wrath Form: +1d6 weapon damage. +10 ft. speed. Your Critical Hits happen on a natural 17–20."
+   ],
+   "abilities": [
+    {
+     "name": "Hellfire Blade",
+     "type": "On-Hit Rider",
+     "cost": "Variable PP",
+     "desc": "Spend up to 15 PP: +1d8 Fire per 3 PP spent. Not reduced on a Glancing Blow."
+    },
+    {
+     "name": "Gorge",
+     "type": "On-Hit Rider",
+     "cost": "3 PP",
+     "desc": "Full Hit: recover HP equal to half the damage dealt."
+    },
+    {
+     "name": "Daemonic Leap",
+     "type": "Move (Free)",
+     "cost": "2 PP",
+     "desc": "Move up to 30 ft. in a straight line, ignoring difficult terrain and Opportunity Attacks."
+    },
+    {
+     "name": "Daemon Chains",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "One enemy within 30 ft. makes a Fort Save or is Grappled until the start of its next turn."
+    },
+    {
+     "name": "The Leash Slips (Signature)",
+     "type": "Bonus Action",
+     "cost": "Once per Long Rest",
+     "desc": "Roll 1d6 — the result applies whether you like it or not. Every result costs you, never your allies. (1) Slaughter's Joy — Make three extra melee attacks this turn against enemies in reach. If none are in reach, first move up to 15 ft. toward the nearest. Each attack deals 1d6 backlash to you. (2) Pit-Born Dread — Every enemy within 20 ft. makes a Will Save or is Frightened of you until the end of its next turn. (3) Famine's End — Until the start of your next turn, damage you deal also heals you by the same amount. At the start of your next turn, lose half the HP you gained this way. (4) Borrowed Face — Choose an enemy within 30 ft. Until the end of your next turn, you have Advantage on attacks against it, and every other enemy has Advantage on attacks against you. (5) Overextended — Make one melee attack with 30 ft. reach. On a Full Hit, roll your weapon damage dice three times and add them. You are Staggered until the end of your next turn. (6) It Speaks — The GM tells you one true, useful thing about an enemy present, in the Daemon's voice. Then choose any other result on this table."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Daemonic Resilience",
+     "desc": "Resistance to physical damage while in Spite Form."
+    },
+    "7": {
+     "name": "Twin Forms",
+     "desc": "When you switch Pact Forms, you keep the previous Form's benefits until the start of your next turn."
+    },
+    "8": {
+     "name": "Hungering Binding",
+     "desc": "Once per round, switching Pact Forms is a Free Action and costs 0 PP. When you switch, your next hit this turn deals +1d8."
+    },
+    "10": {
+     "name": "The Leash Breaks (Ultimate)",
+     "desc": "Choose a result from 1–5 instead of rolling, and the Daemon also speaks as in It Speaks. You enter Unbound Form for 3 rounds: both Pact Forms are active, your melee reach is +10 ft., and Pact Tax costs no HP."
+    }
+   }
+  },
+  "Graveknight": {
+   "class": "The Bond",
+   "passives": [
+    "Heavy Vessel: Proficient with Heavy Armor, Shields, and all martial weapons. Your maximum HP increases by 2 per level.",
+    "Cold to the Touch: Resistance to Necrotic damage, and Advantage on saves against Frightened. Blight you apply is Cold and reduces the creature's speed by 10 ft.",
+    "Grave Toll: Track 0–6. Gain 1 Toll whenever you take damage, and 1 more when that damage is your own Pact Tax (2 per Tax). Toll resets to 0 when combat ends. At 3+ Toll your melee hits deal +1d6 Necrotic; at 6 they deal +2d6. Bonds with a Toll cost spend it, which can drop you below a threshold."
+   ],
+   "abilities": [
+    {
+     "name": "Soulrend Strike",
+     "type": "On-Hit Rider",
+     "cost": "Variable (PP or Toll)",
+     "desc": "Add damage in steps. Each step costs 3 PP or 2 Grave Toll and adds +1d6 Necrotic. Maximum 5 steps (7 from Level 7). Full Hit: recover HP equal to half the Necrotic dealt by the steps."
+    },
+    {
+     "name": "Grave Strike",
+     "type": "On-Hit Rider",
+     "cost": "4 PP",
+     "desc": "Full Hit: recover HP equal to 1d8 + your level + your current Grave Toll."
+    },
+    {
+     "name": "Grave Pull",
+     "type": "Bonus Action",
+     "cost": "3 PP",
+     "desc": "One creature within 30 ft. makes a Fort Save or is pulled to a space adjacent to you. A Boss can't be pulled: instead, you move up to 30 ft. to a space adjacent to it without provoking (no save)."
+    },
+    {
+     "name": "Spell Ward",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Until the start of your next turn: Resistance to damage from spells and magical effects, and Advantage on saves against them. Each time you succeed on such a save, gain 1 Grave Toll."
+    },
+    {
+     "name": "Debt Made Flesh (Signature)",
+     "type": "Bonus Action",
+     "cost": "Once per Long Rest",
+     "desc": "Requires 6 Grave Toll. Death does not gamble — it collects. Spend all your Grave Toll. Until the end of your turn, your melee attacks deal maximum damage and ignore DEF, your next Soulrend Strike gains 3 free steps (they count toward its maximum), and Grave Strike heals for the full damage dealt instead of its normal amount."
+    }
+   ],
+   "levelFeatures": {
+    "4": {
+     "name": "Unholy Resolve",
+     "desc": "While you have 4+ Grave Toll, you have Resistance to physical damage."
+    },
+    "7": {
+     "name": "Rime Eternal",
+     "desc": "Blight you apply doesn't expire while the creature is within 30 ft. of you. Soulrend Strike's maximum rises to 7 steps."
+    },
+    "8": {
+     "name": "Death's Patience",
+     "desc": "Begin each combat with 3 Grave Toll. Once per round, when an ally within 10 ft. takes damage, gain 1 Grave Toll. While you have 3+ Toll, you can't be moved against your will."
+    },
+    "10": {
+     "name": "Debt Comes Due (Ultimate)",
+     "desc": "You may also use Debt Made Flesh as a Reaction when you drop to 0 HP, ignoring its Toll requirement: you drop to half your maximum HP instead, your Grave Toll is set to 6, and the maximum-damage turn happens on your next turn. When that turn starts, every Blight you have applied ticks at maximum."
+    }
+   }
+  },
+  "Strandwalker": {
    "class": "The Bond",
    "passives": [
     "Planar Echo: Passively sense active planar rifts, portals, or significant otherplanar influence within 60 ft.",
@@ -413,7 +418,148 @@
   }
  },
  "pactBonds": {
-  "Daemon Hunter": {
+  "Necromancer": {
+   "basic": [
+    {
+     "name": "Grasping Dead",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "2 PP",
+     "desc": "Full Hit: the target is Grappled until the start of its next turn."
+    },
+    {
+     "name": "Festering Wound",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "3 PP",
+     "desc": "Full Hit: apply 1 Blight (Necrotic)."
+    },
+    {
+     "name": "Bone Shrapnel",
+     "tier": "basic",
+     "type": "Legion Rider",
+     "cost": "2 PP",
+     "desc": "Full Hit: every other enemy in the Legion Zone takes 1d6 Piercing."
+    },
+    {
+     "name": "Bone Armor",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "2 PP",
+     "desc": "Gain temporary HP equal to 1d6 + your PRES modifier + half your level."
+    },
+    {
+     "name": "Echoing Wail",
+     "tier": "basic",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Every enemy in the Legion Zone makes a Will Save or is Frightened until the end of its next turn."
+    },
+    {
+     "name": "Bone Ward",
+     "tier": "basic",
+     "type": "Reaction",
+     "cost": "1 Skeleton",
+     "desc": "You or an ally in or adjacent to the Legion Zone takes damage: destroy 1 Skeleton and either reduce that damage by 1d8 + your level, or have the creature recover that much HP after the hit."
+    },
+    {
+     "name": "Marrow Feast",
+     "tier": "basic",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "The first time a Skeleton is destroyed each round, recover PP equal to 2 + half your level."
+    }
+   ],
+   "advanced": [
+    {
+     "name": "Rattling Charge",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Move the Legion marker up to 30 ft.; every enemy in its new Legion Zone makes a Ref Save or falls Prone."
+    },
+    {
+     "name": "Plague Spread",
+     "tier": "advanced",
+     "type": "Legion Rider",
+     "cost": "4 PP",
+     "desc": "Full Hit on a Blighted creature: every other enemy in the Legion Zone gains Blight with the same number of stacks."
+    },
+    {
+     "name": "Unfailing Command",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "Your Command Legion (or Colossus Slam) this turn is an automatic Full Hit."
+    },
+    {
+     "name": "Soul Lance",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "4 PP",
+     "desc": "A 30 ft. ranged attack: 2d8 Necrotic (half on a Glancing Blow), or an ally within 30 ft. recovers 2d8 HP instead."
+    },
+    {
+     "name": "Ossuary Span",
+     "tier": "advanced",
+     "type": "Bonus Action",
+     "cost": "Up to 3 Skeletons",
+     "desc": "Per Skeleton spent, raise a 5 ft. section of bone wall, bridge or platform within 30 ft. Each section has 5 × your level HP."
+    },
+    {
+     "name": "Bone Colossus",
+     "tier": "advanced",
+     "type": "Action",
+     "cost": "4 PP + Legion",
+     "desc": "Fuse your Legion (minimum 3 Skeletons) into a Bone Colossus. See the stat block. Hit Points: 10 × Skeletons consumed. DEF: 2 + half your level (rounded down). Speed: 30 ft. Reach 10 ft. Uses your saves. Colossus Slam: Replaces Command Legion. Attack roll (PRES) against one creature within reach. Damage: 1 Legion die per Skeleton consumed + your PRES modifier. Legion Riders apply. Bonus Action: Move it 30 ft., or it Shoves or Grapples a creature within reach (contested by your PRES). Bodyguard (its Reaction): When an enemy within its reach attacks one of your allies, the Colossus becomes the target. Duration: Until combat ends or it drops to 0 HP. Either way it collapses into bones: raise up to 2 Skeletons for free."
+    },
+    {
+     "name": "Plague of the Grave",
+     "tier": "advanced",
+     "type": "Action",
+     "cost": "6 PP",
+     "desc": "Every enemy in the Legion Zone makes a Fort Save or is Poisoned until the end of its next turn."
+    }
+   ],
+   "expert": [
+    {
+     "name": "Paralytic Rot",
+     "tier": "expert",
+     "type": "Legion Rider",
+     "cost": "6 PP",
+     "desc": "Full Hit: Fort Save or Paralyzed until the end of its next turn."
+    },
+    {
+     "name": "Legion's Wrath",
+     "tier": "expert",
+     "type": "Legion Rider",
+     "cost": "5 PP",
+     "desc": "Command Legion (or Colossus Slam) rolls 3 extra Legion dice."
+    },
+    {
+     "name": "Necrotic Presence",
+     "tier": "expert",
+     "type": "Passive",
+     "cost": "—",
+     "desc": "Each enemy in the Legion Zone makes its first save each round against your Bonds at Disadvantage."
+    },
+    {
+     "name": "Last Rites",
+     "tier": "expert",
+     "type": "Reaction",
+     "cost": "3 Skeletons",
+     "desc": "Once per combat, when damage would drop you to 0 HP: destroy 3 Skeletons and drop to 1 HP instead."
+    },
+    {
+     "name": "Harvest of Souls",
+     "tier": "expert",
+     "type": "Bonus Action",
+     "cost": "X Skeletons",
+     "desc": "Per Skeleton destroyed: recover 4 PP, or you or an ally within 30 ft. recovers 1d8 + half your level HP."
+    }
+   ]
+  },
+  "Fiendstalker": {
    "basic": [
     {
      "name": "Leash-Cut",
@@ -568,7 +714,7 @@
     }
    ]
   },
-  "Death Knight": {
+  "Graveknight": {
    "basic": [
     {
      "name": "Rime Blight",
@@ -730,148 +876,7 @@
     }
    ]
   },
-  "Necromancer": {
-   "basic": [
-    {
-     "name": "Grasping Dead",
-     "tier": "basic",
-     "type": "Legion Rider",
-     "cost": "2 PP",
-     "desc": "Full Hit: the target is Grappled until the start of its next turn."
-    },
-    {
-     "name": "Festering Wound",
-     "tier": "basic",
-     "type": "Legion Rider",
-     "cost": "3 PP",
-     "desc": "Full Hit: apply 1 Blight (Necrotic)."
-    },
-    {
-     "name": "Bone Shrapnel",
-     "tier": "basic",
-     "type": "Legion Rider",
-     "cost": "2 PP",
-     "desc": "Full Hit: every other enemy in the Legion Zone takes 1d6 Piercing."
-    },
-    {
-     "name": "Bone Armor",
-     "tier": "basic",
-     "type": "Bonus Action",
-     "cost": "2 PP",
-     "desc": "Gain temporary HP equal to 1d6 + your PRES modifier + half your level."
-    },
-    {
-     "name": "Echoing Wail",
-     "tier": "basic",
-     "type": "Bonus Action",
-     "cost": "4 PP",
-     "desc": "Every enemy in the Legion Zone makes a Will Save or is Frightened until the end of its next turn."
-    },
-    {
-     "name": "Bone Ward",
-     "tier": "basic",
-     "type": "Reaction",
-     "cost": "1 Skeleton",
-     "desc": "You or an ally in or adjacent to the Legion Zone takes damage: destroy 1 Skeleton and either reduce that damage by 1d8 + your level, or have the creature recover that much HP after the hit."
-    },
-    {
-     "name": "Marrow Feast",
-     "tier": "basic",
-     "type": "Passive",
-     "cost": "—",
-     "desc": "The first time a Skeleton is destroyed each round, recover PP equal to 2 + half your level."
-    }
-   ],
-   "advanced": [
-    {
-     "name": "Rattling Charge",
-     "tier": "advanced",
-     "type": "Bonus Action",
-     "cost": "4 PP",
-     "desc": "Move the Legion marker up to 30 ft.; every enemy in its new Legion Zone makes a Ref Save or falls Prone."
-    },
-    {
-     "name": "Plague Spread",
-     "tier": "advanced",
-     "type": "Legion Rider",
-     "cost": "4 PP",
-     "desc": "Full Hit on a Blighted creature: every other enemy in the Legion Zone gains Blight with the same number of stacks."
-    },
-    {
-     "name": "Unfailing Command",
-     "tier": "advanced",
-     "type": "Bonus Action",
-     "cost": "4 PP",
-     "desc": "Your Command Legion (or Colossus Slam) this turn is an automatic Full Hit."
-    },
-    {
-     "name": "Soul Lance",
-     "tier": "advanced",
-     "type": "Bonus Action",
-     "cost": "4 PP",
-     "desc": "A 30 ft. ranged attack: 2d8 Necrotic (half on a Glancing Blow), or an ally within 30 ft. recovers 2d8 HP instead."
-    },
-    {
-     "name": "Ossuary Span",
-     "tier": "advanced",
-     "type": "Bonus Action",
-     "cost": "Up to 3 Skeletons",
-     "desc": "Per Skeleton spent, raise a 5 ft. section of bone wall, bridge or platform within 30 ft. Each section has 5 × your level HP."
-    },
-    {
-     "name": "Bone Colossus",
-     "tier": "advanced",
-     "type": "Action",
-     "cost": "4 PP + Legion",
-     "desc": "Fuse your Legion (minimum 3 Skeletons) into a Bone Colossus. See the stat block. Hit Points: 10 × Skeletons consumed. DEF: 2 + half your level (rounded down). Speed: 30 ft. Reach 10 ft. Uses your saves. Colossus Slam: Replaces Command Legion. Attack roll (PRES) against one creature within reach. Damage: 1 Legion die per Skeleton consumed + your PRES modifier. Legion Riders apply. Bonus Action: Move it 30 ft., or it Shoves or Grapples a creature within reach (contested by your PRES). Bodyguard (its Reaction): When an enemy within its reach attacks one of your allies, the Colossus becomes the target. Duration: Until combat ends or it drops to 0 HP. Either way it collapses into bones: raise up to 2 Skeletons for free."
-    },
-    {
-     "name": "Plague of the Grave",
-     "tier": "advanced",
-     "type": "Action",
-     "cost": "6 PP",
-     "desc": "Every enemy in the Legion Zone makes a Fort Save or is Poisoned until the end of its next turn."
-    }
-   ],
-   "expert": [
-    {
-     "name": "Paralytic Rot",
-     "tier": "expert",
-     "type": "Legion Rider",
-     "cost": "6 PP",
-     "desc": "Full Hit: Fort Save or Paralyzed until the end of its next turn."
-    },
-    {
-     "name": "Legion's Wrath",
-     "tier": "expert",
-     "type": "Legion Rider",
-     "cost": "5 PP",
-     "desc": "Command Legion (or Colossus Slam) rolls 3 extra Legion dice."
-    },
-    {
-     "name": "Necrotic Presence",
-     "tier": "expert",
-     "type": "Passive",
-     "cost": "—",
-     "desc": "Each enemy in the Legion Zone makes its first save each round against your Bonds at Disadvantage."
-    },
-    {
-     "name": "Last Rites",
-     "tier": "expert",
-     "type": "Reaction",
-     "cost": "3 Skeletons",
-     "desc": "Once per combat, when damage would drop you to 0 HP: destroy 3 Skeletons and drop to 1 HP instead."
-    },
-    {
-     "name": "Harvest of Souls",
-     "tier": "expert",
-     "type": "Bonus Action",
-     "cost": "X Skeletons",
-     "desc": "Per Skeleton destroyed: recover 4 PP, or you or an ally within 30 ft. recovers 1d8 + half your level HP."
-    }
-   ]
-  },
-  "Planewalker": {
+  "Strandwalker": {
    "Fey": {
     "basic": [
      {
@@ -900,7 +905,7 @@
       "tier": "basic",
       "type": "Bonus Action",
       "cost": "3 PP",
-      "desc": "A target within 30 ft. is outlined in light until the end of your next turn: attacks against it have Advantage, and it can't benefit from Invisible or Hidden."
+      "desc": "A target within 30 ft. is outlined in light until the end of your next turn: attacks against it have Advantage, and it can't become Hidden."
      },
      {
       "name": "Capricious Step",
@@ -1042,7 +1047,7 @@
       "tier": "basic",
       "type": "Bonus Action",
       "cost": "2 PP",
-      "desc": "A 20 ft. radius fills with harsh light for 1 round. Enemies in it can't benefit from Hidden or Invisible."
+      "desc": "A 20 ft. radius fills with harsh light for 1 round. Enemies in it can't be Hidden."
      },
      {
       "name": "Weight of Conscience",
