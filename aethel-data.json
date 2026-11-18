@@ -1,6 +1,6 @@
 {
  "meta": {
-  "version": "0.9.7",
+  "version": "0.9.8",
   "game": "Aethel",
   "edition": "Base Game"
  },
@@ -688,7 +688,7 @@
     {
      "level": 5,
      "features": [
-      "Embodied Faith: When casting Restorative or Ward of Faith, recipient gains +2 DEF until your next turn",
+      "Embodied Faith: When casting Restorative or a Boon, recipient gains +2 DEF until your next turn",
       "Expert Augments Unlocked (Level 5+)",
       "Roll 1 extra effect die"
      ],
@@ -942,14 +942,15 @@
    "class": "The Body",
    "passives": [
     "Exploit Vulnerability: +1d6 damage when hitting a conditioned target, a target you have advantage against, or a target that doesn't see you. Scales: 2d6 at L3, 4d6 at L5, 5d6 at L7, 6d6 at L9. Once per round.",
+    "Slippery Target (always known, no Selection): You are exceptionally difficult to pin down. The first attack made against you each round is made at Disadvantage. If that attack results in a Glancing Blow or worse, you may move 5 ft. as a Free Action without provoking Opportunity Attacks.",
     "Light Armor proficiency. Can wield Light Weapons."
    ],
    "abilities": [
     {
      "name": "Feinting Strike",
-     "type": "Action",
+     "type": "Bonus Action",
      "cost": "5 FP",
-     "desc": "Spend 5 FP. Make a contested Subterfuge check vs. the target’s Awareness. If successful, your next attack against them within 1 minute is an automatic Critical Hit, and the target is Off-Guard against Int until the start of your next turn (outwitted: its next Int Save is at Disadvantage). This may be attempted just before combat begins. Once per encounter, whether the contested check succeeds or fails."
+     "desc": "Spend 5 FP. Make a contested Subterfuge check vs. the target’s Awareness. If successful, your next attack against them within 1 minute (including this turn) is an automatic Critical Hit, and the target is Off-Guard against Int or Ref (your choice) until the start of your next turn: its next save of that type is at Disadvantage. May be attempted just before combat begins. Once per encounter, whether the check succeeds or fails."
     },
     {
      "name": "Hidden Movement",
@@ -989,7 +990,6 @@
     }
    },
    "customManeuvers": [
-    "Slippery Target",
     "Smoke Bomb",
     "Arterial Sever",
     "Coup de Grâce"
@@ -1046,7 +1046,7 @@
    "class": "The Mind",
    "passives": [
     "Wild Augmentation: Access to Wild Augments pool. On level-up, choose standard Strand Augment OR Wild Augment.",
-    "Poisoned counts as a Basic (Low) Condition for Imposing Conditions.",
+    "Poisoned counts as a Basic condition when you cast an Impose Condition Augment; holding it with Focused Sustain still costs the Advanced upkeep (3 AP per turn).",
     "Light Armor proficiency."
    ],
    "abilities": [
@@ -1054,13 +1054,13 @@
      "name": "Aspect Shift",
      "type": "Bonus Action",
      "cost": "2 AP",
-     "desc": "Enter Beast Aspect until end of combat (or unconscious). Melee attacks use INT or PRES mod, deal 2d6 damage. Choose one aspect: Predator (+20 ft speed, ignore difficult terrain), Sentinel (+2 DEF), Bloom (Restorative and Grant Buff Augments cost 1 AP less). Outside combat: functionally transform into a low-threat beast."
+     "desc": "Enter Beast Aspect until end of combat (or unconscious). Melee attacks use INT or PRES mod, deal 2d6 damage. Choose one aspect: Predator (+20 ft speed, ignore difficult terrain), Sentinel (+2 DEF; your Strand Ward costs 2 AP), Bloom (Restorative and Grant Boon Augments cost 1 AP less, minimum 1 AP per Augment). Outside combat: functionally transform into a low-threat beast."
     },
     {
      "name": "Earthbound Thorns",
      "type": "Action",
      "cost": "4 AP",
-     "desc": "Manifest a tangled barrier within 60 ft. (20 ft. wall or 15 ft. radius). Enemies entering take 2d6 Piercing automatically and make a Fort Save vs Scaling Threat DC or are Slowed until they leave. Persists until the encounter ends. The Warden’s signature exception to area pricing."
+     "desc": "Manifest a tangled barrier within 60 ft. (20 ft. wall or 15 ft. radius). Enemies entering or moving through take 2d6 Piercing automatically and make a Fort Save vs Scaling Threat DC or are Slowed until they leave. Persists until the encounter ends. Only one at a time (casting again moves it); forced movement into it counts as entering; does not count against your Sustain limit. The Warden’s signature exception to area pricing."
     },
     {
      "name": "Nature's Rebuke",
@@ -1072,7 +1072,7 @@
    "levelFeatures": {
     "4": {
      "name": "Symbiotic Flow",
-     "desc": "Select a Symbiotic Focus that remains active even outside Aspect Shift. Predator: +10 ft speed (+20 ft in Aspect Shift). Sentinel: +4 DEF (+8 in Aspect Shift; does not stack with Aspect of the Sentinel — use the higher). Bloom: Restorative Augments cost 2 AP less (4 AP less in Aspect Shift); an Augment never costs less than 1 AP."
+     "desc": "Select a Symbiotic Focus that remains active even outside Aspect Shift. Predator: +10 ft speed (+20 ft in Aspect Shift). Sentinel: +4 DEF (+8 in Aspect Shift; its DEF does not stack with Aspect of the Sentinel’s — use the higher; the Aspect’s Strand Ward discount still applies). Bloom: Restorative Augments cost 2 AP less (4 AP less in Aspect Shift); an Augment never costs less than 1 AP."
     },
     "7": {
      "name": "Overgrowth",
@@ -1180,7 +1180,7 @@
   "Oracle": {
    "class": "The Spirit",
    "passives": [
-    "Unwavering Devotion: When you cast a spell that includes a Restorative or Grant Buff Augment, you regain 1 SP.",
+    "Unwavering Devotion: When you cast a spell that includes a Restorative or Grant Boon Augment, you regain 1 SP (never more than half the spell's cost, rounded down).",
     "Heavy Armor proficiency."
    ],
    "abilities": [
@@ -1188,7 +1188,7 @@
      "name": "Purifying Light",
      "type": "Action",
      "cost": "2 SP",
-     "desc": "Select and execute one Divine Inscription costing 3 SP or less (Restorative/Buff only). After executing, make one melee attack against an adjacent enemy."
+     "desc": "Use one Standalone Inscription costing 3 SP or less on an ally (paying its cost), then make one melee weapon attack against an enemy within reach, using your Presence modifier for the attack and damage."
     },
     {
      "name": "Beacon of Hope",
@@ -1212,7 +1212,7 @@
    "levelFeatures": {
     "4": {
      "name": "Aura of Sanctuary",
-     "desc": "When you cast a Restorative or Ward effect, you and allies within 10 ft. gain +2 to Will Saves until your next turn."
+     "desc": "When you cast a spell that applies a Restorative, Boon or temporary HP effect, you and allies within 10 ft. gain +2 to Will Saves until your next turn."
     },
     "7": {
      "name": "Master Healer",
@@ -1220,7 +1220,7 @@
     },
     "8": {
      "name": "Celestial Conduit",
-     "desc": "Unwavering Devotion refunds 2 SP."
+     "desc": "Unwavering Devotion refunds 2 SP (still never more than half the spell's cost, rounded down)."
     },
     "10": {
      "name": "Benediction (Ultimate)",
@@ -1605,13 +1605,6 @@
    ],
    "Marauder": [
     {
-     "name": "Slippery Target",
-     "cost": "0 FP",
-     "type": "Passive",
-     "level": 1,
-     "desc": "You are exceptionally difficult to pin down. The first attack made against you each round is made at Disadvantage. If that attack results in a Glancing Blow or worse, you may move 5 ft. as a Free Action without provoking Opportunity Attacks."
-    },
-    {
      "name": "Smoke Bomb",
      "cost": "2 FP",
      "type": "Reaction",
@@ -1622,7 +1615,7 @@
      "name": "Arterial Sever",
      "cost": "3 FP",
      "type": "On-Hit Rider",
-     "level": 5,
+     "level": 3,
      "desc": "Make a melee attack. On a Full Hit, the target gains Bleeding (1d6 True Damage at the start of each of its turns). At the end of each of its turns it makes a Fort Save to end it; magical healing or an Action spent bandaging also ends it."
     },
     {
@@ -1649,7 +1642,7 @@
     "cost": "+3 AP",
     "level": 0,
     "access": "all",
-    "desc": "Adds healing: Spell restores 2d8 HP to each affected ally. Spend another +3 AP to add 2d8 more healing. AoE Healing/Shielding Modifier: when applying a Restorative or temporary HP effect via an Area of Effect Spell Form, the effect's potency is reduced — healing/shielding dice drop one step (d8→d6, d10→d8) and the max number of affected targets is capped at 3."
+    "desc": "Adds healing: Spell restores 2d8 HP to each affected ally. Spend another +3 AP to add 2d8 more healing. AoE Healing/Shielding Modifier: when applying a Restorative or temporary HP effect via an Area of Effect Spell Form, the effect's potency is reduced — healing/shielding dice drop one step (d8→d6, d10→d8) and the max number of affected targets is capped at 3. Triage: on a Bloodied ally, roll one extra healing die. Temporary HP (shields) can't be granted to a creature at 0 HP."
    },
    {
     "name": "Impose Minor Condition",
@@ -1826,6 +1819,27 @@
     "level": 3,
     "access": "all",
     "desc": "If Spell Form targets an ally (including you), that ally may immediately move up to their full speed as a Free Action (no OAs)."
+   },
+   {
+    "name": "Grant Minor Boon",
+    "cost": "+1 AP",
+    "level": 0,
+    "desc": "Grants one Minor Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Unfocused holds it for the encounter. Choose: Fleet (+10 ft. speed, ignore non-magical difficult terrain) · Guarded (+2 DEF) · Kindled Weapon (weapon attacks +1d6 of an element) · Steadfast (can't be knocked Prone or forcibly moved) · Resolute (Advantage on next save of a named type) · True Aim (attacks ignore cover).",
+    "access": "all"
+   },
+   {
+    "name": "Grant Major Boon",
+    "cost": "+3 AP",
+    "level": 3,
+    "desc": "Grants one Major Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Unfocused holds it for the encounter. Choose: Hasted (+20 ft. speed, movement doesn't provoke) · Warded (Resistance to a named damage type) · Lifedrinker (first Full Hit each turn restores 1d8 HP) · Wellspring (first Full Hit each turn restores 2 RP) · Empowered Weapon (weapon attacks +2d6 of an element) · Sure Strike (first Glancing Blow each turn becomes a Full Hit) · Unshaken (immune to Frightened and Dazed).",
+    "access": "all"
+   },
+   {
+    "name": "Grant Greater Boon",
+    "cost": "+5 AP",
+    "level": 5,
+    "desc": "Grants one Greater Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Can be held only with Focused Sustain. Choose: Keen Edge (Critical threshold −1, never below 16) · Quickened (one extra attack with the Attack action) · Surge (next spell, Inscription or Maneuver costs 3 RP less, min 1) · Phase (attack rolls against it have Disadvantage).",
+    "access": "all"
    }
   ],
   "combination": [
@@ -2083,17 +2097,6 @@
     "desc": "One ally within 60 ft. gains 2d6 temporary HP, +10 ft. movement speed, and Advantage on their next attack roll — all until the start of your next turn."
    },
    {
-    "name": "Ward of Faith",
-    "cost": "+2 SP",
-    "level": 0,
-    "access": [
-     "Oracle",
-     "Templar"
-    ],
-    "type": "Standalone",
-    "desc": "Grants one ally within 30 ft. +2 Defense Score until the start of your next turn."
-   },
-   {
     "name": "Aegis of Light",
     "cost": "+2 SP",
     "level": 0,
@@ -2204,6 +2207,39 @@
     ],
     "type": "On-Hit Rider",
     "desc": "When you deal damage with a weapon attack or Spell Form, all subsequent attacks made by your allies against that target have Advantage until the end of your next turn. The target also takes an extra 1d6 damage from all sources until the start of its next turn."
+   },
+   {
+    "name": "Grant Minor Boon",
+    "cost": "+1 SP",
+    "level": 0,
+    "desc": "Grants one Minor Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Unfocused holds it for the encounter. Choose: Fleet (+10 ft. speed, ignore non-magical difficult terrain) · Guarded (+2 DEF) · Kindled Weapon (weapon attacks +1d6 of an element) · Steadfast (can't be knocked Prone or forcibly moved) · Resolute (Advantage on next save of a named type) · True Aim (attacks ignore cover).",
+    "access": [
+     "Oracle",
+     "Zealot"
+    ],
+    "type": "Augment"
+   },
+   {
+    "name": "Grant Major Boon",
+    "cost": "+3 SP",
+    "level": 3,
+    "desc": "Grants one Major Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Unfocused holds it for the encounter. Choose: Hasted (+20 ft. speed, movement doesn't provoke) · Warded (Resistance to a named damage type) · Lifedrinker (first Full Hit each turn restores 1d8 HP) · Wellspring (first Full Hit each turn restores 2 RP) · Empowered Weapon (weapon attacks +2d6 of an element) · Sure Strike (first Glancing Blow each turn becomes a Full Hit) · Unshaken (immune to Frightened and Dazed).",
+    "access": [
+     "Oracle",
+     "Zealot"
+    ],
+    "type": "Augment"
+   },
+   {
+    "name": "Grant Greater Boon",
+    "cost": "+5 SP",
+    "level": 5,
+    "desc": "Grants one Greater Boon to an ally. No roll on willing allies; an area Form reaches up to 3 allies. Lasts until the end of the ally's next turn unless Sustained (Focused upkeep = the Boon's price). Can be held only with Focused Sustain. Choose: Keen Edge (Critical threshold −1, never below 16) · Quickened (one extra attack with the Attack action) · Surge (next spell, Inscription or Maneuver costs 3 RP less, min 1) · Phase (attack rolls against it have Disadvantage).",
+    "access": [
+     "Oracle",
+     "Zealot"
+    ],
+    "type": "Augment"
    }
   ],
   "oracle": [
@@ -2216,6 +2252,46 @@
     ],
     "type": "Augment",
     "desc": "If the Spell Form includes Restorative healing, the target recovers an additional 1d8 HP and one adjacent ally also recovers 1d4 HP."
+   },
+   {
+    "name": "Ill Omen",
+    "cost": "+2 SP",
+    "level": 0,
+    "access": [
+     "Oracle"
+    ],
+    "type": "Standalone",
+    "desc": "One enemy within 60 ft. makes its next attack roll or saving throw before the start of your next turn with Disadvantage."
+   },
+   {
+    "name": "Chastise",
+    "cost": "+1 SP",
+    "level": 0,
+    "access": [
+     "Oracle"
+    ],
+    "type": "Augment",
+    "desc": "The Oracle's Impose Minor Condition: on a Full Hit with a one-target Form, or a failed save with an area Form, the target is Frightened, Dazed or Prone (your choice) until the end of its next turn. Sustains like any condition (upkeep 1)."
+   },
+   {
+    "name": "Anathema",
+    "cost": "+3 SP",
+    "level": 3,
+    "access": [
+     "Oracle"
+    ],
+    "type": "Augment",
+    "desc": "The Oracle's Impose Major Condition: as Chastise, but Blinded, Silenced or Weakened. Sustains like any condition (upkeep 3)."
+   },
+   {
+    "name": "Foretold Doom",
+    "cost": "+3 SP",
+    "level": 3,
+    "access": [
+     "Oracle"
+    ],
+    "type": "Standalone",
+    "desc": "Mark one enemy within 60 ft. until the start of your next turn. The first ally to land a Full Hit on it deals +1d8 Radiant, and it is Off-Guard against one save type you name (its next save of that type is at Disadvantage)."
    },
    {
     "name": "Mass Renewal",
@@ -2434,7 +2510,7 @@
    "name": "Simple Projection",
    "cost": "1 RP",
    "action": "Action",
-   "desc": "Single target within 60 ft. Requires an Attack Roll."
+   "desc": "Single target within 60 ft. Attack Roll against an enemy; no roll on a willing ally (healing, shields and Boons always take full effect)."
   },
   {
    "name": "Close Burst",
